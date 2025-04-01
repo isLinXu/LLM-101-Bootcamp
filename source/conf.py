@@ -68,5 +68,5 @@ html_theme_options = {
 }
 
 html_title = "LLM-101创造营"
-html_logo = "_static/logo.png"
+html_logo = "_static/llm101.png"
 html_favicon = "_static/panda.png"

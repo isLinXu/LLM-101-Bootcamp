@@ -168,13 +168,13 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "2460368cf2c2fb69",
+  "active": "d79851fb6bebf2c3",
   "lastOpenFiles": [
+    "docs/_static/llm101.png",
     "build/html/_static/plot_directive.css",
     "build/html/_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css",
     "build/html/objects.inv",
     "build/html/searchindex.js",
-    "build/html/searchindex.js.tmp",
     "build/html/search.html",
     "build/html/genindex.html",
     "build/html/_sources/index.md",
@@ -208,13 +208,13 @@
     "build/html/_sources/chapters/13_inference_quantization/chapter13_inference_quantization.md",
     "build/html/_static/logo.png",
     "build/html/_static/panda.png",
+    "build/html/_static/llm101.png",
     "build/html/_static/images/logo_jupyterhub.svg",
     "build/html/_static/images/logo_binder.svg",
     "build/html/_static/images/logo_colab.png",
     "build/html/_static/images/logo_deepnote.svg",
-    "build/html/_static/plus.png",
     "build/html/_static/minus.png",
     "build/html/_static/file.png",
-    "docs/_static/logo.png"
+    "build/html/_static/plus.png"
   ]
 }
