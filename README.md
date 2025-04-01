@@ -1,9 +1,8 @@
 <div align="center">
   <h1>🚀 LLM-101-Bootcamp: 从零构建生成式AI全栈指南</h1>
-  <img src="./source/_static/llm101.png" style="zoom:33%;" />
+  <img src="./source/_static/llm101.png" width="200" style="border-radius: 10px; margin: 20px 0;" />
   <p>LLM-AI工程师成长训练营 | 分阶段多模块掌握LLM开发全流程</p>
-
-
+</div>
 
   <p>
     <img src="https://img.shields.io/badge/Python-3.9+-blue?logo=python" alt="Python">
@@ -11,8 +10,6 @@
     <img src="https://img.shields.io/badge/Transformer-Architecture-orange" alt="Transformer">
     <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License">
   </p>
-
-</div>
 
 ---
 
