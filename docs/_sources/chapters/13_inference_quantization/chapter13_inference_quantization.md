@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第13章：推理 II：量化 (Quantization)
 
 ## 13.1 量化基础概念

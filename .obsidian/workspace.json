@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "source/chapters/17_Multimodal/chapter17_5_multimodal_model_integration.md",
+                "file": "source/chapters/intro.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "chapter17_5_multimodal_model_integration"
+              "title": "intro"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "source/chapters/17_Multimodal/chapter17_5_multimodal_model_integration.md",
+                "file": "source/chapters/intro.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "chapter17_5_multimodal_model_integration 的反向链接列表"
+              "title": "intro 的反向链接列表"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "source/chapters/17_Multimodal/chapter17_5_multimodal_model_integration.md",
+                "file": "source/chapters/intro.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "chapter17_5_multimodal_model_integration 的出链列表"
+              "title": "intro 的出链列表"
             }
           },
           {
@@ -142,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "source/chapters/17_Multimodal/chapter17_5_multimodal_model_integration.md",
+                "file": "source/chapters/intro.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "chapter17_5_multimodal_model_integration 的大纲"
+              "title": "intro 的大纲"
             }
           }
         ]
@@ -170,7 +170,14 @@
   },
   "active": "d79851fb6bebf2c3",
   "lastOpenFiles": [
-    "docs/_static/llm101.png",
+    "docs/chapters/intro.html",
+    "docs/_static/mathjax_config.js",
+    "docs/_sources/chapters/intro.md",
+    "build/html/_sources/chapters/intro.md",
+    "build/html/chapters/intro.html",
+    "build/doctrees/chapters/intro.doctree",
+    "source/chapters/07_optimization/chapter07_optimization.md",
+    "source/chapters/intro.md",
     "build/html/_static/plot_directive.css",
     "build/html/_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css",
     "build/html/objects.inv",
@@ -180,11 +187,8 @@
     "build/html/_sources/index.md",
     "build/html/index.html",
     "build/html/_sources/chapters/appendix/F1_multimodal.md",
-    "build/html/chapters/appendix/F1_multimodal.html",
     "build/html/_sources/chapters/appendix/E1_neural_network_architectures.md",
-    "build/html/chapters/appendix/E1_neural_network_architectures.html",
     "build/html/_sources/chapters/appendix/D1_deep_learning_frameworks.md",
-    "build/html/chapters/appendix/D1_deep_learning_frameworks.html",
     "build/html/_sources/chapters/appendix/C1_tensor_operations.md",
     "build/html/_sources/chapters/appendix/B1_data_types.md",
     "build/html/_sources/chapters/appendix/A1_programming_languages.md",
@@ -202,10 +206,6 @@
     "build/html/_sources/chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.md",
     "build/html/_sources/chapters/14_finetuning_i_sft/chapter14_5_practical_case_study.md",
     "build/html/_sources/chapters/14_finetuning_i_sft/chapter14_4_chat_model_finetuning.md",
-    "build/html/_sources/chapters/14_finetuning_i_sft/chapter14_3_lora_technique.md",
-    "build/html/_sources/chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.md",
-    "build/html/_sources/chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.md",
-    "build/html/_sources/chapters/13_inference_quantization/chapter13_inference_quantization.md",
     "build/html/_static/logo.png",
     "build/html/_static/panda.png",
     "build/html/_static/llm101.png",
@@ -214,7 +214,7 @@
     "build/html/_static/images/logo_colab.png",
     "build/html/_static/images/logo_deepnote.svg",
     "build/html/_static/minus.png",
-    "build/html/_static/file.png",
-    "build/html/_static/plus.png"
+    "build/html/_static/plus.png",
+    "build/html/_static/file.png"
   ]
 }

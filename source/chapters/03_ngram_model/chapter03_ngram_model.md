@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）
 
 ## 1. 从Bigram到N-gram

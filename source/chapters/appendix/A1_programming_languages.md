@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 附录A：编程语言基础
 
 ## A.1 编程语言：从汇编到Python

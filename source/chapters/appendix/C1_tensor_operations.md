@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 附录C：张量操作基础
 
 ## C.1 张量：形状、视图、步长与连续性

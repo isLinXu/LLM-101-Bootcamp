@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第11章：数据集（Datasets）
 
 ## 11.1 数据集概述

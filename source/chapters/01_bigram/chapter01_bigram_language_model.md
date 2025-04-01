@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第01章：Bigram语言模型（语言建模）
 
 ## 1. 语言模型基础概念

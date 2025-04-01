@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 附录D：深度学习框架
 
 ## D.1 深度学习框架：PyTorch与JAX

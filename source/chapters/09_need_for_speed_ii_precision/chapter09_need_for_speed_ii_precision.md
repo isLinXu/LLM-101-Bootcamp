@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第9章：速度提升II：精度(Precision)
 
 ## 9.1 数值精度基础

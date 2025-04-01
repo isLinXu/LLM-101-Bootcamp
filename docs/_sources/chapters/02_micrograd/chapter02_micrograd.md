@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第02章：Micrograd（机器学习，反向传播）
 
 ## 1. 机器学习基础

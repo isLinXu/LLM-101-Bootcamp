@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调
 
 ## 14.4 聊天模型的监督式微调

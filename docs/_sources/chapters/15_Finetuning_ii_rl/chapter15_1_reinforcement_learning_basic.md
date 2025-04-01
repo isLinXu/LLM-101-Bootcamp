@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第15章：强化学习微调 II: RL-15.1 强化学习基础
 
 ## 15.1 强化学习基础

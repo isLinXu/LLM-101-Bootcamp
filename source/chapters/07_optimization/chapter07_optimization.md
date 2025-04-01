@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第7章：优化技术(Optimization)
 
 ## 7.1 神经网络优化基础

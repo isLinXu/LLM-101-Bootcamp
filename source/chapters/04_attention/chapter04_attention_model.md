@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第04章：注意力机制（Attention，Softmax，位置编码器）
 
 ## 1. 序列模型的挑战

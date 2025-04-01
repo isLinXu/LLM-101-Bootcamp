@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第17章：多模态-17.1 多模态基础理论
 
 ## 17.1 多模态基础理论

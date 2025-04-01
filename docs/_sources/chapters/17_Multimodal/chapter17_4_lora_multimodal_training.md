@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第17章：多模态-基于LoRA的多模态模型训练
 
 ## 17.4 基于LoRA的多模态模型训练

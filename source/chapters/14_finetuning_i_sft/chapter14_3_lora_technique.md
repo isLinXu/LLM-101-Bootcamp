@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第14章：监督式微调 I: SFT-14.3 LoRA技术详解
 
 ## 14.3 LoRA技术详解

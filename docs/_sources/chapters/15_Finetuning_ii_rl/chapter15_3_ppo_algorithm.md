@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法
 
 ## 15.3 近端策略优化(PPO)算法

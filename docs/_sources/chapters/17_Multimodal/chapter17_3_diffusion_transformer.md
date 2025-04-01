@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第17章：多模态-17.3 扩散变换器
 
 ## 17.3 扩散变换器(Diffusion Transformer)

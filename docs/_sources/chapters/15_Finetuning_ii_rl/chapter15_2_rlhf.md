@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)
 
 ## 15.2 人类反馈的强化学习(RLHF)

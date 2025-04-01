@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第8章：速度提升I：设备(Device)
 
 ## 8.1 计算设备概述

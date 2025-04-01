@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 附录E：神经网络架构
 
 ## E.1 神经网络架构：GPT、Llama、MoE及其演进

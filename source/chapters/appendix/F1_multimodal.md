@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 附录F：多模态基础
 
 ## F.1 多模态：VQVAE、VQGAN、扩散模型

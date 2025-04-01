@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第17章：多模态-17.2 VQVAE技术详解
 
 ## 17.2 VQVAE技术详解

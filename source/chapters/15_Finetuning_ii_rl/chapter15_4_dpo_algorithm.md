@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法
 
 ## 15.4 直接偏好优化(DPO)算法

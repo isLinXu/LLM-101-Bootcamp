@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第6章：分词技术(Tokenization)
 
 ## 6.1 分词的基本概念与重要性

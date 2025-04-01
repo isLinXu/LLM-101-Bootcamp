@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第16章：部署-16.2 Web应用开发
 
 ## 16.2 Web应用开发

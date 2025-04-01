@@ -60,6 +60,24 @@ html_theme = "sphinx_book_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+# MathJax配置
+mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+mathjax_options = {
+    'tex': {
+        'inlineMath': [['$', '$'], ['\\(', '\\)']],
+        'displayMath': [['$$', '$$'], ['\\[', '\\]']],
+        'processEscapes': True,
+        'processEnvironments': True,
+    },
+    'options': {
+        'ignoreHtmlClass': 'tex2jax_ignore',
+        'processHtmlClass': 'tex2jax_process'
+    },
+}
+
+def setup(app):
+    app.add_js_file('mathjax_config.js')
+
 html_theme_options = {
     "repository_url": "https://github.com/isLinXu/LLM-101-Bootcamp",
     "use_repository_button": True,

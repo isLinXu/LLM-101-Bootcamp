@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第10章：速度提升III：分布式(Distributed)
 
 ## 10.1 分布式训练基础

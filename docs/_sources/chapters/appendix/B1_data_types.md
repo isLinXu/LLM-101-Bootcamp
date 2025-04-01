@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 附录B：数据类型基础
 
 ## B.1 数据类型：从整数到字符串

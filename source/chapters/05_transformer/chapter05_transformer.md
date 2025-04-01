@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）
 
 ## 1. Transformer架构概览

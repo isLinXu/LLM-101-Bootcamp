@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第16章：部署-16.1 API开发基础
 
 ## 16.1 API开发基础

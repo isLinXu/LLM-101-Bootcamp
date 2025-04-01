@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现
 
 ## 14.5 实践案例：故事讲述模型的SFT实现

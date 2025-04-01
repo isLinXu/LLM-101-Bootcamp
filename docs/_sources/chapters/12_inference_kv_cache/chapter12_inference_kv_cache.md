@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第12章：推理 I：KV缓存（KV-Cache）
 
 ## 12.1 推理过程概述

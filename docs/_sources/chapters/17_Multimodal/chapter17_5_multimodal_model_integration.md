@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第17章：多模态-17.5 多模态模型整合
 
 ## 17.5 多模态模型整合

@@ -1,3 +1,8 @@
+---
+file_format: mystnb
+kernelspec:
+  name: python3
+---
 # 第14章：监督式微调 I: SFT-14.1 监督式微调基础
 
 ## 14.2 参数高效微调技术(PEFT)
