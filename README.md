@@ -20,7 +20,7 @@
 
 ## 🎯 **项目动机**
 
-本项目受到 karpathy/LLM101n 项目的启发。尽管该项目的仓库已经归档，仅提供了大纲，但为了满足学习和探索的需求，我们决定对该项目进行完善和补充。我们的目标是构建一个功能齐全的**故事创作精灵 AI 🌟**，从基础到高级的深度学习技术进行全面的学习和实践。
+本项目受到 **[karpathy/LLM101n](https://github.com/karpathy/LLM101n)** 项目的启发。尽管该项目的仓库已归档，且仅提供了大纲，但为了满足学习和探索的需求，我们决定对该项目进行完善和补充。我们的目标是构建一个功能齐全的**故事创作精灵 AI 🌟**，从基础到高级的深度学习技术进行全面的学习和实践。
 
 ## 🙏 **致敬 Richard Feynman**
 
@@ -74,31 +74,31 @@ graph TD
 
 ## 💡**主要内容**
 
-| 阶段         | 模块 | 技术主题                        | 核心组件                                       | 产出目标       | 难度 | 状态     | 代码示例 |
-| ------------ | ---- | ------------------------------- | ---------------------------------------------- | -------------- | ---- | -------- | -------- |
-| **基础开发** | 01   | Bigram Language Model           | Bigram/概率统计                                | 文本生成器     | ⭐    | 🚧 开发中 | -        |
-|              | 02   | Micrograd                       | 反向传播/计算图                                | Micrograd框架  | ⭐⭐   | 🚧 开发中 | -        |
-|              | 03   | N-gram model                    | MLP/矩阵优化                                   | 特征提取器     | ⭐⭐   | 🚧 开发中 | -        |
-| **核心架构** | 04   | Attention                       | QKV计算/位置编码                               | Attention模块  | ⭐⭐⭐  | 🚧 开发中 | -        |
-|              | 05   | Transformer                     | 残差连接/LayerNorm                             | GPT-2实现      | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
-|              | 06   | Tokenization                    | Byte Pair Encoding                             | Tokenizer      | ⭐⭐   | 🚧 开发中 | -        |
-|              | 07   | Optimization                    | 初始化/AdamW                                   | 优化器实现     | ⭐⭐⭐  | 🚧 开发中 | -        |
-| **优化系统** | 08   | Need for Speed I: Device        | CUDA内核/内存管理                              | 并行计算框架   | ⭐⭐⭐  | 🚧 开发中 | -        |
-|              | 09   | Need for Speed II: Precision    | 混合精度训练                                   | 高效训练框架   | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
-|              | 10   | Need for Speed III: Distributed | 分布式优化/DDP                                 | 分布式训练框架 | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
-|              | 11   | Datasets                        | 数据加载/合成数据                              | 数据集管理     | ⭐⭐   | 🚧 开发中 | -        |
-|              | 12   | Inference I: kv-cache           | KV缓存机制                                     | 高效推理模块   | ⭐⭐⭐  | 🚧 开发中 | -        |
-|              | 13   | Inference II: Quantization      | 量化技术                                       | 高效推理模块   | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
-|              | 14   | Finetuning I: SFT               | 监督微调/LoRA                                  | 微调框架       | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
-|              | 15   | Finetuning II: RL               | RLHF/PPO/DPO                                   | 强化学习框架   | ⭐⭐⭐⭐ | ❌ 待开发 | -        |
-| **生产部署** | 16   | Deployment                      | FastAPI/React                                  | 可交互演示系统 | ⭐⭐⭐  | 🚧 开发中 | -        |
-| **多模态**   | 17   | Multimodal                      | Diffusion/VQVAE                                | 图文生成系统   | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
-| **附录**     |      | Programming languages           | Assembly, C, Python                            | 编程语言指南   | ⭐⭐   | 🚧 开发中 | -        |
-|              |      | Data types                      | Integer, Float, String (ASCII, Unicode, UTF-8) | 数据类型指南   | ⭐⭐   | 🚧 开发中 | -        |
-|              |      | Tensor                          | shapes, views, strides, contiguous             | 张量操作指南   | ⭐⭐⭐  | ✅ 已完成 | -        |
-|              |      | Deep Learning frameworks        | PyTorch, JAX                                   | 框架对比文档   | ⭐⭐⭐  | 🚧 开发中 | -        |
-|              |      | Neural Net Architecture         | GPT, Llama, MoE                                | 架构对比文档   | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
-|              |      | Multimodal                      | Images, Audio, Video, VQVAE, VQGAN, diffusion  | 多模态技术指南 | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
+| 阶段         | 模块 | 技术主题                                                     | 核心组件                                       | 产出目标       | 难度 | 状态     | 代码示例 |
+| ------------ | ---- | ------------------------------------------------------------ | ---------------------------------------------- | -------------- | ---- | -------- | -------- |
+| **基础开发** | 01   | [Bigram Language Model](./source/chapters/01_bigram/chapter01_bigram_language_model.md) | Bigram/概率统计                                | 文本生成器     | ⭐    | 🚧 开发中 | -        |
+|              | 02   | [Micrograd](./source/chapters/02_micrograd/chapter02_micrograd.md) | 反向传播/计算图                                | Micrograd框架  | ⭐⭐   | 🚧 开发中 | -        |
+|              | 03   | [N-gram model](./source/chapters/03_ngram_model/chapter03_ngram_model.md) | MLP/矩阵优化                                   | 特征提取器     | ⭐⭐   | 🚧 开发中 | -        |
+| **核心架构** | 04   | [Attention](./source/chapters/04_attention/chapter04_attention_model.md) | QKV计算/位置编码                               | Attention模块  | ⭐⭐⭐  | 🚧 开发中 | -        |
+|              | 05   | [Transformer](./source/chapters/05_transformer/chapter05_transformer.md) | 残差连接/LayerNorm                             | GPT-2实现      | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
+|              | 06   | [Tokenization](./source/chapters/06_tokenization/chaptet06_tokenization.md) | Byte Pair Encoding                             | Tokenizer      | ⭐⭐   | 🚧 开发中 | -        |
+|              | 07   | [Optimization](./source/chapters/07_optimization/chapter07_optimization.md) | 初始化/AdamW                                   | 优化器实现     | ⭐⭐⭐  | 🚧 开发中 | -        |
+| **优化系统** | 08   | [Need for Speed I: Device](./source/chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.md) | CUDA内核/内存管理                              | 并行计算框架   | ⭐⭐⭐  | 🚧 开发中 | -        |
+|              | 09   | [Need for Speed II: Precision](./source/chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.md) | 混合精度训练                                   | 高效训练框架   | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
+|              | 10   | [Need for Speed III: Distributed](./source/chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.md) | 分布式优化/DDP                                 | 分布式训练框架 | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
+|              | 11   | [Datasets](./source/chapters/11_datasets/chapter11_datasets.md) | 数据加载/合成数据                              | 数据集管理     | ⭐⭐   | 🚧 开发中 | -        |
+|              | 12   | [Inference I: kv-cache](./source/chapters/12_inference_kv_cache/chapter12_inference_kv_cache.md) | KV缓存机制                                     | 高效推理模块   | ⭐⭐⭐  | 🚧 开发中 | -        |
+|              | 13   | [Inference II: Quantization](./source/chapters/13_inference_quantization/chapter13_inference_quantization.md) | 量化技术                                       | 高效推理模块   | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
+|              | 14   | [Finetuning I: SFT](./source/chapters/14_finetuning_i_sft)   | 监督微调/LoRA                                  | 微调框架       | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
+|              | 15   | [Finetuning II: RL](./source/chapters/15_Finetuning_ii_rl)   | RLHF/PPO/DPO                                   | 强化学习框架   | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
+| **生产部署** | 16   | [Deployment](./source/chapters/16_deployment)                | FastAPI/React                                  | 可交互演示系统 | ⭐⭐⭐  | 🚧 开发中 | -        |
+| **多模态**   | 17   | [Multimodal](./source/chapters/17_Multimodal)                | Diffusion/VQVAE                                | 图文生成系统   | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
+| **附录**     |      | [Programming languages](./source/chapters/appendix/A1_programming_languages.md) | Assembly, C, Python                            | 编程语言指南   | ⭐⭐   | 🚧 开发中 | -        |
+|              |      | [Data types](./source/chapters/appendix/B1_data_types.md)    | Integer, Float, String (ASCII, Unicode, UTF-8) | 数据类型指南   | ⭐⭐   | 🚧 开发中 | -        |
+|              |      | [Tensor](./source/chapters/appendix/C1_tensor_operations.md) | shapes, views, strides, contiguous             | 张量操作指南   | ⭐⭐⭐  | 🚧 开发中 | -        |
+|              |      | [Deep Learning frameworks](./source/chapters/appendix/D1_deep_learning_frameworks.md) | PyTorch, JAX                                   | 框架对比文档   | ⭐⭐⭐  | 🚧 开发中 | -        |
+|              |      | [Neural Net Architecture](./source/chapters/appendix/E1_neural_network_architectures.md) | GPT, Llama, MoE                                | 架构对比文档   | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
+|              |      | [Multimodal](./source/chapters/appendix/F1_multimodal.md)    | Images, Audio, Video, VQVAE, VQGAN, diffusion  | 多模态技术指南 | ⭐⭐⭐⭐ | 🚧 开发中 | -        |
 
 > **说明**
 >
@@ -115,7 +115,7 @@ graph TD
 >
 > 3. **详细说明**：
 >
->    可见[intro](./source/chapters/intro.md)
+>    更多详情，可见[intro](./source/chapters/intro.md)
 >
 
 ## 🛠️ **项目加速工具**
