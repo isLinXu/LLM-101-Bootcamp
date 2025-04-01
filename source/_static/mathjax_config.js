@@ -1,3 +1,4 @@
+// 先加载MathJax配置
 window.MathJax = {
   tex: {
     inlineMath: [['$', '$'], ['\\(', '\\)']], // 行内公式
@@ -14,3 +15,11 @@ window.MathJax = {
     fontCache: 'global'
   }
 };
+
+// 动态加载MathJax库
+(function () {
+  var script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+  script.async = true;
+  document.head.appendChild(script);
+})();
