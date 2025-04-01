@@ -1,0 +1,1106 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第02章：Micrograd（机器学习，反向传播） &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/02_micrograd/chapter02_micrograd';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）" href="../03_ngram_model/chapter03_ngram_model.html" />
+    <link rel="prev" title="第01章：Bigram语言模型（语言建模）" href="../01_bigram/chapter01_bigram_language_model.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/02_micrograd/chapter02_micrograd.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/02_micrograd/chapter02_micrograd.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/02_micrograd/chapter02_micrograd.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第02章：Micrograd（机器学习，反向传播）</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. 机器学习基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">监督学习、无监督学习与强化学习</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">损失函数与优化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">梯度下降法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2. 计算图与自动微分</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">前向传播</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">反向传播算法详解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">链式法则</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">3. Micrograd框架介绍</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Micrograd的设计理念</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">核心组件与架构</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">4. 从零实现Micrograd</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value">实现Value类</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">实现基本运算操作</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">实现反向传播</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">5. 使用Micrograd构建简单神经网络</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">实现神经网络层</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">训练过程实现</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">案例：使用Micrograd解决简单分类问题</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">总结</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="micrograd">
+<h1>第02章：Micrograd（机器学习，反向传播）<a class="headerlink" href="#micrograd" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>1. 机器学习基础<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>监督学习、无监督学习与强化学习<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>机器学习是人工智能的一个核心分支，它研究如何让计算机系统从数据中学习并改进其性能，而无需显式编程。根据学习方式和任务类型，机器学习可以分为三大类：监督学习、无监督学习和强化学习。</p>
+<p><strong>监督学习</strong>是最常见的机器学习范式，它使用带有标签的训练数据。在监督学习中，算法通过分析训练样本（输入）及其对应的目标值（输出）来学习输入与输出之间的映射关系。一旦学习完成，算法就能够对新的、未见过的输入数据做出预测。</p>
+<p>监督学习的典型应用包括：</p>
+<ul class="simple">
+<li><p>分类问题：如垃圾邮件检测、图像识别、情感分析等</p></li>
+<li><p>回归问题：如房价预测、股票价格预测、温度预测等</p></li>
+</ul>
+<p>在语言模型的背景下，预测下一个词的任务可以看作是一个监督学习问题，其中输入是前面的词序列，输出是下一个词的概率分布。</p>
+<p><strong>无监督学习</strong>使用的是没有标签的数据。算法需要自行发现数据中的模式、结构或规律，而不依赖于预定义的目标值。无监督学习的主要目标是理解数据的内在结构，而非做出预测。</p>
+<p>无监督学习的典型应用包括：</p>
+<ul class="simple">
+<li><p>聚类：如客户分群、社区发现等</p></li>
+<li><p>降维：如主成分分析(PCA)、t-SNE等</p></li>
+<li><p>异常检测：如信用卡欺诈检测、网络入侵检测等</p></li>
+</ul>
+<p>在语言模型中，词嵌入（如Word2Vec、GloVe）的学习过程可以看作是一种无监督学习，它从大量文本中学习词的分布式表示，而不需要人工标注。</p>
+<p><strong>强化学习</strong>是一种通过与环境交互来学习的方法。在强化学习中，智能体（agent）通过执行动作并观察环境的反馈（奖励或惩罚）来学习最优策略，以最大化长期累积奖励。</p>
+<p>强化学习的典型应用包括：</p>
+<ul class="simple">
+<li><p>游戏AI：如AlphaGo、OpenAI Five等</p></li>
+<li><p>机器人控制：如自主导航、机械臂操作等</p></li>
+<li><p>推荐系统：如新闻推荐、广告投放等</p></li>
+</ul>
+<p>在语言模型的微调阶段，特别是基于人类反馈的强化学习（RLHF）中，强化学习被用来使模型生成的文本更符合人类偏好。</p>
+</section>
+<section id="id3">
+<h3>损失函数与优化<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>在机器学习中，我们需要一种方法来衡量模型的预测与真实值之间的差距，这就是<strong>损失函数</strong>（Loss Function）的作用。损失函数将模型的预测与真实标签作为输入，输出一个非负实数，表示预测的”错误程度”。我们的目标是通过调整模型参数，使损失函数的值最小化。</p>
+<p>常见的损失函数包括：</p>
+<ol class="arabic simple">
+<li><p><strong>均方误差（Mean Squared Error, MSE）</strong>：主要用于回归问题
+$$MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+其中，$y_i$是真实值，$\hat{y}_i$是预测值，$n$是样本数量。</p></li>
+<li><p><strong>交叉熵损失（Cross-Entropy Loss）</strong>：主要用于分类问题
+$$CE = -\sum_{i=1}^{n}y_i\log(\hat{y}_i)$$
+其中，$y_i$是真实标签（通常是one-hot编码），$\hat{y}_i$是预测的概率分布。</p></li>
+<li><p><strong>负对数似然（Negative Log-Likelihood, NLL）</strong>：常用于语言模型
+$$NLL = -\sum_{i=1}^{n}\log(P(w_i|w_1, w_2, …, w_{i-1}))$$
+其中，$P(w_i|w_1, w_2, …, w_{i-1})$是模型预测的下一个词$w_i$的条件概率。</p></li>
+</ol>
+<p>一旦定义了损失函数，我们需要一种方法来调整模型参数，使损失函数最小化。这个过程称为<strong>优化</strong>（Optimization）。</p>
+<p>最常用的优化算法是<strong>梯度下降法</strong>（Gradient Descent）及其变体。梯度下降法的基本思想是沿着损失函数的负梯度方向更新参数，因为负梯度方向是函数值下降最快的方向。</p>
+</section>
+<section id="id4">
+<h3>梯度下降法<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>梯度下降法是一种迭代优化算法，用于找到函数的局部最小值。在机器学习中，我们使用梯度下降法来最小化损失函数，从而找到最优的模型参数。</p>
+<p>梯度下降法的基本步骤如下：</p>
+<ol class="arabic simple">
+<li><p>初始化模型参数（通常是随机初始化）</p></li>
+<li><p>计算损失函数关于参数的梯度</p></li>
+<li><p>沿着负梯度方向更新参数</p></li>
+<li><p>重复步骤2和3，直到收敛（梯度接近零或达到预定的迭代次数）</p></li>
+</ol>
+<p>数学表示为：
+$$\theta_{t+1} = \theta_t - \alpha \nabla_{\theta} J(\theta_t)$$</p>
+<p>其中，$\theta_t$是当前参数，$\alpha$是学习率（一个控制更新步长的超参数），$\nabla_{\theta} J(\theta_t)$是损失函数$J$关于参数$\theta$的梯度。</p>
+<p>梯度下降法有几种变体：</p>
+<ol class="arabic simple">
+<li><p><strong>批量梯度下降（Batch Gradient Descent）</strong>：使用所有训练样本计算梯度</p>
+<ul class="simple">
+<li><p>优点：每次更新使用所有数据，梯度估计准确</p></li>
+<li><p>缺点：计算成本高，内存需求大，更新慢</p></li>
+</ul>
+</li>
+<li><p><strong>随机梯度下降（Stochastic Gradient Descent, SGD）</strong>：每次只使用一个随机样本计算梯度</p>
+<ul class="simple">
+<li><p>优点：更新快，可能跳出局部最小值</p></li>
+<li><p>缺点：梯度估计噪声大，收敛波动</p></li>
+</ul>
+</li>
+<li><p><strong>小批量梯度下降（Mini-batch Gradient Descent）</strong>：使用一小批样本计算梯度</p>
+<ul class="simple">
+<li><p>优点：结合了前两者的优点，计算效率和收敛性的良好平衡</p></li>
+<li><p>缺点：需要调整批量大小这一额外超参数</p></li>
+</ul>
+</li>
+</ol>
+<p>在实践中，我们通常使用小批量梯度下降及其改进版本，如动量法（Momentum）、AdaGrad、RMSProp和Adam等。这些改进算法通过自适应学习率、加入动量等机制，使优化过程更加稳定和高效。</p>
+</section>
+</section>
+<section id="id5">
+<h2>2. 计算图与自动微分<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h3>前向传播<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>在神经网络中，<strong>前向传播</strong>（Forward Propagation）是指从输入层到输出层的计算过程。在这个过程中，数据沿着网络的前向方向流动，经过各层的变换，最终产生预测输出。</p>
+<p>前向传播可以用<strong>计算图</strong>（Computational Graph）来表示。计算图是一种有向无环图，其中节点表示操作（如加法、乘法、激活函数等），边表示数据流动的方向。</p>
+<p>以一个简单的神经网络为例，假设我们有一个具有一个隐藏层的网络，其数学表示为：</p>
+<p>$$z = W_2 \cdot \sigma(W_1 \cdot x + b_1) + b_2$$</p>
+<p>其中，$x$是输入，$W_1$和$b_1$是第一层的权重和偏置，$\sigma$是激活函数，$W_2$和$b_2$是第二层的权重和偏置，$z$是输出。</p>
+<p>前向传播的计算步骤为：</p>
+<ol class="arabic simple">
+<li><p>计算第一层的线性变换：$a_1 = W_1 \cdot x + b_1$</p></li>
+<li><p>应用激活函数：$h_1 = \sigma(a_1)$</p></li>
+<li><p>计算第二层的线性变换：$z = W_2 \cdot h_1 + b_2$</p></li>
+</ol>
+<p>这个过程可以用计算图表示，其中每个操作都是图中的一个节点，数据沿着边流动。</p>
+</section>
+<section id="id7">
+<h3>反向传播算法详解<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p><strong>反向传播</strong>（Backpropagation）是训练神经网络的核心算法，它用于计算损失函数关于网络参数的梯度。反向传播的名称来源于梯度信息从输出层向输入层反向流动的特性。</p>
+<p>反向传播算法基于链式法则，它允许我们计算复合函数的导数。在神经网络中，损失函数通常是网络参数的复合函数，我们需要计算损失函数关于每个参数的偏导数，以便使用梯度下降法更新参数。</p>
+<p>反向传播的基本步骤如下：</p>
+<ol class="arabic simple">
+<li><p><strong>前向传播</strong>：计算网络的输出和损失</p></li>
+<li><p><strong>计算输出层的梯度</strong>：计算损失函数关于输出层的梯度</p></li>
+<li><p><strong>反向传播梯度</strong>：使用链式法则，将梯度从输出层反向传播到每一层</p></li>
+<li><p><strong>更新参数</strong>：使用计算得到的梯度，通过梯度下降法更新网络参数</p></li>
+</ol>
+<p>以上面的简单神经网络为例，假设我们使用均方误差作为损失函数：$L = \frac{1}{2}(z - y)^2$，其中$y$是真实标签。</p>
+<p>反向传播的计算步骤为：</p>
+<ol class="arabic simple">
+<li><p>计算损失关于输出的梯度：$\frac{\partial L}{\partial z} = z - y$</p></li>
+<li><p>计算损失关于第二层参数的梯度：</p>
+<ul class="simple">
+<li><p>$\frac{\partial L}{\partial W_2} = \frac{\partial L}{\partial z} \cdot h_1^T$</p></li>
+<li><p>$\frac{\partial L}{\partial b_2} = \frac{\partial L}{\partial z}$</p></li>
+</ul>
+</li>
+<li><p>计算损失关于隐藏层输出的梯度：$\frac{\partial L}{\partial h_1} = W_2^T \cdot \frac{\partial L}{\partial z}$</p></li>
+<li><p>计算损失关于隐藏层激活前的梯度：$\frac{\partial L}{\partial a_1} = \frac{\partial L}{\partial h_1} \odot \sigma’(a_1)$，其中$\odot$表示元素wise乘法</p></li>
+<li><p>计算损失关于第一层参数的梯度：</p>
+<ul class="simple">
+<li><p>$\frac{\partial L}{\partial W_1} = \frac{\partial L}{\partial a_1} \cdot x^T$</p></li>
+<li><p>$\frac{\partial L}{\partial b_1} = \frac{\partial L}{\partial a_1}$</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id8">
+<h3>链式法则<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p><strong>链式法则</strong>（Chain Rule）是微积分中的一个基本原理，用于计算复合函数的导数。在神经网络中，链式法则是反向传播算法的数学基础。</p>
+<p>对于复合函数$f(g(x))$，其导数可以表示为：
+$$\frac{d}{dx}f(g(x)) = \frac{df}{dg} \cdot \frac{dg}{dx}$$</p>
+<p>在多变量情况下，如果$y = f(u)$且$u = g(x)$，则：
+$$\frac{\partial y}{\partial x} = \frac{\partial y}{\partial u} \cdot \frac{\partial u}{\partial x}$$</p>
+<p>在神经网络中，损失函数通常是网络参数的复杂复合函数。通过链式法则，我们可以将这个复杂的导数计算分解为一系列简单的导数计算，从而高效地计算梯度。</p>
+<p>例如，对于一个三层神经网络，损失函数关于第一层权重的梯度可以表示为：
+$$\frac{\partial L}{\partial W_1} = \frac{\partial L}{\partial z} \cdot \frac{\partial z}{\partial h_2} \cdot \frac{\partial h_2}{\partial a_2} \cdot \frac{\partial a_2}{\partial h_1} \cdot \frac{\partial h_1}{\partial a_1} \cdot \frac{\partial a_1}{\partial W_1}$$</p>
+<p>通过链式法则，我们可以从输出层开始，逐层反向计算梯度，最终得到损失函数关于每个参数的梯度。</p>
+</section>
+</section>
+<section id="id9">
+<h2>3. Micrograd框架介绍<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<section id="id10">
+<h3>Micrograd的设计理念<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>Micrograd是由Andrej Karpathy创建的一个微型自动微分引擎，它的设计理念是通过最小化的代码实现神经网络的核心功能，包括前向计算和反向传播。Micrograd的目标是帮助人们理解深度学习的基本原理，特别是自动微分和反向传播算法。</p>
+<p>Micrograd的主要设计理念包括：</p>
+<ol class="arabic simple">
+<li><p><strong>简洁性</strong>：Micrograd的核心代码非常简洁，只有几百行，便于理解和学习。</p></li>
+<li><p><strong>教育性</strong>：Micrograd的设计目的是教育而非性能，它清晰地展示了自动微分和神经网络的工作原理。</p></li>
+<li><p><strong>纯Python实现</strong>：Micrograd完全用Python实现，不依赖于其他深度学习库，使得代码易于阅读和理解。</p></li>
+<li><p><strong>动态计算图</strong>：Micrograd使用动态计算图，这意味着计算图是在运行时构建的，而非预先定义。</p></li>
+<li><p><strong>标量操作</strong>：为了简化实现，Micrograd主要处理标量操作，而非向量或矩阵操作。</p></li>
+</ol>
+</section>
+<section id="id11">
+<h3>核心组件与架构<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>Micrograd的核心组件是<code class="docutils literal notranslate"><span class="pre">Value</span></code>类，它代表计算图中的一个节点，封装了一个标量值及其梯度。<code class="docutils literal notranslate"><span class="pre">Value</span></code>类支持基本的算术操作（如加法、乘法）和激活函数（如tanh），并能够通过这些操作构建计算图。</p>
+<p>Micrograd的架构主要包括以下几个部分：</p>
+<ol class="arabic simple">
+<li><p><strong>Value类</strong>：表示计算图中的节点，包含值、梯度和反向传播函数。</p></li>
+<li><p><strong>操作符重载</strong>：通过重载Python的算术操作符（如+、*），使<code class="docutils literal notranslate"><span class="pre">Value</span></code>对象能够参与算术表达式。</p></li>
+<li><p><strong>反向传播</strong>：通过拓扑排序和链式法则，实现梯度的反向传播。</p></li>
+<li><p><strong>神经网络模块</strong>：基于<code class="docutils literal notranslate"><span class="pre">Value</span></code>类构建的简单神经网络组件，如神经元和层。</p></li>
+</ol>
+<p>Micrograd的工作流程如下：</p>
+<ol class="arabic simple">
+<li><p>创建<code class="docutils literal notranslate"><span class="pre">Value</span></code>对象，表示输入和参数。</p></li>
+<li><p>通过算术操作和激活函数，构建计算图，得到输出。</p></li>
+<li><p>调用输出的<code class="docutils literal notranslate"><span class="pre">.backward()</span></code>方法，触发反向传播，计算梯度。</p></li>
+<li><p>使用计算得到的梯度，通过梯度下降法更新参数。</p></li>
+</ol>
+</section>
+</section>
+<section id="id12">
+<h2>4. 从零实现Micrograd<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<section id="value">
+<h3>实现Value类<a class="headerlink" href="#value" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Value</span></code>类是Micrograd的核心，它封装了一个标量值及其梯度，并支持自动微分。下面是<code class="docutils literal notranslate"><span class="pre">Value</span></code>类的基本实现：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Value</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">_children</span><span class="o">=</span><span class="p">(),</span> <span class="n">_op</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_backward</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_children</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_op</span> <span class="o">=</span> <span class="n">_op</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">other</span> <span class="o">=</span> <span class="n">other</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Value</span><span class="p">)</span> <span class="k">else</span> <span class="n">Value</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">),</span> <span class="s1">&#39;+&#39;</span><span class="p">)</span>
+        
+        <span class="k">def</span> <span class="nf">_backward</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">+=</span> <span class="n">out</span><span class="o">.</span><span class="n">grad</span>
+            <span class="n">other</span><span class="o">.</span><span class="n">grad</span> <span class="o">+=</span> <span class="n">out</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">_backward</span> <span class="o">=</span> <span class="n">_backward</span>
+        
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">other</span> <span class="o">=</span> <span class="n">other</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Value</span><span class="p">)</span> <span class="k">else</span> <span class="n">Value</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">),</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
+        
+        <span class="k">def</span> <span class="nf">_backward</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="n">out</span><span class="o">.</span><span class="n">grad</span>
+            <span class="n">other</span><span class="o">.</span><span class="n">grad</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="n">out</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">_backward</span> <span class="o">=</span> <span class="n">_backward</span>
+        
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="p">,),</span> <span class="s1">&#39;tanh&#39;</span><span class="p">)</span>
+        
+        <span class="k">def</span> <span class="nf">_backward</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">out</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">_backward</span> <span class="o">=</span> <span class="n">_backward</span>
+        
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">topo</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">build_topo</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">_prev</span><span class="p">:</span>
+                    <span class="n">build_topo</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                <span class="n">topo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">build_topo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">topo</span><span class="p">):</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">_backward</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>这个实现包含了<code class="docutils literal notranslate"><span class="pre">Value</span></code>类的基本功能：</p>
+<ul class="simple">
+<li><p>初始化方法，设置数据、梯度和反向传播函数</p></li>
+<li><p>加法和乘法操作的重载，支持构建计算图</p></li>
+<li><p>tanh激活函数，用于引入非线性</p></li>
+<li><p>backward方法，实现反向传播</p></li>
+</ul>
+</section>
+<section id="id13">
+<h3>实现基本运算操作<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>为了使<code class="docutils literal notranslate"><span class="pre">Value</span></code>类更加完整，我们需要实现更多的基本运算操作，如减法、除法、幂运算等。下面是这些操作的实现：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="n">other</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">other</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">other</span><span class="o">**-</span><span class="mi">1</span>
+
+<span class="k">def</span> <span class="fm">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">**-</span><span class="mi">1</span>
+
+<span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)),</span> <span class="s2">&quot;only supporting int/float powers for now&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">**</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="p">,),</span> <span class="sa">f</span><span class="s1">&#39;**</span><span class="si">{</span><span class="n">other</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_backward</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">+=</span> <span class="p">(</span><span class="n">other</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">**</span><span class="p">(</span><span class="n">other</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">out</span><span class="o">.</span><span class="n">grad</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">_backward</span> <span class="o">=</span> <span class="n">_backward</span>
+    
+    <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+</div>
+<p>这些方法使<code class="docutils literal notranslate"><span class="pre">Value</span></code>类支持更多的算术操作，从而能够构建更复杂的计算图。</p>
+</section>
+<section id="id14">
+<h3>实现反向传播<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<p>反向传播是自动微分的核心，它通过链式法则计算梯度。在Micrograd中，反向传播通过<code class="docutils literal notranslate"><span class="pre">backward</span></code>方法实现，该方法首先对计算图进行拓扑排序，然后从输出节点开始，反向传播梯度。</p>
+<p>拓扑排序确保在计算一个节点的梯度之前，已经计算了所有依赖于该节点的节点的梯度。这是因为根据链式法则，一个节点的梯度依赖于所有使用该节点的节点的梯度。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># 拓扑排序</span>
+    <span class="n">topo</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">build_topo</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+            <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">_prev</span><span class="p">:</span>
+                <span class="n">build_topo</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+            <span class="n">topo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">build_topo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    <span class="c1"># 反向传播梯度</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">topo</span><span class="p">):</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">_backward</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>在这个实现中，我们首先通过深度优先搜索对计算图进行拓扑排序，然后从输出节点开始，按照拓扑排序的逆序反向传播梯度。输出节点的梯度初始化为1.0，表示损失函数关于输出的导数。</p>
+</section>
+</section>
+<section id="id15">
+<h2>5. 使用Micrograd构建简单神经网络<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<section id="id16">
+<h3>实现神经网络层<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<p>有了<code class="docutils literal notranslate"><span class="pre">Value</span></code>类，我们可以构建简单的神经网络组件，如神经元和层。下面是这些组件的实现：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="k">class</span> <span class="nc">Neuron</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nin</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="n">Value</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nin</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># w * x + b</span>
+        <span class="n">act</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">wi</span> <span class="o">*</span> <span class="n">xi</span> <span class="k">for</span> <span class="n">wi</span><span class="p">,</span> <span class="n">xi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">act</span><span class="o">.</span><span class="n">tanh</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">Layer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nin</span><span class="p">,</span> <span class="n">nout</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neurons</span> <span class="o">=</span> <span class="p">[</span><span class="n">Neuron</span><span class="p">(</span><span class="n">nin</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nout</span><span class="p">)]</span>
+    
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">outs</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neurons</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">outs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">outs</span>
+    
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">neuron</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neurons</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">neuron</span><span class="o">.</span><span class="n">parameters</span><span class="p">()]</span>
+
+<span class="k">class</span> <span class="nc">MLP</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nin</span><span class="p">,</span> <span class="n">nouts</span><span class="p">):</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="p">[</span><span class="n">nin</span><span class="p">]</span> <span class="o">+</span> <span class="n">nouts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">Layer</span><span class="p">(</span><span class="n">sz</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sz</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nouts</span><span class="p">))]</span>
+    
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+    
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">layer</span><span class="o">.</span><span class="n">parameters</span><span class="p">()]</span>
+</pre></div>
+</div>
+<p>这个实现包括三个类：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Neuron</span></code>：表示一个神经元，包含权重、偏置和激活函数</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Layer</span></code>：表示一层神经元</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MLP</span></code>（多层感知器）：表示一个多层神经网络</p></li>
+</ul>
+</section>
+<section id="id17">
+<h3>训练过程实现<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<p>有了神经网络模型，我们可以实现训练过程，包括前向传播、计算损失、反向传播和参数更新。下面是一个简单的训练循环：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 创建模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># 训练数据</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>  <span class="c1"># 目标值</span>
+
+<span class="c1"># 训练参数</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="c1"># 训练循环</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="c1"># 前向传播</span>
+    <span class="n">ypred</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">]</span>
+    
+    <span class="c1"># 计算损失</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">yout</span> <span class="o">-</span> <span class="n">ygt</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">ygt</span><span class="p">,</span> <span class="n">yout</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">ypred</span><span class="p">))</span>
+    
+    <span class="c1"># 反向传播</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>  <span class="c1"># 清零梯度</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="c1"># 更新参数</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">data</span> <span class="o">-=</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span>
+    
+    <span class="c1"># 打印损失</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s1">, Loss: </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>在这个训练循环中，我们首先创建一个多层感知器模型，然后定义训练数据和参数。在每个训练周期，我们执行以下步骤：</p>
+<ol class="arabic simple">
+<li><p>前向传播，计算模型的预测输出</p></li>
+<li><p>计算损失，这里使用均方误差</p></li>
+<li><p>反向传播，计算梯度</p></li>
+<li><p>更新参数，使用梯度下降法</p></li>
+</ol>
+</section>
+<section id="id18">
+<h3>案例：使用Micrograd解决简单分类问题<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<p>下面是一个完整的例子，展示如何使用Micrograd解决一个简单的二分类问题：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># 完整的Value类实现（包括之前的所有方法）</span>
+<span class="k">class</span> <span class="nc">Value</span><span class="p">:</span>
+    <span class="c1"># ... （之前的实现）</span>
+
+<span class="c1"># 神经网络组件</span>
+<span class="k">class</span> <span class="nc">Neuron</span><span class="p">:</span>
+    <span class="c1"># ... （之前的实现）</span>
+
+<span class="k">class</span> <span class="nc">Layer</span><span class="p">:</span>
+    <span class="c1"># ... （之前的实现）</span>
+
+<span class="k">class</span> <span class="nc">MLP</span><span class="p">:</span>
+    <span class="c1"># ... （之前的实现）</span>
+
+<span class="c1"># 生成螺旋数据</span>
+<span class="k">def</span> <span class="nf">generate_spiral_data</span><span class="p">(</span><span class="n">n_points</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_classes</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_points</span><span class="p">):</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">j</span> <span class="o">/</span> <span class="n">n_points</span> <span class="o">*</span> <span class="mi">5</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="mf">1.25</span> <span class="o">*</span> <span class="n">j</span> <span class="o">/</span> <span class="n">n_points</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">r</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)])</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+
+<span class="c1"># 生成数据</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">generate_spiral_data</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># 可视化数据</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Class 1&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="n">c</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Class 2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Spiral Dataset&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;spiral_data.png&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># 创建模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># 训练参数</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># 训练循环</span>
+<span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="c1"># 前向传播</span>
+    <span class="n">ypred</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span>
+    
+    <span class="c1"># 计算损失</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">yout</span> <span class="o">-</span> <span class="n">ygt</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">ygt</span><span class="p">,</span> <span class="n">yout</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ypred</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    
+    <span class="c1"># 反向传播</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">grad</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># 清零梯度</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="c1"># 更新参数</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">data</span> <span class="o">-=</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span>
+    
+    <span class="c1"># 打印损失</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s1">, Loss: </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">data</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># 可视化损失曲线</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epoch&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;training_loss.png&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># 可视化决策边界</span>
+<span class="n">h</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">model</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xx_row</span><span class="p">,</span> <span class="n">yy_row</span><span class="p">)]</span> <span class="k">for</span> <span class="n">xx_row</span><span class="p">,</span> <span class="n">yy_row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">)])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Spectral</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Class 1&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="n">c</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Class 2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Decision Boundary&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;decision_boundary.png&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>在这个例子中，我们生成了一个螺旋形的二分类数据集，然后使用Micrograd构建了一个多层感知器模型来解决这个分类问题。我们训练模型1000个周期，并可视化了训练损失和最终的决策边界。</p>
+<p>这个例子展示了Micrograd的强大功能：尽管它是一个微型库，但它能够实现完整的神经网络训练过程，并解决实际的机器学习问题。</p>
+</section>
+</section>
+<section id="id19">
+<h2>总结<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<p>在本章中，我们深入探讨了机器学习的基础概念，包括监督学习、无监督学习和强化学习，以及损失函数和优化算法。我们详细讲解了计算图和自动微分的原理，特别是前向传播和反向传播算法。</p>
+<p>我们介绍了Micrograd，一个微型自动微分引擎，并从零开始实现了它的核心功能，包括<code class="docutils literal notranslate"><span class="pre">Value</span></code>类、基本运算操作和反向传播算法。最后，我们使用Micrograd构建了简单的神经网络组件，并展示了如何使用它们解决实际的机器学习问题。</p>
+<p>Micrograd的实现虽然简单，但它包含了深度学习的核心原理，为我们理解更复杂的深度学习框架（如PyTorch、TensorFlow）奠定了基础。在接下来的章节中，我们将基于这些基础知识，逐步构建更强大的语言模型。</p>
+<p>在下一章中，我们将学习N-gram模型，这是一种更高级的语言模型，它使用多层感知器和矩阵乘法来捕捉更复杂的语言模式。我们还将介绍GELU激活函数，这是现代语言模型中常用的非线性函数。</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../01_bigram/chapter01_bigram_language_model.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第01章：Bigram语言模型（语言建模）</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../03_ngram_model/chapter03_ngram_model.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. 机器学习基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">监督学习、无监督学习与强化学习</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">损失函数与优化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">梯度下降法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2. 计算图与自动微分</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">前向传播</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">反向传播算法详解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">链式法则</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">3. Micrograd框架介绍</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Micrograd的设计理念</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">核心组件与架构</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">4. 从零实现Micrograd</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value">实现Value类</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">实现基本运算操作</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">实现反向传播</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">5. 使用Micrograd构建简单神经网络</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">实现神经网络层</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">训练过程实现</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">案例：使用Micrograd解决简单分类问题</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">总结</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

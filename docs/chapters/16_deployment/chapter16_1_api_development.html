@@ -1,0 +1,1767 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第16章：部署-16.1 API开发基础 &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/16_deployment/chapter16_1_api_development';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第16章：部署-16.2 Web应用开发" href="chapter16_2_web_application.html" />
+    <link rel="prev" title="第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/16_deployment/chapter16_1_api_development.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/16_deployment/chapter16_1_api_development.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/16_deployment/chapter16_1_api_development.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第16章：部署-16.1 API开发基础</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">16.1 API开发基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">API设计原则</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">API功能规划</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">API架构设计</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">整体架构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">组件说明</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">API规范设计</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">基本端点</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">实现API服务器</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">基本项目结构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">核心代码实现</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">API测试与文档</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">单元测试</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">API文档</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">部署考虑事项</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dockerapi">Docker化API服务</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">总结</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="api">
+<h1>第16章：部署-16.1 API开发基础<a class="headerlink" href="#api" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>16.1 API开发基础<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>在前面的章节中，我们深入探讨了如何训练和优化一个故事讲述AI模型，从监督式微调到强化学习技术。现在，我们已经拥有了一个高质量的模型，能够生成符合人类偏好的引人入胜的故事。然而，一个优秀的模型如果无法被用户便捷地使用，其价值就会大打折扣。本章将介绍如何将我们的故事讲述AI模型部署为实用的应用程序，使其能够服务于最终用户。</p>
+<p>首先，我们将探讨API（应用程序编程接口）的开发，这是将AI模型转化为可用服务的第一步。API提供了一种标准化的方式，使其他应用程序能够与我们的模型进行交互，而无需了解其内部工作原理。</p>
+<section id="id2">
+<h3>API设计原则<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>设计一个好的API需要遵循一些基本原则，特别是对于AI模型这样的复杂系统：</p>
+<ol class="arabic simple">
+<li><p><strong>简单性</strong>：</p>
+<ul class="simple">
+<li><p>API应该易于理解和使用</p></li>
+<li><p>隐藏模型的复杂性，只暴露必要的功能</p></li>
+<li><p>提供合理的默认值，减少用户决策负担</p></li>
+</ul>
+</li>
+<li><p><strong>一致性</strong>：</p>
+<ul class="simple">
+<li><p>保持命名、参数和返回值的一致性</p></li>
+<li><p>遵循RESTful或GraphQL等标准设计模式</p></li>
+<li><p>错误处理和状态码应该遵循行业标准</p></li>
+</ul>
+</li>
+<li><p><strong>可扩展性</strong>：</p>
+<ul class="simple">
+<li><p>设计应考虑未来功能扩展</p></li>
+<li><p>版本控制策略应该从一开始就考虑</p></li>
+<li><p>允许灵活配置模型参数和行为</p></li>
+</ul>
+</li>
+<li><p><strong>安全性</strong>：</p>
+<ul class="simple">
+<li><p>实现适当的认证和授权机制</p></li>
+<li><p>防止滥用和过度使用（如速率限制）</p></li>
+<li><p>保护用户数据和隐私</p></li>
+</ul>
+</li>
+<li><p><strong>可观测性</strong>：</p>
+<ul class="simple">
+<li><p>提供详细的日志和监控能力</p></li>
+<li><p>包含性能指标和使用统计</p></li>
+<li><p>便于调试和问题排查</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id3">
+<h3>API功能规划<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>对于故事讲述AI，我们的API应该提供哪些功能？以下是一个基本功能集：</p>
+<ol class="arabic simple">
+<li><p><strong>故事生成</strong>：</p>
+<ul class="simple">
+<li><p>根据提示或主题生成完整故事</p></li>
+<li><p>支持不同的故事类型和风格</p></li>
+<li><p>允许控制故事长度和复杂度</p></li>
+</ul>
+</li>
+<li><p><strong>故事续写</strong>：</p>
+<ul class="simple">
+<li><p>基于已有故事片段继续创作</p></li>
+<li><p>保持风格和情节的一致性</p></li>
+<li><p>支持多轮交互式创作</p></li>
+</ul>
+</li>
+<li><p><strong>角色创建</strong>：</p>
+<ul class="simple">
+<li><p>生成详细的角色描述</p></li>
+<li><p>基于简单描述扩展角色背景</p></li>
+<li><p>创建符合特定故事需求的角色</p></li>
+</ul>
+</li>
+<li><p><strong>故事修改</strong>：</p>
+<ul class="simple">
+<li><p>调整故事的风格或语调</p></li>
+<li><p>简化或丰富故事内容</p></li>
+<li><p>改变故事的结局或关键情节</p></li>
+</ul>
+</li>
+<li><p><strong>元数据生成</strong>：</p>
+<ul class="simple">
+<li><p>为故事创建标题</p></li>
+<li><p>生成摘要或简介</p></li>
+<li><p>提取关键主题和教育价值</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id4">
+<h3>API架构设计<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>设计API架构时，我们需要考虑多个因素，包括性能、可扩展性和易用性。以下是一个适合故事讲述AI的架构设计：</p>
+<section id="id5">
+<h4>整体架构<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│             │     │             │     │             │
+│  客户端应用  │────▶│  API网关    │────▶│ 负载均衡器  │
+│             │     │             │     │             │
+└─────────────┘     └─────────────┘     └─────────────┘
+                                               │
+                                               ▼
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│             │     │             │     │             │
+│  数据库      │◀───▶│  应用服务器  │◀───▶│ 模型服务器  │
+│             │     │             │     │             │
+└─────────────┘     └─────────────┘     └─────────────┘
+                           │                   │
+                           ▼                   ▼
+                    ┌─────────────┐     ┌─────────────┐
+                    │             │     │             │
+                    │  缓存服务    │     │ 监控系统    │
+                    │             │     │             │
+                    └─────────────┘     └─────────────┘
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h4>组件说明<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>API网关</strong>：</p>
+<ul class="simple">
+<li><p>处理认证和授权</p></li>
+<li><p>实现速率限制和配额管理</p></li>
+<li><p>路由请求到适当的服务</p></li>
+</ul>
+</li>
+<li><p><strong>负载均衡器</strong>：</p>
+<ul class="simple">
+<li><p>分配请求到多个模型服务器</p></li>
+<li><p>实现健康检查和故障转移</p></li>
+<li><p>优化资源利用</p></li>
+</ul>
+</li>
+<li><p><strong>应用服务器</strong>：</p>
+<ul class="simple">
+<li><p>实现业务逻辑和API端点</p></li>
+<li><p>处理请求验证和响应格式化</p></li>
+<li><p>管理用户会话和状态</p></li>
+</ul>
+</li>
+<li><p><strong>模型服务器</strong>：</p>
+<ul class="simple">
+<li><p>运行AI模型推理</p></li>
+<li><p>管理模型版本和配置</p></li>
+<li><p>优化推理性能</p></li>
+</ul>
+</li>
+<li><p><strong>数据库</strong>：</p>
+<ul class="simple">
+<li><p>存储用户数据和生成的故事</p></li>
+<li><p>管理模型配置和元数据</p></li>
+<li><p>支持分析和报告</p></li>
+</ul>
+</li>
+<li><p><strong>缓存服务</strong>：</p>
+<ul class="simple">
+<li><p>缓存常用请求和响应</p></li>
+<li><p>减少模型推理负载</p></li>
+<li><p>提高响应速度</p></li>
+</ul>
+</li>
+<li><p><strong>监控系统</strong>：</p>
+<ul class="simple">
+<li><p>跟踪API使用情况和性能</p></li>
+<li><p>检测异常和错误</p></li>
+<li><p>生成报告和警报</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="id7">
+<h3>API规范设计<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>现在，让我们设计一个具体的API规范，使用RESTful风格：</p>
+<section id="id8">
+<h4>基本端点<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>生成故事</strong></p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">stories</span><span class="o">/</span><span class="n">generate</span>
+
+<span class="n">请求体</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="s2">&quot;一个关于勇敢小兔子的故事&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;童话&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;target_age&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+  <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;educational_theme&quot;</span><span class="p">:</span> <span class="s2">&quot;勇气&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
+    <span class="s2">&quot;top_p&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span>
+    <span class="s2">&quot;max_tokens&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">响应</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;story_id&quot;</span><span class="p">:</span> <span class="s2">&quot;story_12345&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;跳跳兔的冒险&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;从前，有一只名叫跳跳的小兔子...&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;word_count&quot;</span><span class="p">:</span> <span class="mi">450</span><span class="p">,</span>
+    <span class="s2">&quot;reading_time&quot;</span><span class="p">:</span> <span class="s2">&quot;3分钟&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;themes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;勇气&quot;</span><span class="p">,</span> <span class="s2">&quot;友谊&quot;</span><span class="p">,</span> <span class="s2">&quot;冒险&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;educational_value&quot;</span><span class="p">:</span> <span class="s2">&quot;教导孩子面对恐惧和挑战&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>续写故事</strong></p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">stories</span><span class="o">/</span><span class="p">{</span><span class="n">story_id</span><span class="p">}</span><span class="o">/</span><span class="k">continue</span>
+
+<span class="n">请求体</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;current_content&quot;</span><span class="p">:</span> <span class="s2">&quot;从前，有一只名叫跳跳的小兔子...&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;continuation_prompt&quot;</span><span class="p">:</span> <span class="s2">&quot;跳跳遇到了一只狐狸&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
+    <span class="s2">&quot;top_p&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span>
+    <span class="s2">&quot;max_tokens&quot;</span><span class="p">:</span> <span class="mi">500</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">响应</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;continuation&quot;</span><span class="p">:</span> <span class="s2">&quot;当跳跳正在森林里采集胡萝卜时，他突然遇到了一只狡猾的狐狸...&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;word_count&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="s2">&quot;themes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;危险&quot;</span><span class="p">,</span> <span class="s2">&quot;智慧&quot;</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>创建角色</strong></p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">characters</span><span class="o">/</span><span class="n">create</span>
+
+<span class="n">请求体</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;跳跳&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;brief_description&quot;</span><span class="p">:</span> <span class="s2">&quot;一只勇敢但有点胆小的小兔子&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;story_context&quot;</span><span class="p">:</span> <span class="s2">&quot;森林冒险故事&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;target_age&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+  <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;detail_level&quot;</span><span class="p">:</span> <span class="s2">&quot;high&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;creativity&quot;</span><span class="p">:</span> <span class="mf">0.8</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">响应</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;character_id&quot;</span><span class="p">:</span> <span class="s2">&quot;char_6789&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;跳跳&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;full_description&quot;</span><span class="p">:</span> <span class="s2">&quot;跳跳是一只白色的小兔子，有着粉红色的鼻子和长长的耳朵...&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;personality&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;traits&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;勇敢&quot;</span><span class="p">,</span> <span class="s2">&quot;善良&quot;</span><span class="p">,</span> <span class="s2">&quot;好奇&quot;</span><span class="p">,</span> <span class="s2">&quot;有时胆小&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;motivations&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;保护家人&quot;</span><span class="p">,</span> <span class="s2">&quot;探索森林&quot;</span><span class="p">,</span> <span class="s2">&quot;克服恐惧&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;strengths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;跑得快&quot;</span><span class="p">,</span> <span class="s2">&quot;听力敏锐&quot;</span><span class="p">,</span> <span class="s2">&quot;善于交朋友&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;weaknesses&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;害怕黑暗&quot;</span><span class="p">,</span> <span class="s2">&quot;有时优柔寡断&quot;</span><span class="p">]</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;background&quot;</span><span class="p">:</span> <span class="s2">&quot;跳跳出生在森林边缘的一个兔子洞里，是家中最小的兔子...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>修改故事</strong></p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">stories</span><span class="o">/</span><span class="p">{</span><span class="n">story_id</span><span class="p">}</span><span class="o">/</span><span class="n">modify</span>
+
+<span class="n">请求体</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;从前，有一只名叫跳跳的小兔子...&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;modification_type&quot;</span><span class="p">:</span> <span class="s2">&quot;change_style&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;target_style&quot;</span><span class="p">:</span> <span class="s2">&quot;冒险&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;instructions&quot;</span><span class="p">:</span> <span class="s2">&quot;使故事更加刺激，增加一些冒险元素&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;creativity&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
+    <span class="s2">&quot;preservation_rate&quot;</span><span class="p">:</span> <span class="mf">0.5</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">响应</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;modified_content&quot;</span><span class="p">:</span> <span class="s2">&quot;在茂密的魔法森林深处，生活着一只名叫跳跳的勇敢小兔子...&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;changes&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;style_shift&quot;</span><span class="p">:</span> <span class="s2">&quot;从平静的童话风格转变为更具冒险性的叙述&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;added_elements&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;神秘森林&quot;</span><span class="p">,</span> <span class="s2">&quot;潜在危险&quot;</span><span class="p">,</span> <span class="s2">&quot;冒险使命&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;preservation_rate&quot;</span><span class="p">:</span> <span class="mf">0.6</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p><strong>生成元数据</strong></p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">stories</span><span class="o">/</span><span class="p">{</span><span class="n">story_id</span><span class="p">}</span><span class="o">/</span><span class="n">metadata</span>
+
+<span class="n">请求体</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;从前，有一只名叫跳跳的小兔子...&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;metadata_types&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;summary&quot;</span><span class="p">,</span> <span class="s2">&quot;themes&quot;</span><span class="p">,</span> <span class="s2">&quot;educational_value&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">响应</span><span class="p">:</span>
+<span class="p">{</span>
+  <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;跳跳兔的森林冒险&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;这是一个关于小兔子跳跳克服恐惧，在森林中冒险的故事...&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;themes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;勇气&quot;</span><span class="p">,</span> <span class="s2">&quot;成长&quot;</span><span class="p">,</span> <span class="s2">&quot;友谊&quot;</span><span class="p">,</span> <span class="s2">&quot;冒险&quot;</span><span class="p">],</span>
+  <span class="s2">&quot;educational_value&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;primary_lesson&quot;</span><span class="p">:</span> <span class="s2">&quot;勇敢面对恐惧&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;secondary_lessons&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;友谊的价值&quot;</span><span class="p">,</span> <span class="s2">&quot;不轻易放弃&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;target_age_range&quot;</span><span class="p">:</span> <span class="s2">&quot;5-9岁&quot;</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;兔子&quot;</span><span class="p">,</span> <span class="s2">&quot;森林&quot;</span><span class="p">,</span> <span class="s2">&quot;冒险&quot;</span><span class="p">,</span> <span class="s2">&quot;勇气&quot;</span><span class="p">,</span> <span class="s2">&quot;友谊&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id9">
+<h3>实现API服务器<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>现在，让我们使用Python和Flask实现一个简单的API服务器，将我们的故事讲述AI模型暴露为Web服务。</p>
+<section id="id10">
+<h4>基本项目结构<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>storyteller-api/
+├── app/
+│   ├── __init__.py
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── routes.py
+│   │   └── validators.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── storyteller.py
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   └── helpers.py
+│   └── config.py
+├── instance/
+│   └── config.py
+├── logs/
+├── tests/
+│   ├── __init__.py
+│   ├── test_api.py
+│   └── test_models.py
+├── .env
+├── .gitignore
+├── requirements.txt
+└── run.py
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h4>核心代码实现<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>app/__init__.py</strong> - 应用初始化</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask_cors</span> <span class="kn">import</span> <span class="n">CORS</span>
+<span class="kn">from</span> <span class="nn">flask_limiter</span> <span class="kn">import</span> <span class="n">Limiter</span>
+<span class="kn">from</span> <span class="nn">flask_limiter.util</span> <span class="kn">import</span> <span class="n">get_remote_address</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">logging.handlers</span> <span class="kn">import</span> <span class="n">RotatingFileHandler</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">app.config</span> <span class="kn">import</span> <span class="n">Config</span>
+
+<span class="n">limiter</span> <span class="o">=</span> <span class="n">Limiter</span><span class="p">(</span><span class="n">key_func</span><span class="o">=</span><span class="n">get_remote_address</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span><span class="n">config_class</span><span class="o">=</span><span class="n">Config</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">instance_relative_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="n">config_class</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_pyfile</span><span class="p">(</span><span class="s1">&#39;config.py&#39;</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="c1"># 初始化扩展</span>
+    <span class="n">CORS</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="n">limiter</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    
+    <span class="c1"># 注册蓝图</span>
+    <span class="kn">from</span> <span class="nn">app.api</span> <span class="kn">import</span> <span class="n">bp</span> <span class="k">as</span> <span class="n">api_bp</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">api_bp</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="s1">&#39;/api/v1&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># 设置日志</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;logs&#39;</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;logs&#39;</span><span class="p">)</span>
+    <span class="n">file_handler</span> <span class="o">=</span> <span class="n">RotatingFileHandler</span><span class="p">(</span><span class="s1">&#39;logs/storyteller.log&#39;</span><span class="p">,</span> <span class="n">maxBytes</span><span class="o">=</span><span class="mi">10240</span><span class="p">,</span> <span class="n">backupCount</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+        <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1"> [in </span><span class="si">%(pathname)s</span><span class="s1">:</span><span class="si">%(lineno)d</span><span class="s1">]&#39;</span>
+    <span class="p">))</span>
+    <span class="n">file_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Storyteller API startup&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">app</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>app/config.py</strong> - 配置文件</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;you-will-never-guess&#39;</span>
+    <span class="n">MODEL_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;MODEL_PATH&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;./models/storyteller-model&#39;</span>
+    <span class="n">MAX_CONTENT_LENGTH</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 16MB</span>
+    <span class="n">RATELIMIT_DEFAULT</span> <span class="o">=</span> <span class="s2">&quot;100 per day, 10 per hour&quot;</span>
+    <span class="n">RATELIMIT_STORAGE_URL</span> <span class="o">=</span> <span class="s2">&quot;memory://&quot;</span>
+    <span class="n">LOG_LEVEL</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LOG_LEVEL&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;INFO&#39;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>app/api/routes.py</strong> - API路由</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">app.api</span> <span class="kn">import</span> <span class="n">bp</span>
+<span class="kn">from</span> <span class="nn">app.models.storyteller</span> <span class="kn">import</span> <span class="n">StorytellerModel</span>
+<span class="kn">from</span> <span class="nn">app.utils.auth</span> <span class="kn">import</span> <span class="n">token_required</span>
+<span class="kn">from</span> <span class="nn">app.utils.helpers</span> <span class="kn">import</span> <span class="n">validate_json</span>
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">limiter</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="c1"># 初始化模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">StorytellerModel</span><span class="p">()</span>
+
+<span class="nd">@bp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/stories/generate&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@token_required</span>
+<span class="nd">@limiter</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="s2">&quot;10 per minute&quot;</span><span class="p">)</span>
+<span class="nd">@validate_json</span><span class="p">([</span><span class="s1">&#39;prompt&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">generate_story</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;生成新故事的端点&quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    
+    <span class="c1"># 记录请求</span>
+    <span class="n">request_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="n">current_app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Story generation request </span><span class="si">{</span><span class="n">request_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;prompt&#39;</span><span class="p">][:</span><span class="mi">50</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># 提取参数</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;prompt&#39;</span><span class="p">]</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="s1">&#39;general&#39;</span><span class="p">)</span>
+        <span class="n">target_age</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;target_age&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;medium&#39;</span><span class="p">)</span>
+        <span class="n">educational_theme</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;educational_theme&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        
+        <span class="c1"># 模型参数</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+        <span class="n">top_p</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;top_p&#39;</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+        <span class="n">max_tokens</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_tokens&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        
+        <span class="c1"># 生成故事</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate_story</span><span class="p">(</span>
+            <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">,</span>
+            <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+            <span class="n">target_age</span><span class="o">=</span><span class="n">target_age</span><span class="p">,</span>
+            <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
+            <span class="n">educational_theme</span><span class="o">=</span><span class="n">educational_theme</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+            <span class="n">top_p</span><span class="o">=</span><span class="n">top_p</span><span class="p">,</span>
+            <span class="n">max_tokens</span><span class="o">=</span><span class="n">max_tokens</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 构建响应</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;story_id&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;story_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
+        <span class="p">}</span>
+        
+        <span class="c1"># 记录性能</span>
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">current_app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request </span><span class="si">{</span><span class="n">request_id</span><span class="si">}</span><span class="s2"> completed in </span><span class="si">{</span><span class="n">elapsed_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">),</span> <span class="mi">200</span>
+        
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">current_app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in request </span><span class="si">{</span><span class="n">request_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}),</span> <span class="mi">500</span>
+
+<span class="nd">@bp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/stories/&lt;story_id&gt;/continue&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@token_required</span>
+<span class="nd">@validate_json</span><span class="p">([</span><span class="s1">&#39;current_content&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">continue_story</span><span class="p">(</span><span class="n">story_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;续写故事的端点&quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># 提取参数</span>
+        <span class="n">current_content</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;current_content&#39;</span><span class="p">]</span>
+        <span class="n">continuation_prompt</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;continuation_prompt&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;medium&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># 模型参数</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">temperature</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+        <span class="n">top_p</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;top_p&#39;</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+        <span class="n">max_tokens</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_tokens&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+        
+        <span class="c1"># 生成续写</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">continue_story</span><span class="p">(</span>
+            <span class="n">current_content</span><span class="o">=</span><span class="n">current_content</span><span class="p">,</span>
+            <span class="n">continuation_prompt</span><span class="o">=</span><span class="n">continuation_prompt</span><span class="p">,</span>
+            <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+            <span class="n">top_p</span><span class="o">=</span><span class="n">top_p</span><span class="p">,</span>
+            <span class="n">max_tokens</span><span class="o">=</span><span class="n">max_tokens</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 构建响应</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;continuation&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;continuation&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
+        <span class="p">}</span>
+        
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">),</span> <span class="mi">200</span>
+        
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">current_app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error continuing story </span><span class="si">{</span><span class="n">story_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}),</span> <span class="mi">500</span>
+
+<span class="c1"># 其他端点实现类似...</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>app/models/storyteller.py</strong> - 模型封装</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+<span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="kn">import</span> <span class="n">sent_tokenize</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">class</span> <span class="nc">StorytellerModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;初始化故事讲述模型&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">model_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">app.config</span> <span class="kn">import</span> <span class="n">Config</span>
+            <span class="n">model_path</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">MODEL_PATH</span>
+        
+        <span class="c1"># 下载必要的NLTK资源</span>
+        <span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;punkt&#39;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># 加载模型和分词器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+            <span class="n">model_path</span><span class="p">,</span>
+            <span class="n">torch_dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float16</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="c1"># 长度映射</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;short&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+            <span class="s2">&quot;medium&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+            <span class="s2">&quot;long&quot;</span><span class="p">:</span> <span class="mi">1200</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">generate_story</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">,</span> <span class="n">target_age</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">,</span> 
+                      <span class="n">educational_theme</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">top_p</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;生成一个完整的故事&quot;&quot;&quot;</span>
+        <span class="c1"># 准备提示</span>
+        <span class="k">if</span> <span class="n">max_tokens</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">max_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+        
+        <span class="c1"># 构建系统提示</span>
+        <span class="n">system_prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;你是一个专业的儿童故事作家。请创作一个适合</span><span class="si">{</span><span class="n">target_age</span><span class="si">}</span><span class="s2">岁儿童的</span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">风格故事。&quot;</span>
+        <span class="k">if</span> <span class="n">educational_theme</span><span class="p">:</span>
+            <span class="n">system_prompt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; 故事应该包含关于&#39;</span><span class="si">{</span><span class="n">educational_theme</span><span class="si">}</span><span class="s2">&#39;的教育主题。&quot;</span>
+        
+        <span class="c1"># 组合提示</span>
+        <span class="n">full_prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">system_prompt</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">故事提示: </span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">故事:&quot;</span>
+        
+        <span class="c1"># 生成故事</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">full_prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">max_length</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">max_tokens</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+            <span class="n">top_p</span><span class="o">=</span><span class="n">top_p</span><span class="p">,</span>
+            <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">pad_token_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 解码故事</span>
+        <span class="n">story_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">inputs</span><span class="o">.</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># 生成标题</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_title</span><span class="p">(</span><span class="n">story_text</span><span class="p">)</span>
+        
+        <span class="c1"># 分析元数据</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analyze_story</span><span class="p">(</span><span class="n">story_text</span><span class="p">,</span> <span class="n">target_age</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">story_text</span><span class="p">,</span>
+            <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">metadata</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">continue_story</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_content</span><span class="p">,</span> <span class="n">continuation_prompt</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">,</span> 
+                      <span class="n">temperature</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">top_p</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;续写一个已有的故事&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">max_tokens</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">max_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+        
+        <span class="c1"># 准备提示</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;以下是一个故事的开始:</span><span class="se">\n\n</span><span class="si">{</span><span class="n">current_content</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">continuation_prompt</span><span class="p">:</span>
+            <span class="n">prompt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;继续这个故事，其中: </span><span class="si">{</span><span class="n">continuation_prompt</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prompt</span> <span class="o">+=</span> <span class="s2">&quot;请继续这个故事:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># 生成续写</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">max_length</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">max_tokens</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+            <span class="n">top_p</span><span class="o">=</span><span class="n">top_p</span><span class="p">,</span>
+            <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">pad_token_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 解码续写</span>
+        <span class="n">continuation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">inputs</span><span class="o">.</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># 分析元数据</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;word_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">continuation</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span>
+            <span class="s2">&quot;themes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_themes</span><span class="p">(</span><span class="n">continuation</span><span class="p">)</span>
+        <span class="p">}</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;continuation&quot;</span><span class="p">:</span> <span class="n">continuation</span><span class="p">,</span>
+            <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">metadata</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">_generate_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">story_text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;为故事生成标题&quot;&quot;&quot;</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;为以下故事生成一个吸引人的标题:</span><span class="se">\n\n</span><span class="si">{</span><span class="n">story_text</span><span class="p">[:</span><span class="mi">500</span><span class="p">]</span><span class="si">}</span><span class="s2">...</span><span class="se">\n\n</span><span class="s2">标题:&quot;</span>
+        
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">max_length</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+            <span class="n">top_p</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+            <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">pad_token_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span>
+        <span class="p">)</span>
+        
+        <span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">inputs</span><span class="o">.</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># 清理标题</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">title</span><span class="p">:</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="n">title</span>
+    
+    <span class="k">def</span> <span class="nf">_analyze_story</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">story_text</span><span class="p">,</span> <span class="n">target_age</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;分析故事并提取元数据&quot;&quot;&quot;</span>
+        <span class="c1"># 计算字数和阅读时间</span>
+        <span class="n">word_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">story_text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="n">reading_time</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">round</span><span class="p">(</span><span class="n">word_count</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">200</span><span class="p">))</span><span class="si">}</span><span class="s2">分钟&quot;</span>
+        
+        <span class="c1"># 提取主题</span>
+        <span class="n">themes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_themes</span><span class="p">(</span><span class="n">story_text</span><span class="p">)</span>
+        
+        <span class="c1"># 分析教育价值</span>
+        <span class="n">educational_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analyze_educational_value</span><span class="p">(</span><span class="n">story_text</span><span class="p">)</span>
+        
+        <span class="c1"># 分析适龄性</span>
+        <span class="n">age_appropriate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analyze_age_appropriateness</span><span class="p">(</span><span class="n">story_text</span><span class="p">,</span> <span class="n">target_age</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;word_count&quot;</span><span class="p">:</span> <span class="n">word_count</span><span class="p">,</span>
+            <span class="s2">&quot;reading_time&quot;</span><span class="p">:</span> <span class="n">reading_time</span><span class="p">,</span>
+            <span class="s2">&quot;themes&quot;</span><span class="p">:</span> <span class="n">themes</span><span class="p">,</span>
+            <span class="s2">&quot;educational_value&quot;</span><span class="p">:</span> <span class="n">educational_value</span><span class="p">,</span>
+            <span class="s2">&quot;age_appropriate&quot;</span><span class="p">:</span> <span class="n">age_appropriate</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">_extract_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;从文本中提取主题&quot;&quot;&quot;</span>
+        <span class="c1"># 这里使用简化的实现，实际应用中可能需要更复杂的主题提取算法</span>
+        <span class="n">theme_keywords</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;勇气&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;勇敢&quot;</span><span class="p">,</span> <span class="s2">&quot;勇气&quot;</span><span class="p">,</span> <span class="s2">&quot;克服&quot;</span><span class="p">,</span> <span class="s2">&quot;挑战&quot;</span><span class="p">,</span> <span class="s2">&quot;害怕&quot;</span><span class="p">,</span> <span class="s2">&quot;恐惧&quot;</span><span class="p">,</span> <span class="s2">&quot;面对&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;友谊&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;朋友&quot;</span><span class="p">,</span> <span class="s2">&quot;友谊&quot;</span><span class="p">,</span> <span class="s2">&quot;帮助&quot;</span><span class="p">,</span> <span class="s2">&quot;支持&quot;</span><span class="p">,</span> <span class="s2">&quot;一起&quot;</span><span class="p">,</span> <span class="s2">&quot;分享&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;冒险&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;冒险&quot;</span><span class="p">,</span> <span class="s2">&quot;探索&quot;</span><span class="p">,</span> <span class="s2">&quot;发现&quot;</span><span class="p">,</span> <span class="s2">&quot;旅程&quot;</span><span class="p">,</span> <span class="s2">&quot;旅行&quot;</span><span class="p">,</span> <span class="s2">&quot;未知&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;家庭&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;家庭&quot;</span><span class="p">,</span> <span class="s2">&quot;父母&quot;</span><span class="p">,</span> <span class="s2">&quot;妈妈&quot;</span><span class="p">,</span> <span class="s2">&quot;爸爸&quot;</span><span class="p">,</span> <span class="s2">&quot;兄弟&quot;</span><span class="p">,</span> <span class="s2">&quot;姐妹&quot;</span><span class="p">,</span> <span class="s2">&quot;爱&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;成长&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;成长&quot;</span><span class="p">,</span> <span class="s2">&quot;学习&quot;</span><span class="p">,</span> <span class="s2">&quot;变化&quot;</span><span class="p">,</span> <span class="s2">&quot;进步&quot;</span><span class="p">,</span> <span class="s2">&quot;经验&quot;</span><span class="p">,</span> <span class="s2">&quot;教训&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;诚实&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;诚实&quot;</span><span class="p">,</span> <span class="s2">&quot;真相&quot;</span><span class="p">,</span> <span class="s2">&quot;谎言&quot;</span><span class="p">,</span> <span class="s2">&quot;欺骗&quot;</span><span class="p">,</span> <span class="s2">&quot;真实&quot;</span><span class="p">,</span> <span class="s2">&quot;坦白&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;坚持&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;坚持&quot;</span><span class="p">,</span> <span class="s2">&quot;努力&quot;</span><span class="p">,</span> <span class="s2">&quot;不放弃&quot;</span><span class="p">,</span> <span class="s2">&quot;坚定&quot;</span><span class="p">,</span> <span class="s2">&quot;毅力&quot;</span><span class="p">,</span> <span class="s2">&quot;继续&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;想象力&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;想象&quot;</span><span class="p">,</span> <span class="s2">&quot;创造&quot;</span><span class="p">,</span> <span class="s2">&quot;梦想&quot;</span><span class="p">,</span> <span class="s2">&quot;幻想&quot;</span><span class="p">,</span> <span class="s2">&quot;魔法&quot;</span><span class="p">,</span> <span class="s2">&quot;神奇&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+        
+        <span class="n">found_themes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">theme</span><span class="p">,</span> <span class="n">keywords</span> <span class="ow">in</span> <span class="n">theme_keywords</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+                    <span class="n">found_themes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+                    <span class="k">break</span>
+        
+        <span class="k">return</span> <span class="n">found_themes</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>  <span class="c1"># 最多返回5个主题</span>
+    
+    <span class="k">def</span> <span class="nf">_analyze_educational_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;分析故事的教育价值&quot;&quot;&quot;</span>
+        <span class="c1"># 简化实现</span>
+        <span class="n">educational_aspects</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;学习&quot;</span><span class="p">,</span> <span class="s2">&quot;知识&quot;</span><span class="p">,</span> <span class="s2">&quot;教育&quot;</span><span class="p">,</span> <span class="s2">&quot;学校&quot;</span><span class="p">,</span> <span class="s2">&quot;老师&quot;</span><span class="p">]):</span>
+            <span class="n">educational_aspects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;学习价值&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;分享&quot;</span><span class="p">,</span> <span class="s2">&quot;给予&quot;</span><span class="p">,</span> <span class="s2">&quot;帮助&quot;</span><span class="p">,</span> <span class="s2">&quot;关心&quot;</span><span class="p">,</span> <span class="s2">&quot;同情&quot;</span><span class="p">]):</span>
+            <span class="n">educational_aspects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;社交情感学习&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;对不起&quot;</span><span class="p">,</span> <span class="s2">&quot;道歉&quot;</span><span class="p">,</span> <span class="s2">&quot;原谅&quot;</span><span class="p">,</span> <span class="s2">&quot;理解&quot;</span><span class="p">,</span> <span class="s2">&quot;接受&quot;</span><span class="p">]):</span>
+            <span class="n">educational_aspects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;情感管理&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;动物&quot;</span><span class="p">,</span> <span class="s2">&quot;植物&quot;</span><span class="p">,</span> <span class="s2">&quot;自然&quot;</span><span class="p">,</span> <span class="s2">&quot;环境&quot;</span><span class="p">,</span> <span class="s2">&quot;地球&quot;</span><span class="p">]):</span>
+            <span class="n">educational_aspects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;自然知识&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;数字&quot;</span><span class="p">,</span> <span class="s2">&quot;计数&quot;</span><span class="p">,</span> <span class="s2">&quot;形状&quot;</span><span class="p">,</span> <span class="s2">&quot;大小&quot;</span><span class="p">,</span> <span class="s2">&quot;比较&quot;</span><span class="p">]):</span>
+            <span class="n">educational_aspects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;数学概念&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">educational_aspects</span><span class="p">:</span>
+            <span class="n">educational_aspects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;一般性教育&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">educational_aspects</span>
+    
+    <span class="k">def</span> <span class="nf">_analyze_age_appropriateness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">target_age</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;分析故事的适龄性&quot;&quot;&quot;</span>
+        <span class="c1"># 简化实现</span>
+        <span class="n">sentences</span> <span class="o">=</span> <span class="n">sent_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">avg_sentence_length</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span>
+        
+        <span class="c1"># 词汇复杂度的简单估计</span>
+        <span class="n">complex_words</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">])</span>
+        <span class="n">complex_word_ratio</span> <span class="o">=</span> <span class="n">complex_words</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        
+        <span class="c1"># 根据目标年龄调整期望值</span>
+        <span class="k">if</span> <span class="n">target_age</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">expected_sentence_length</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="n">expected_complex_ratio</span> <span class="o">=</span> <span class="mf">0.05</span>
+        <span class="k">elif</span> <span class="n">target_age</span> <span class="o">&lt;=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">expected_sentence_length</span> <span class="o">=</span> <span class="mi">8</span>
+            <span class="n">expected_complex_ratio</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">expected_sentence_length</span> <span class="o">=</span> <span class="mi">12</span>
+            <span class="n">expected_complex_ratio</span> <span class="o">=</span> <span class="mf">0.15</span>
+        
+        <span class="c1"># 计算偏差</span>
+        <span class="n">sentence_length_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">avg_sentence_length</span> <span class="o">-</span> <span class="n">expected_sentence_length</span><span class="p">)</span>
+        <span class="n">complex_ratio_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">complex_word_ratio</span> <span class="o">-</span> <span class="n">expected_complex_ratio</span><span class="p">)</span>
+        
+        <span class="c1"># 评估适龄性</span>
+        <span class="k">if</span> <span class="n">sentence_length_diff</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">complex_ratio_diff</span> <span class="o">&lt;=</span> <span class="mf">0.05</span><span class="p">:</span>
+            <span class="n">appropriateness</span> <span class="o">=</span> <span class="s2">&quot;非常适合&quot;</span>
+        <span class="k">elif</span> <span class="n">sentence_length_diff</span> <span class="o">&lt;=</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">complex_ratio_diff</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">:</span>
+            <span class="n">appropriateness</span> <span class="o">=</span> <span class="s2">&quot;适合&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">appropriateness</span> <span class="o">=</span> <span class="s2">&quot;可能需要调整&quot;</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;rating&quot;</span><span class="p">:</span> <span class="n">appropriateness</span><span class="p">,</span>
+            <span class="s2">&quot;avg_sentence_length&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">avg_sentence_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;complex_word_ratio&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">complex_word_ratio</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p><strong>app/utils/auth.py</strong> - 认证工具</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">current_app</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">token_required</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">decorated</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="c1"># 检查是否存在Authorization头</span>
+        <span class="k">if</span> <span class="s1">&#39;Authorization&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+            <span class="n">auth_header</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="n">auth_header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Token is missing or invalid&#39;</span><span class="p">}),</span> <span class="mi">401</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Token is missing!&#39;</span><span class="p">}),</span> <span class="mi">401</span>
+        
+        <span class="c1"># 在生产环境中，应该使用更安全的方法验证令牌</span>
+        <span class="c1"># 这里使用简单的API密钥比较作为示例</span>
+        <span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;API_KEY&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">token</span> <span class="o">!=</span> <span class="n">api_key</span><span class="p">:</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid API key attempt: </span><span class="si">{</span><span class="n">token</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Invalid token!&#39;</span><span class="p">}),</span> <span class="mi">401</span>
+        
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">decorated</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p><strong>app/utils/helpers.py</strong> - 辅助函数</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
+
+<span class="k">def</span> <span class="nf">validate_json</span><span class="p">(</span><span class="n">required_fields</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;验证JSON请求体并检查必需字段&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">decorated_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="c1"># 检查Content-Type</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Missing JSON in request&#39;</span><span class="p">}),</span> <span class="mi">400</span>
+            
+            <span class="c1"># 获取JSON数据</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Invalid JSON&#39;</span><span class="p">}),</span> <span class="mi">400</span>
+            
+            <span class="c1"># 检查必需字段</span>
+            <span class="n">missing_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span> <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">missing_fields</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span>
+                    <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Missing required fields: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_fields</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">}),</span> <span class="mi">400</span>
+            
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">decorated_function</span>
+    <span class="k">return</span> <span class="n">decorator</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li><p><strong>run.py</strong> - 应用入口点</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">create_app</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id12">
+<h3>API测试与文档<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>开发API后，测试和文档是确保其可用性和可维护性的关键步骤。</p>
+<section id="id13">
+<h4>单元测试<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
+<p>以下是一个简单的测试示例，使用pytest测试我们的API端点：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># tests/test_api.py</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">create_app</span>
+<span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">client</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;TESTING&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;API_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;test_key&#39;</span>
+    
+    <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">test_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">client</span>
+
+<span class="k">def</span> <span class="nf">test_generate_story</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;测试故事生成端点&quot;&quot;&quot;</span>
+    <span class="c1"># 模拟StorytellerModel.generate_story的返回值</span>
+    <span class="n">mock_result</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;测试标题&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;这是一个测试故事内容。&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;word_count&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+            <span class="s2">&quot;reading_time&quot;</span><span class="p">:</span> <span class="s2">&quot;1分钟&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;themes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;测试&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;educational_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;一般性教育&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;age_appropriate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;rating&quot;</span><span class="p">:</span> <span class="s2">&quot;适合&quot;</span><span class="p">,</span> <span class="s2">&quot;avg_sentence_length&quot;</span><span class="p">:</span> <span class="mf">6.0</span><span class="p">,</span> <span class="s2">&quot;complex_word_ratio&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    
+    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;app.models.storyteller.StorytellerModel.generate_story&#39;</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="n">mock_result</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/stories/generate&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer test_key&#39;</span><span class="p">},</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;prompt&#39;</span><span class="p">:</span> <span class="s1">&#39;测试提示&#39;</span><span class="p">}</span>
+        <span class="p">)</span>
+        
+        <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="s1">&#39;story_id&#39;</span> <span class="ow">in</span> <span class="n">data</span>
+        <span class="k">assert</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;测试标题&quot;</span>
+        <span class="k">assert</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;这是一个测试故事内容。&quot;</span>
+        <span class="k">assert</span> <span class="s1">&#39;metadata&#39;</span> <span class="ow">in</span> <span class="n">data</span>
+
+<span class="k">def</span> <span class="nf">test_missing_token</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;测试缺少认证令牌的情况&quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/stories/generate&#39;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;prompt&#39;</span><span class="p">:</span> <span class="s1">&#39;测试提示&#39;</span><span class="p">}</span>
+    <span class="p">)</span>
+    
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s1">&#39;message&#39;</span> <span class="ow">in</span> <span class="n">data</span>
+    <span class="k">assert</span> <span class="s1">&#39;missing&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">test_invalid_token</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;测试无效认证令牌的情况&quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/stories/generate&#39;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer invalid_key&#39;</span><span class="p">},</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;prompt&#39;</span><span class="p">:</span> <span class="s1">&#39;测试提示&#39;</span><span class="p">}</span>
+    <span class="p">)</span>
+    
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s1">&#39;message&#39;</span> <span class="ow">in</span> <span class="n">data</span>
+    <span class="k">assert</span> <span class="s1">&#39;invalid&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">test_missing_required_field</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;测试缺少必需字段的情况&quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/stories/generate&#39;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer test_key&#39;</span><span class="p">},</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{}</span>  <span class="c1"># 缺少prompt字段</span>
+    <span class="p">)</span>
+    
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">400</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">data</span>
+    <span class="k">assert</span> <span class="s1">&#39;prompt&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="id14">
+<h4>API文档<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<p>为API创建清晰的文档对于开发者使用至关重要。我们可以使用Swagger/OpenAPI规范来自动生成API文档。</p>
+<p>首先，安装必要的包：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>flask-swagger-ui<span class="w"> </span>apispec<span class="w"> </span>marshmallow
+</pre></div>
+</div>
+<p>然后，添加Swagger支持：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># app/__init__.py 中添加</span>
+<span class="kn">from</span> <span class="nn">flask_swagger_ui</span> <span class="kn">import</span> <span class="n">get_swaggerui_blueprint</span>
+
+<span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span><span class="n">config_class</span><span class="o">=</span><span class="n">Config</span><span class="p">):</span>
+    <span class="c1"># ... 现有代码 ...</span>
+    
+    <span class="c1"># 设置Swagger</span>
+    <span class="n">SWAGGER_URL</span> <span class="o">=</span> <span class="s1">&#39;/api/docs&#39;</span>
+    <span class="n">API_URL</span> <span class="o">=</span> <span class="s1">&#39;/static/swagger.json&#39;</span>
+    <span class="n">swaggerui_blueprint</span> <span class="o">=</span> <span class="n">get_swaggerui_blueprint</span><span class="p">(</span>
+        <span class="n">SWAGGER_URL</span><span class="p">,</span>
+        <span class="n">API_URL</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s2">&quot;Storyteller API&quot;</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">swaggerui_blueprint</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="n">SWAGGER_URL</span><span class="p">)</span>
+    
+    <span class="c1"># ... 现有代码 ...</span>
+</pre></div>
+</div>
+<p>创建Swagger规范文件：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># app/api/swagger.py</span>
+<span class="kn">from</span> <span class="nn">apispec</span> <span class="kn">import</span> <span class="n">APISpec</span>
+<span class="kn">from</span> <span class="nn">apispec.ext.marshmallow</span> <span class="kn">import</span> <span class="n">MarshmallowPlugin</span>
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">fields</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">current_app</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># 定义请求和响应模式</span>
+<span class="k">class</span> <span class="nc">GenerateStoryRequestSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;故事提示&quot;</span><span class="p">)</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;故事风格&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;童话&quot;</span><span class="p">)</span>
+    <span class="n">target_age</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Int</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;目标年龄&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;故事长度&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">)</span>
+    <span class="n">educational_theme</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;教育主题&quot;</span><span class="p">)</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;模型参数&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">StoryMetadataSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">word_count</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Int</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;字数&quot;</span><span class="p">)</span>
+    <span class="n">reading_time</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;阅读时间&quot;</span><span class="p">)</span>
+    <span class="n">themes</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;主题&quot;</span><span class="p">)</span>
+    <span class="n">educational_value</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;教育价值&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">GenerateStoryResponseSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">story_id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;故事ID&quot;</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;故事标题&quot;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;故事内容&quot;</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">StoryMetadataSchema</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;元数据&quot;</span><span class="p">)</span>
+
+<span class="c1"># 创建规范</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="n">APISpec</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Storyteller API&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+    <span class="n">openapi_version</span><span class="o">=</span><span class="s2">&quot;3.0.2&quot;</span><span class="p">,</span>
+    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">MarshmallowPlugin</span><span class="p">()],</span>
+<span class="p">)</span>
+
+<span class="c1"># 注册模式</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="s2">&quot;GenerateStoryRequest&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">GenerateStoryRequestSchema</span><span class="p">)</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="s2">&quot;GenerateStoryResponse&quot;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">GenerateStoryResponseSchema</span><span class="p">)</span>
+
+<span class="c1"># 添加路径</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">path</span><span class="p">(</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/api/v1/stories/generate&quot;</span><span class="p">,</span>
+    <span class="n">operations</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;post&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;生成新故事&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;根据提示生成一个完整的故事&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;requestBody&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;application/json&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/components/schemas/GenerateStoryRequest&quot;</span><span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;responses&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;200&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;成功生成故事&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;application/json&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/components/schemas/GenerateStoryResponse&quot;</span><span class="p">}</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;400&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;无效请求&quot;</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;401&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;未授权&quot;</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;500&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;服务器错误&quot;</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;security&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;ApiKeyAuth&quot;</span><span class="p">:</span> <span class="p">[]}]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># 添加安全定义</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">security_scheme</span><span class="p">(</span>
+    <span class="s2">&quot;ApiKeyAuth&quot;</span><span class="p">,</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;apiKey&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;in&quot;</span><span class="p">:</span> <span class="s2">&quot;header&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Authorization&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;API密钥认证。格式: Bearer </span><span class="si">{token}</span><span class="s2">&quot;</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># 导出规范</span>
+<span class="k">def</span> <span class="nf">get_apispec</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">spec</span>
+
+<span class="k">def</span> <span class="nf">create_swagger_json</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;创建swagger.json文件&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">static_folder</span><span class="p">,</span> <span class="s1">&#39;swagger.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>最后，在应用启动时创建swagger.json文件：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># app/__init__.py 中添加</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">before_first_request</span>
+<span class="k">def</span> <span class="nf">before_first_request</span><span class="p">():</span>
+    <span class="c1"># 创建静态目录（如果不存在）</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">static_folder</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">static_folder</span><span class="p">)</span>
+    
+    <span class="c1"># 创建swagger.json</span>
+    <span class="kn">from</span> <span class="nn">app.api.swagger</span> <span class="kn">import</span> <span class="n">create_swagger_json</span>
+    <span class="n">create_swagger_json</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id15">
+<h3>部署考虑事项<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>在将API部署到生产环境之前，需要考虑以下几个方面：</p>
+<ol class="arabic simple">
+<li><p><strong>性能优化</strong>：</p>
+<ul class="simple">
+<li><p>使用模型量化减少内存需求</p></li>
+<li><p>实现请求批处理以提高吞吐量</p></li>
+<li><p>考虑使用模型服务框架如TorchServe或Triton</p></li>
+</ul>
+</li>
+<li><p><strong>可扩展性</strong>：</p>
+<ul class="simple">
+<li><p>使用容器化（Docker）便于部署和扩展</p></li>
+<li><p>实现水平扩展以处理高负载</p></li>
+<li><p>使用负载均衡器分配请求</p></li>
+</ul>
+</li>
+<li><p><strong>安全性</strong>：</p>
+<ul class="simple">
+<li><p>实现适当的认证和授权机制</p></li>
+<li><p>使用HTTPS加密所有通信</p></li>
+<li><p>定期更新依赖项以修复安全漏洞</p></li>
+</ul>
+</li>
+<li><p><strong>监控和日志</strong>：</p>
+<ul class="simple">
+<li><p>实现详细的日志记录</p></li>
+<li><p>设置性能监控和警报</p></li>
+<li><p>跟踪API使用情况和错误率</p></li>
+</ul>
+</li>
+<li><p><strong>成本管理</strong>：</p>
+<ul class="simple">
+<li><p>优化资源使用以减少云服务成本</p></li>
+<li><p>考虑按需扩展以处理流量峰值</p></li>
+<li><p>实现缓存以减少模型推理次数</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="dockerapi">
+<h3>Docker化API服务<a class="headerlink" href="#dockerapi" title="Link to this heading">#</a></h3>
+<p>使用Docker可以简化部署过程并确保环境一致性。以下是一个基本的Dockerfile：</p>
+<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="c"># 使用官方Python镜像作为基础</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">python:3.9-slim</span>
+
+<span class="c"># 设置工作目录</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+
+<span class="c"># 复制依赖文件</span>
+<span class="k">COPY</span><span class="w"> </span>requirements.txt<span class="w"> </span>.
+
+<span class="c"># 安装依赖</span>
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+
+<span class="c"># 复制应用代码</span>
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.
+
+<span class="c"># 设置环境变量</span>
+<span class="k">ENV</span><span class="w"> </span><span class="nv">FLASK_APP</span><span class="o">=</span>run.py
+<span class="k">ENV</span><span class="w"> </span><span class="nv">FLASK_ENV</span><span class="o">=</span>production
+<span class="k">ENV</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span>/app/models/storyteller-model
+
+<span class="c"># 暴露端口</span>
+<span class="k">EXPOSE</span><span class="w"> </span><span class="s">5000</span>
+
+<span class="c"># 运行应用</span>
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;gunicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--bind&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;0.0.0.0:5000&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run:app&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>创建docker-compose.yml文件以简化部署：</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3&#39;</span>
+
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">api</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5000:5000&quot;</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./models:/app/models</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./logs:/app/logs</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SECRET_KEY=your-secret-key</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API_KEY=your-api-key</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+</pre></div>
+</div>
+</section>
+<section id="id16">
+<h3>总结<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<p>在本节中，我们探讨了如何设计和实现一个API，将我们的故事讲述AI模型转化为可用的服务。我们讨论了API设计原则、功能规划和架构设计，并提供了一个使用Flask实现的完整示例。我们还介绍了测试、文档和部署考虑事项，以确保API的可靠性和可用性。</p>
+<p>在下一节中，我们将探讨如何构建一个Web应用程序，为最终用户提供一个友好的界面来与我们的故事讲述AI交互。</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter16_2_web_application.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第16章：部署-16.2 Web应用开发</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">16.1 API开发基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">API设计原则</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">API功能规划</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">API架构设计</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">整体架构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">组件说明</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">API规范设计</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">基本端点</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">实现API服务器</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">基本项目结构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">核心代码实现</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">API测试与文档</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">单元测试</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">API文档</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">部署考虑事项</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dockerapi">Docker化API服务</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">总结</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

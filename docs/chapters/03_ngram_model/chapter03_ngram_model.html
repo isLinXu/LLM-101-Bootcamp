@@ -1,0 +1,1028 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数） &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/03_ngram_model/chapter03_ngram_model';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第04章：注意力机制（Attention，Softmax，位置编码器）" href="../04_attention/chapter04_attention_model.html" />
+    <link rel="prev" title="第02章：Micrograd（机器学习，反向传播）" href="../02_micrograd/chapter02_micrograd.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/03_ngram_model/chapter03_ngram_model.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/03_ngram_model/chapter03_ngram_model.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/03_ngram_model/chapter03_ngram_model.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bigramn-gram">1. 从Bigram到N-gram</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#n-gram">N-gram模型的数学定义</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">高阶N-gram的优势与挑战</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mlp">2. 多层感知器(MLP)基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">感知器模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">多层网络结构</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">前向传播算法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">3. 矩阵乘法在深度学习中的应用</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">矩阵乘法基础</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">向量化计算的优势</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">批处理技术</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">4. 激活函数详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">常见激活函数比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gelu">GELU激活函数的特点</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">为什么现代语言模型选择GELU</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mlpn-gram">5. 实现基于MLP的N-gram模型</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">模型架构设计</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">训练与评估</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">与传统N-gram模型的比较</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">总结</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="n-gram-gelu">
+<h1>第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）<a class="headerlink" href="#n-gram-gelu" title="Link to this heading">#</a></h1>
+<section id="bigramn-gram">
+<h2>1. 从Bigram到N-gram<a class="headerlink" href="#bigramn-gram" title="Link to this heading">#</a></h2>
+<section id="n-gram">
+<h3>N-gram模型的数学定义<a class="headerlink" href="#n-gram" title="Link to this heading">#</a></h3>
+<p>在第一章中，我们详细介绍了Bigram模型，它基于一阶马尔可夫假设，认为一个词的出现只与其前一个词相关。然而，这种简化假设限制了模型捕捉更长距离依赖关系的能力。为了克服这一限制，我们可以扩展到更高阶的N-gram模型。</p>
+<p>N-gram模型是一种基于(N-1)阶马尔可夫假设的语言模型，它假设一个词的出现只与其前面的N-1个词相关。形式化地，N-gram模型计算的条件概率为：</p>
+<p>$$P(w_i|w_{i-(N-1)}, w_{i-(N-2)}, …, w_{i-1})$$</p>
+<p>例如：</p>
+<ul class="simple">
+<li><p>Unigram (N=1): $P(w_i)$</p></li>
+<li><p>Bigram (N=2): $P(w_i|w_{i-1})$</p></li>
+<li><p>Trigram (N=3): $P(w_i|w_{i-2}, w_{i-1})$</p></li>
+<li><p>4-gram (N=4): $P(w_i|w_{i-3}, w_{i-2}, w_{i-1})$</p></li>
+</ul>
+<p>在N-gram模型中，一个句子的概率可以表示为：</p>
+<p>$$P(w_1, w_2, …, w_m) = \prod_{i=1}^{m} P(w_i|w_{i-(N-1)}, w_{i-(N-2)}, …, w_{i-1})$$</p>
+<p>其中，对于$i &lt; N$的情况，我们通常使用特殊的开始标记（如<code class="docutils literal notranslate"><span class="pre">&lt;s&gt;</span></code>）来填充序列的开始部分。</p>
+<p>与Bigram模型类似，N-gram模型的条件概率通常使用最大似然估计来计算：</p>
+<p>$$P(w_i|w_{i-(N-1)}, …, w_{i-1}) = \frac{count(w_{i-(N-1)}, …, w_{i-1}, w_i)}{count(w_{i-(N-1)}, …, w_{i-1})}$$</p>
+<p>其中，$count(w_{i-(N-1)}, …, w_{i-1}, w_i)$是N个词的序列在语料库中出现的次数，$count(w_{i-(N-1)}, …, w_{i-1})$是N-1个词的序列在语料库中出现的次数。</p>
+</section>
+<section id="id1">
+<h3>高阶N-gram的优势与挑战<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>高阶N-gram模型相比Bigram模型有以下优势：</p>
+<ol class="arabic simple">
+<li><p><strong>捕捉更长距离的依赖关系</strong>：高阶N-gram模型考虑了更多的上下文信息，能够捕捉更长距离的词间依赖关系。例如，Trigram模型可以考虑前两个词的影响，而不仅仅是前一个词。</p></li>
+<li><p><strong>更准确的概率估计</strong>：通过考虑更多的上下文，高阶N-gram模型通常能够提供更准确的下一个词的概率估计，从而生成更流畅、更符合语法的文本。</p></li>
+<li><p><strong>更好的语言理解</strong>：高阶N-gram模型能够更好地理解语言的结构和模式，特别是对于那些依赖于较长上下文的语言现象（如一些固定搭配、习语等）。</p></li>
+</ol>
+<p>然而，高阶N-gram模型也面临一些挑战：</p>
+<ol class="arabic simple">
+<li><p><strong>数据稀疏性问题加剧</strong>：随着N的增加，可能的N-gram组合数量呈指数级增长，而大多数组合在语料库中可能很少出现或根本不出现。这导致了更严重的数据稀疏性问题。</p></li>
+<li><p><strong>存储和计算开销增加</strong>：高阶N-gram模型需要存储和处理更多的N-gram统计信息，增加了存储和计算的开销。</p></li>
+<li><p><strong>泛化能力有限</strong>：尽管高阶N-gram模型考虑了更多的上下文，但它们仍然基于离散的词序列统计，无法像神经网络模型那样学习词的分布式表示和更复杂的语言模式。</p></li>
+</ol>
+<p>为了解决这些挑战，研究者提出了各种改进方法，如更复杂的平滑技术、回退模型、插值模型等。然而，这些方法仍然无法从根本上解决N-gram模型的局限性。随着深度学习的发展，基于神经网络的语言模型逐渐取代了传统的N-gram模型，成为语言建模的主流方法。</p>
+</section>
+</section>
+<section id="mlp">
+<h2>2. 多层感知器(MLP)基础<a class="headerlink" href="#mlp" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>感知器模型<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>感知器（Perceptron）是神经网络的基本构建块，由Frank Rosenblatt在1957年提出。它是一种简单的二分类线性分类器，可以看作是一个单个神经元的模型。</p>
+<p>感知器的基本结构包括：</p>
+<ul class="simple">
+<li><p>输入特征 $x = (x_1, x_2, …, x_n)$</p></li>
+<li><p>权重 $w = (w_1, w_2, …, w_n)$</p></li>
+<li><p>偏置 $b$</p></li>
+<li><p>激活函数 $f$</p></li>
+</ul>
+<p>感知器的输出计算如下：
+$$y = f(w \cdot x + b) = f(\sum_{i=1}^{n} w_i x_i + b)$$</p>
+<p>其中，$f$通常是一个阶跃函数（step function），如：
+$$f(z) = \begin{cases}
+1, &amp; \text{if } z \geq 0 \
+0, &amp; \text{if } z &lt; 0
+\end{cases}$$</p>
+<p>感知器可以学习线性可分的问题，通过调整权重和偏置，使得模型的预测与真实标签尽可能一致。然而，感知器无法解决非线性可分的问题，如经典的XOR问题。</p>
+</section>
+<section id="id3">
+<h3>多层网络结构<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>为了克服单层感知器的局限性，研究者提出了多层感知器（Multi-Layer Perceptron, MLP），也称为前馈神经网络（Feedforward Neural Network）。MLP由多层神经元组成，包括：</p>
+<ul class="simple">
+<li><p>输入层：接收输入特征</p></li>
+<li><p>隐藏层：一个或多个中间层，执行非线性变换</p></li>
+<li><p>输出层：产生最终预测</p></li>
+</ul>
+<p>在MLP中，每一层的神经元接收前一层所有神经元的输出作为输入，并将其输出传递给下一层的所有神经元。这种结构允许网络学习更复杂的非线性映射。</p>
+<p>形式化地，对于一个具有L层的MLP，第l层的输出可以表示为：
+$$h^{(l)} = f^{(l)}(W^{(l)} h^{(l-1)} + b^{(l)})$$</p>
+<p>其中，$h^{(l)}$是第l层的输出，$W^{(l)}$是第l层的权重矩阵，$b^{(l)}$是第l层的偏置向量，$f^{(l)}$是第l层的激活函数。特别地，$h^{(0)} = x$是输入特征。</p>
+<p>MLP的关键特性是引入了非线性激活函数，如sigmoid、tanh或ReLU，使网络能够学习非线性映射。没有这些非线性函数，多层网络将等价于单层线性模型。</p>
+</section>
+<section id="id4">
+<h3>前向传播算法<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>前向传播（Forward Propagation）是神经网络中从输入到输出的计算过程。在MLP中，前向传播按照从输入层到输出层的顺序，逐层计算每一层的输出。</p>
+<p>对于一个L层的MLP，前向传播的步骤如下：</p>
+<ol class="arabic simple">
+<li><p>初始化：$h^{(0)} = x$（输入特征）</p></li>
+<li><p>对于每一层 $l = 1, 2, …, L$：
+a. 计算线性变换：$z^{(l)} = W^{(l)} h^{(l-1)} + b^{(l)}$
+b. 应用激活函数：$h^{(l)} = f^{(l)}(z^{(l)})$</p></li>
+<li><p>输出：$y = h^{(L)}$</p></li>
+</ol>
+<p>在语言模型中，MLP可以用来学习词嵌入之间的关系，或者作为更复杂网络架构（如Transformer）的组件。例如，在Transformer的前馈网络部分，就使用了MLP来处理注意力机制的输出。</p>
+</section>
+</section>
+<section id="id5">
+<h2>3. 矩阵乘法在深度学习中的应用<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h3>矩阵乘法基础<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>矩阵乘法是深度学习中最基本、最常用的操作之一。在神经网络中，权重通常表示为矩阵，输入和激活值表示为向量，它们之间的线性变换通过矩阵乘法实现。</p>
+<p>给定一个权重矩阵 $W \in \mathbb{R}^{m \times n}$ 和一个输入向量 $x \in \mathbb{R}^{n}$，线性变换的结果是一个向量 $z \in \mathbb{R}^{m}$，计算如下：
+$$z = Wx$$</p>
+<p>其中，$z_i = \sum_{j=1}^{n} W_{ij} x_j$，即矩阵的第i行与向量x的点积。</p>
+<p>在深度学习框架中，矩阵乘法通常通过高度优化的线性代数库（如BLAS、cuBLAS）实现，以充分利用现代CPU和GPU的并行计算能力。</p>
+</section>
+<section id="id7">
+<h3>向量化计算的优势<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>向量化计算是指使用矩阵和向量操作代替循环的编程范式。在深度学习中，向量化计算有以下优势：</p>
+<ol class="arabic simple">
+<li><p><strong>计算效率</strong>：现代硬件（特别是GPU）针对矩阵运算进行了优化，向量化计算可以充分利用这些优化，大大提高计算效率。</p></li>
+<li><p><strong>代码简洁</strong>：向量化计算使代码更加简洁、易读，减少了显式循环的使用。</p></li>
+<li><p><strong>并行处理</strong>：矩阵运算可以自然地并行化，使得模型能够高效地处理大批量数据。</p></li>
+<li><p><strong>数值稳定性</strong>：优化的线性代数库通常实现了数值稳定的算法，减少了浮点误差的累积。</p></li>
+</ol>
+<p>例如，考虑一个具有n个输入特征和m个输出特征的全连接层，非向量化的实现可能需要两层嵌套循环：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 非向量化实现</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+    <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>而向量化实现只需要一行代码：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 向量化实现</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
+</div>
+<p>向量化实现不仅代码更简洁，而且计算效率通常要高出几个数量级。</p>
+</section>
+<section id="id8">
+<h3>批处理技术<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>在深度学习中，我们通常不是一次处理一个样本，而是同时处理一批（batch）样本。批处理可以进一步提高计算效率，并且有助于稳定训练过程。</p>
+<p>给定一个批次的输入 $X \in \mathbb{R}^{n \times b}$，其中b是批次大小，n是特征维度，线性变换的结果是 $Z \in \mathbb{R}^{m \times b}$，计算如下：
+$$Z = WX$$</p>
+<p>其中，$W \in \mathbb{R}^{m \times n}$ 是权重矩阵。</p>
+<p>批处理的优势包括：</p>
+<ol class="arabic simple">
+<li><p><strong>计算效率</strong>：批处理允许更高的计算并行度，特别是在GPU上，可以显著提高吞吐量。</p></li>
+<li><p><strong>内存访问效率</strong>：批处理可以更有效地利用缓存和内存带宽，减少内存访问的开销。</p></li>
+<li><p><strong>训练稳定性</strong>：批处理使用多个样本的平均梯度更新参数，减少了梯度的方差，使训练过程更加稳定。</p></li>
+<li><p><strong>批归一化</strong>：批处理使得批归一化（Batch Normalization）等技术成为可能，这些技术可以加速训练并提高模型性能。</p></li>
+</ol>
+<p>在语言模型中，批处理通常涉及同时处理多个序列。为了处理不同长度的序列，我们通常使用填充（padding）和掩码（masking）技术。</p>
+</section>
+</section>
+<section id="id9">
+<h2>4. 激活函数详解<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<section id="id10">
+<h3>常见激活函数比较<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>激活函数是神经网络中引入非线性的关键组件。没有激活函数，多层神经网络将等价于单层线性模型，无法学习复杂的非线性映射。以下是几种常见的激活函数及其特点：</p>
+<ol class="arabic simple">
+<li><p><strong>Sigmoid函数</strong>：
+$$\sigma(x) = \frac{1}{1 + e^{-x}}$$</p>
+<ul class="simple">
+<li><p>输出范围：(0, 1)</p></li>
+<li><p>优点：平滑、可微、输出可解释为概率</p></li>
+<li><p>缺点：存在梯度消失问题、输出不是零中心的、计算开销较大</p></li>
+</ul>
+</li>
+<li><p><strong>Tanh函数</strong>：
+$$\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$$</p>
+<ul class="simple">
+<li><p>输出范围：(-1, 1)</p></li>
+<li><p>优点：平滑、可微、输出是零中心的</p></li>
+<li><p>缺点：仍然存在梯度消失问题、计算开销较大</p></li>
+</ul>
+</li>
+<li><p><strong>ReLU（Rectified Linear Unit）</strong>：
+$$\text{ReLU}(x) = \max(0, x)$$</p>
+<ul class="simple">
+<li><p>输出范围：[0, +∞)</p></li>
+<li><p>优点：计算简单、收敛快、缓解梯度消失问题</p></li>
+<li><p>缺点：存在”死亡ReLU”问题（某些神经元可能永远不会激活）、输出不是零中心的</p></li>
+</ul>
+</li>
+<li><p><strong>Leaky ReLU</strong>：
+$$\text{LeakyReLU}(x) = \begin{cases}
+x, &amp; \text{if } x \geq 0 \
+\alpha x, &amp; \text{if } x &lt; 0
+\end{cases}$$
+其中，$\alpha$是一个小正数（如0.01）。</p>
+<ul class="simple">
+<li><p>输出范围：(-∞, +∞)</p></li>
+<li><p>优点：解决了”死亡ReLU”问题、其他优点与ReLU类似</p></li>
+<li><p>缺点：引入了额外的超参数$\alpha$</p></li>
+</ul>
+</li>
+<li><p><strong>ELU（Exponential Linear Unit）</strong>：
+$$\text{ELU}(x) = \begin{cases}
+x, &amp; \text{if } x \geq 0 \
+\alpha (e^x - 1), &amp; \text{if } x &lt; 0
+\end{cases}$$
+其中，$\alpha$是一个正数（通常为1）。</p>
+<ul class="simple">
+<li><p>输出范围：(-α, +∞)</p></li>
+<li><p>优点：可以产生负输出、缓解”死亡ReLU”问题、导数平滑</p></li>
+<li><p>缺点：计算开销较大、引入了额外的超参数</p></li>
+</ul>
+</li>
+<li><p><strong>GELU（Gaussian Error Linear Unit）</strong>：
+$$\text{GELU}(x) = x \cdot \Phi(x)$$
+其中，$\Phi(x)$是标准正态分布的累积分布函数。</p>
+<ul class="simple">
+<li><p>输出范围：(-∞, +∞)，但主要集中在(-1, +∞)</p></li>
+<li><p>优点：平滑、可微、在负值区域有非零梯度、性能优越</p></li>
+<li><p>缺点：计算开销较大</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="gelu">
+<h3>GELU激活函数的特点<a class="headerlink" href="#gelu" title="Link to this heading">#</a></h3>
+<p>GELU（Gaussian Error Linear Unit）激活函数由Dan Hendrycks和Kevin Gimpel在2016年提出，它在现代语言模型（如BERT、GPT等）中被广泛使用。GELU的数学定义为：</p>
+<p>$$\text{GELU}(x) = x \cdot \Phi(x) = x \cdot \frac{1}{2}\left(1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right)\right)$$</p>
+<p>其中，$\Phi(x)$是标准正态分布的累积分布函数，$\text{erf}$是误差函数。</p>
+<p>GELU可以看作是ReLU和Leaky ReLU的平滑版本，它具有以下特点：</p>
+<ol class="arabic simple">
+<li><p><strong>平滑性</strong>：GELU是一个平滑函数，在所有点都可微，这有助于梯度的稳定传播。</p></li>
+<li><p><strong>非线性</strong>：GELU在正值区域近似于恒等函数，在负值区域有非零输出，但随着输入变得更负，输出趋近于零。</p></li>
+<li><p><strong>自正则化</strong>：GELU可以看作是一种自正则化的激活函数，它根据输入的值随机”丢弃”一些神经元的激活，类似于Dropout的效果。</p></li>
+<li><p><strong>理论基础</strong>：GELU的设计基于高斯误差函数，有着良好的理论基础。</p></li>
+</ol>
+<p>在实践中，由于精确计算GELU的计算开销较大，通常使用以下近似公式：</p>
+<p>$$\text{GELU}(x) \approx 0.5x(1 + \tanh(\sqrt{2/\pi}(x + 0.044715x^3)))$$</p>
+<p>或者更简单的近似：</p>
+<p>$$\text{GELU}(x) \approx x \cdot \sigma(1.702x)$$</p>
+<p>其中，$\sigma$是sigmoid函数。</p>
+</section>
+<section id="id11">
+<h3>为什么现代语言模型选择GELU<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>现代语言模型（如BERT、GPT、T5等）普遍选择GELU作为激活函数，主要有以下原因：</p>
+<ol class="arabic simple">
+<li><p><strong>性能优越</strong>：在多项实验中，GELU表现出比ReLU和其他激活函数更好的性能，特别是在语言模型任务上。</p></li>
+<li><p><strong>平滑性</strong>：GELU是一个平滑函数，这有助于梯度的稳定传播，减少训练过程中的波动。</p></li>
+<li><p><strong>自正则化特性</strong>：GELU的自正则化特性有助于防止过拟合，特别是在大型模型中。</p></li>
+<li><p><strong>与注意力机制的兼容性</strong>：GELU与Transformer架构中的注意力机制配合良好，有助于模型学习复杂的语言模式。</p></li>
+<li><p><strong>经验证明</strong>：大量实践表明，使用GELU的模型通常收敛更快，最终性能也更好。</p></li>
+</ol>
+<p>值得注意的是，虽然GELU在语言模型中表现优越，但在其他类型的神经网络中，ReLU及其变体仍然是常用的选择。激活函数的选择应该根据具体任务和模型架构来决定。</p>
+</section>
+</section>
+<section id="mlpn-gram">
+<h2>5. 实现基于MLP的N-gram模型<a class="headerlink" href="#mlpn-gram" title="Link to this heading">#</a></h2>
+<section id="id12">
+<h3>模型架构设计<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>传统的N-gram模型基于计数统计，面临数据稀疏性和泛化能力有限的问题。我们可以使用神经网络，特别是多层感知器（MLP），来构建更强大的N-gram语言模型。</p>
+<p>基于MLP的N-gram模型的基本思想是：使用前面N-1个词的分布式表示（词嵌入）作为输入，通过多层神经网络预测下一个词的概率分布。</p>
+<p>模型架构包括以下组件：</p>
+<ol class="arabic simple">
+<li><p><strong>词嵌入层</strong>：将离散的词转换为连续的向量表示。</p>
+<ul class="simple">
+<li><p>输入：词的one-hot编码或词索引</p></li>
+<li><p>输出：词的嵌入向量（通常是50-300维）</p></li>
+</ul>
+</li>
+<li><p><strong>上下文表示层</strong>：将前面N-1个词的嵌入向量组合成一个上下文表示。</p>
+<ul class="simple">
+<li><p>最简单的方法是将这些向量拼接起来</p></li>
+<li><p>也可以使用平均、加权和等方法</p></li>
+</ul>
+</li>
+<li><p><strong>隐藏层</strong>：一个或多个全连接层，用于学习上下文表示与下一个词之间的映射关系。</p>
+<ul class="simple">
+<li><p>每个隐藏层包括线性变换和非线性激活函数（如GELU）</p></li>
+</ul>
+</li>
+<li><p><strong>输出层</strong>：一个全连接层，输出词汇表大小的向量，表示下一个词的概率分布。</p>
+<ul class="simple">
+<li><p>通常使用softmax函数将输出转换为概率分布</p></li>
+</ul>
+</li>
+</ol>
+<p>形式化地，模型的前向传播过程如下：</p>
+<ol class="arabic simple">
+<li><p>获取前面N-1个词的嵌入向量：$e_1, e_2, …, e_{N-1}$</p></li>
+<li><p>拼接这些向量得到上下文表示：$c = [e_1; e_2; …; e_{N-1}]$</p></li>
+<li><p>通过隐藏层：$h = \text{GELU}(W_h c + b_h)$</p></li>
+<li><p>通过输出层：$o = W_o h + b_o$</p></li>
+<li><p>应用softmax函数：$p = \text{softmax}(o)$</p></li>
+</ol>
+<p>其中，$W_h$和$b_h$是隐藏层的权重和偏置，$W_o$和$b_o$是输出层的权重和偏置，$p$是下一个词的概率分布。</p>
+</section>
+<section id="id13">
+<h3>训练与评估<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>基于MLP的N-gram模型的训练过程包括以下步骤：</p>
+<ol class="arabic simple">
+<li><p><strong>数据准备</strong>：</p>
+<ul class="simple">
+<li><p>将文本分割成词序列</p></li>
+<li><p>构建训练样本：每个样本包括N-1个输入词和1个目标词</p></li>
+<li><p>将词转换为索引或one-hot编码</p></li>
+</ul>
+</li>
+<li><p><strong>模型初始化</strong>：</p>
+<ul class="simple">
+<li><p>随机初始化词嵌入矩阵和网络参数</p></li>
+<li><p>选择合适的超参数（如嵌入维度、隐藏层大小、学习率等）</p></li>
+</ul>
+</li>
+<li><p><strong>训练循环</strong>：</p>
+<ul class="simple">
+<li><p>前向传播：计算模型预测的下一个词的概率分布</p></li>
+<li><p>计算损失：通常使用交叉熵损失或负对数似然损失</p></li>
+<li><p>反向传播：计算梯度</p></li>
+<li><p>参数更新：使用优化算法（如SGD、Adam）更新模型参数</p></li>
+</ul>
+</li>
+<li><p><strong>评估</strong>：</p>
+<ul class="simple">
+<li><p>困惑度（Perplexity）：语言模型最常用的评估指标，定义为平均每个词的负对数似然的指数：
+$$\text{PPL} = \exp\left(-\frac{1}{N}\sum_{i=1}^{N}\log p(w_i|w_{i-n+1}, …, w_{i-1})\right)$$
+其中，$p(w_i|w_{i-n+1}, …, w_{i-1})$是模型预测的第i个词的条件概率。</p></li>
+<li><p>准确率：预测正确的词的比例</p></li>
+<li><p>生成质量：使用模型生成文本，并评估其流畅度和连贯性</p></li>
+</ul>
+</li>
+</ol>
+<p>下面是一个使用PyTorch实现基于MLP的N-gram模型的示例代码：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">MLPNgramModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">context_size</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MLPNgramModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">context_size</span> <span class="o">*</span> <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gelu</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="n">embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embeddings</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gelu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">embeds</span><span class="p">))</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear2</span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+        <span class="n">log_probs</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">log_probs</span>
+
+<span class="c1"># 超参数</span>
+<span class="n">VOCAB_SIZE</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">EMBEDDING_DIM</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">HIDDEN_DIM</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">CONTEXT_SIZE</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># 使用前3个词预测下一个词</span>
+<span class="n">LEARNING_RATE</span> <span class="o">=</span> <span class="mf">0.001</span>
+<span class="n">EPOCHS</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">128</span>
+
+<span class="c1"># 创建模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MLPNgramModel</span><span class="p">(</span><span class="n">VOCAB_SIZE</span><span class="p">,</span> <span class="n">EMBEDDING_DIM</span><span class="p">,</span> <span class="n">HIDDEN_DIM</span><span class="p">,</span> <span class="n">CONTEXT_SIZE</span><span class="p">)</span>
+<span class="n">loss_function</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NLLLoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">LEARNING_RATE</span><span class="p">)</span>
+
+<span class="c1"># 训练循环</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">EPOCHS</span><span class="p">):</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">batch_inputs</span><span class="p">,</span> <span class="n">batch_targets</span> <span class="ow">in</span> <span class="n">data_loader</span><span class="p">:</span>  <span class="c1"># 假设data_loader已定义</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">log_probs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">log_probs</span><span class="p">,</span> <span class="n">batch_targets</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">, Loss: </span><span class="si">{</span><span class="n">total_loss</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># 评估</span>
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">batch_inputs</span><span class="p">,</span> <span class="n">batch_targets</span> <span class="ow">in</span> <span class="n">data_loader</span><span class="p">:</span>
+            <span class="n">log_probs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">log_probs</span><span class="p">,</span> <span class="n">batch_targets</span><span class="p">)</span>
+            <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            
+            <span class="n">_</span><span class="p">,</span> <span class="n">predicted</span> <span class="o">=</span> <span class="n">log_probs</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="n">batch_targets</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">correct</span> <span class="o">+=</span> <span class="n">predicted</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">batch_targets</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    
+    <span class="n">perplexity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">total_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_loader</span><span class="p">))</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="mf">100.</span> <span class="o">*</span> <span class="n">correct</span> <span class="o">/</span> <span class="n">total</span>
+    <span class="k">return</span> <span class="n">perplexity</span><span class="p">,</span> <span class="n">accuracy</span>
+</pre></div>
+</div>
+</section>
+<section id="id14">
+<h3>与传统N-gram模型的比较<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<p>基于MLP的N-gram模型与传统的统计N-gram模型相比有以下优势：</p>
+<ol class="arabic simple">
+<li><p><strong>更好的泛化能力</strong>：</p>
+<ul class="simple">
+<li><p>传统N-gram模型基于离散的词序列统计，对未见过的序列泛化能力有限</p></li>
+<li><p>基于MLP的模型使用词的分布式表示，能够捕捉词之间的语义相似性，对未见过的序列有更好的泛化能力</p></li>
+</ul>
+</li>
+<li><p><strong>缓解数据稀疏性问题</strong>：</p>
+<ul class="simple">
+<li><p>传统N-gram模型面临严重的数据稀疏性问题，需要复杂的平滑技术</p></li>
+<li><p>基于MLP的模型通过学习词的分布式表示和非线性映射，能够更好地处理稀疏数据</p></li>
+</ul>
+</li>
+<li><p><strong>捕捉更复杂的模式</strong>：</p>
+<ul class="simple">
+<li><p>传统N-gram模型只能捕捉词序列的表面统计特性</p></li>
+<li><p>基于MLP的模型能够学习更复杂的非线性模式，捕捉词之间的深层语义关系</p></li>
+</ul>
+</li>
+<li><p><strong>可扩展性</strong>：</p>
+<ul class="simple">
+<li><p>传统N-gram模型的性能受限于N的大小，增大N会导致数据稀疏性问题加剧</p></li>
+<li><p>基于MLP的模型可以通过增加网络深度和宽度来提高模型容量，而不会显著增加数据稀疏性问题</p></li>
+</ul>
+</li>
+<li><p><strong>与现代深度学习技术的兼容性</strong>：</p>
+<ul class="simple">
+<li><p>基于MLP的模型可以与现代深度学习技术（如Dropout、Batch Normalization等）结合，进一步提高性能</p></li>
+<li><p>基于MLP的模型可以作为更复杂神经网络架构的基础或组件</p></li>
+</ul>
+</li>
+</ol>
+<p>然而，基于MLP的N-gram模型也有一些局限性：</p>
+<ol class="arabic simple">
+<li><p><strong>计算开销</strong>：</p>
+<ul class="simple">
+<li><p>基于MLP的模型通常需要更多的计算资源和训练时间</p></li>
+<li><p>传统N-gram模型在小规模应用中可能更加高效</p></li>
+</ul>
+</li>
+<li><p><strong>解释性</strong>：</p>
+<ul class="simple">
+<li><p>传统N-gram模型基于简单的计数统计，结果更容易解释</p></li>
+<li><p>基于MLP的模型是”黑盒”模型，内部工作机制不易理解</p></li>
+</ul>
+</li>
+<li><p><strong>上下文长度限制</strong>：</p>
+<ul class="simple">
+<li><p>基于MLP的N-gram模型仍然受限于固定的上下文窗口大小</p></li>
+<li><p>增大上下文窗口会导致输入维度增加，增加模型复杂度和过拟合风险</p></li>
+</ul>
+</li>
+</ol>
+<p>尽管基于MLP的N-gram模型相比传统模型有显著改进，但它仍然无法有效处理长距离依赖关系。为了解决这个问题，研究者提出了循环神经网络（RNN）、长短期记忆网络（LSTM）和注意力机制等更先进的技术，这些将在后续章节中详细介绍。</p>
+</section>
+</section>
+<section id="id15">
+<h2>总结<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<p>在本章中，我们从传统的Bigram模型扩展到更一般的N-gram模型，探讨了高阶N-gram模型的优势和挑战。我们介绍了多层感知器（MLP）的基础知识，包括感知器模型、多层网络结构和前向传播算法。</p>
+<p>我们详细讨论了矩阵乘法在深度学习中的应用，强调了向量化计算和批处理技术的重要性。我们比较了各种激活函数，特别关注了GELU激活函数的特点及其在现代语言模型中的应用。</p>
+<p>最后，我们设计并实现了一个基于MLP的N-gram语言模型，讨论了其训练与评估方法，并与传统的统计N-gram模型进行了比较。</p>
+<p>基于MLP的N-gram模型是从传统统计语言模型向现代神经网络语言模型过渡的重要一步。它引入了词的分布式表示和非线性映射，显著提高了模型的泛化能力和性能。然而，它仍然受限于固定的上下文窗口大小，无法有效处理长距离依赖关系。</p>
+<p>在下一章中，我们将学习注意力机制，这是现代语言模型的核心组件之一，它能够动态地关注输入序列的不同部分，有效地处理长距离依赖关系。</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../02_micrograd/chapter02_micrograd.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第02章：Micrograd（机器学习，反向传播）</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../04_attention/chapter04_attention_model.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第04章：注意力机制（Attention，Softmax，位置编码器）</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bigramn-gram">1. 从Bigram到N-gram</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#n-gram">N-gram模型的数学定义</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">高阶N-gram的优势与挑战</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mlp">2. 多层感知器(MLP)基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">感知器模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">多层网络结构</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">前向传播算法</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">3. 矩阵乘法在深度学习中的应用</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">矩阵乘法基础</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">向量化计算的优势</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">批处理技术</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">4. 激活函数详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">常见激活函数比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gelu">GELU激活函数的特点</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">为什么现代语言模型选择GELU</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mlpn-gram">5. 实现基于MLP的N-gram模型</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">模型架构设计</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">训练与评估</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">与传统N-gram模型的比较</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">总结</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

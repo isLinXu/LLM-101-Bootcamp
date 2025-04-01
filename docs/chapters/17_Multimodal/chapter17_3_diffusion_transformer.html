@@ -1,0 +1,1478 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第17章：多模态-17.3 扩散变换器 &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/17_Multimodal/chapter17_3_diffusion_transformer';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第17章：多模态-基于LoRA的多模态模型训练" href="chapter17_4_lora_multimodal_training.html" />
+    <link rel="prev" title="第17章：多模态-17.2 VQVAE技术详解" href="chapter17_2_vqvae_technique.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/17_Multimodal/chapter17_3_diffusion_transformer.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/17_Multimodal/chapter17_3_diffusion_transformer.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/17_Multimodal/chapter17_3_diffusion_transformer.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第17章：多模态-17.3 扩散变换器</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffusion-transformer">17.3 扩散变换器(Diffusion Transformer)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">扩散模型基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">扩散过程</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">训练目标</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">扩散模型的变种</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">扩散变换器(Diffusion Transformer)的诞生</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">为什么需要扩散变换器？</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">扩散变换器的架构</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#dit">DiT的数学表示</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">扩散变换器的变种</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">扩散变换器的训练</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python">扩散变换器的Python实现</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">扩散变换器在文本到图像生成中的应用</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">扩散变换器在故事讲述AI中的应用</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">扩散变换器与其他技术的比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">扩散变换器的最新进展</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">扩散变换器的局限性和未来方向</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">总结</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="id1">
+<h1>第17章：多模态-17.3 扩散变换器<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<section id="diffusion-transformer">
+<h2>17.3 扩散变换器(Diffusion Transformer)<a class="headerlink" href="#diffusion-transformer" title="Link to this heading">#</a></h2>
+<p>在前一节中，我们详细探讨了VQVAE及其在多模态系统中的应用。本节将介绍另一种强大的生成模型技术——扩散变换器(Diffusion Transformer)，它结合了扩散模型的生成能力和Transformer的序列建模能力，为多模态系统提供了更强大的图像生成能力。</p>
+<section id="id2">
+<h3>扩散模型基础<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>在深入扩散变换器之前，我们需要先了解扩散模型的基本原理。扩散模型是一类基于马尔可夫链的生成模型，通过逐步向数据添加噪声然后学习去噪的过程来生成新样本。</p>
+<section id="id3">
+<h4>扩散过程<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<p>扩散模型包含两个关键过程：</p>
+<ol class="arabic simple">
+<li><p><strong>前向扩散过程(Forward Diffusion Process)</strong>：</p>
+<ul class="simple">
+<li><p>一个固定的马尔可夫链，逐步将高斯噪声添加到数据中</p></li>
+<li><p>经过足够多的步骤后，数据变为纯噪声</p></li>
+<li><p>数学表示：q(x₁, x₂, …, xₜ | x₀) = ∏ᵢ₌₁ᵗ q(xᵢ | xᵢ₋₁)，其中q(xᵢ | xᵢ₋₁)是添加噪声的条件概率</p></li>
+</ul>
+</li>
+<li><p><strong>反向扩散过程(Reverse Diffusion Process)</strong>：</p>
+<ul class="simple">
+<li><p>一个学习的马尔可夫链，从噪声中逐步恢复数据</p></li>
+<li><p>通过神经网络预测每一步的噪声，然后去除它</p></li>
+<li><p>数学表示：p_θ(x₀, x₁, …, xₜ₋₁ | xₜ) = ∏ᵢ₌₁ᵗ p_θ(xₜ₋ᵢ | xₜ₋ᵢ₊₁)，其中p_θ是参数化的去噪模型</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id4">
+<h4>训练目标<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
+<p>扩散模型的训练目标是最小化真实数据分布和模型生成分布之间的KL散度，这等价于最大化变分下界(ELBO)。在实践中，通常简化为预测添加的噪声，即：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>L = E_{x₀,ε,t}[||ε - ε_θ(x_t, t)||²]
+</pre></div>
+</div>
+<p>其中ε是添加的噪声，ε_θ是模型预测的噪声，t是时间步。</p>
+</section>
+<section id="id5">
+<h4>扩散模型的变种<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<p>扩散模型有多种变种，包括：</p>
+<ol class="arabic simple">
+<li><p><strong>DDPM(Denoising Diffusion Probabilistic Models)</strong>：</p>
+<ul class="simple">
+<li><p>最初提出的扩散模型形式</p></li>
+<li><p>使用固定的线性噪声调度</p></li>
+<li><p>采样过程需要多步迭代(通常为1000步)</p></li>
+</ul>
+</li>
+<li><p><strong>DDIM(Denoising Diffusion Implicit Models)</strong>：</p>
+<ul class="simple">
+<li><p>允许非马尔可夫采样路径</p></li>
+<li><p>大幅减少采样步骤(可降至10-50步)</p></li>
+<li><p>保持生成质量的同时提高效率</p></li>
+</ul>
+</li>
+<li><p><strong>潜在扩散模型(Latent Diffusion Models, LDM)</strong>：</p>
+<ul class="simple">
+<li><p>在压缩的潜在空间而非像素空间中应用扩散</p></li>
+<li><p>显著降低计算成本</p></li>
+<li><p>代表作是Stable Diffusion</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="id6">
+<h3>扩散变换器(Diffusion Transformer)的诞生<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>扩散变换器(DiT, Diffusion Transformer)是由Peebles和Xie在2023年提出的，它将Transformer架构应用于扩散模型，特别是用于图像生成任务。DiT的核心思想是用Transformer块替代传统扩散模型中的U-Net架构，利用Transformer在建模长距离依赖方面的优势来提高图像生成质量。</p>
+<section id="id7">
+<h4>为什么需要扩散变换器？<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<p>传统扩散模型通常使用U-Net作为去噪网络，虽然U-Net在图像任务上表现出色，但它也有一些局限性：</p>
+<ol class="arabic simple">
+<li><p><strong>局部感受野</strong>：</p>
+<ul class="simple">
+<li><p>卷积操作主要捕捉局部特征</p></li>
+<li><p>虽然U-Net通过下采样和上采样扩大感受野，但仍然有限</p></li>
+</ul>
+</li>
+<li><p><strong>缺乏全局建模能力</strong>：</p>
+<ul class="simple">
+<li><p>难以有效建模图像中的长距离依赖关系</p></li>
+<li><p>对于复杂场景和多物体关系的理解有限</p></li>
+</ul>
+</li>
+<li><p><strong>扩展性挑战</strong>：</p>
+<ul class="simple">
+<li><p>随着模型规模增加，U-Net的性能提升可能遇到瓶颈</p></li>
+<li><p>难以像Transformer那样有效地扩展到超大规模</p></li>
+</ul>
+</li>
+</ol>
+<p>Transformer凭借其自注意力机制，能够直接建模序列中任意位置之间的关系，这使其非常适合捕捉图像中的全局依赖关系。此外，Transformer已经在NLP和视觉领域展示了出色的可扩展性，可以训练到数十亿参数的规模。</p>
+</section>
+</section>
+<section id="id8">
+<h3>扩散变换器的架构<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>扩散变换器的核心架构包括以下组件：</p>
+<ol class="arabic simple">
+<li><p><strong>图像标记化(Image Tokenization)</strong>：</p>
+<ul class="simple">
+<li><p>将图像分割成patch(例如，将256×256图像分成8×8=64个patch)</p></li>
+<li><p>每个patch被视为一个”标记”，类似于NLP中的文本标记</p></li>
+</ul>
+</li>
+<li><p><strong>位置嵌入(Positional Embedding)</strong>：</p>
+<ul class="simple">
+<li><p>为每个patch添加位置信息</p></li>
+<li><p>可以使用正弦位置编码或可学习的位置嵌入</p></li>
+</ul>
+</li>
+<li><p><strong>时间嵌入(Time Embedding)</strong>：</p>
+<ul class="simple">
+<li><p>将扩散时间步t嵌入为向量</p></li>
+<li><p>通常使用正弦编码后接MLP</p></li>
+</ul>
+</li>
+<li><p><strong>条件嵌入(Condition Embedding)</strong>：</p>
+<ul class="simple">
+<li><p>嵌入额外的条件信息，如类别标签或文本描述</p></li>
+<li><p>允许控制生成过程</p></li>
+</ul>
+</li>
+<li><p><strong>Transformer块(Transformer Blocks)</strong>：</p>
+<ul class="simple">
+<li><p>多层自注意力和前馈网络</p></li>
+<li><p>每层都有层归一化(LayerNorm)和残差连接</p></li>
+</ul>
+</li>
+<li><p><strong>输出投影(Output Projection)</strong>：</p>
+<ul class="simple">
+<li><p>将Transformer的输出映射回原始patch空间</p></li>
+<li><p>预测每个patch的噪声或去噪后的内容</p></li>
+</ul>
+</li>
+</ol>
+<section id="dit">
+<h4>DiT的数学表示<a class="headerlink" href="#dit" title="Link to this heading">#</a></h4>
+<p>给定一个噪声图像x_t，时间步t，和可选的条件信息c，DiT模型的前向传播可以表示为：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ε_θ</span><span class="p">(</span><span class="n">x_t</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="n">DiT</span><span class="p">(</span><span class="n">Patchify</span><span class="p">(</span><span class="n">x_t</span><span class="p">),</span> <span class="n">Embed</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">Embed</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>其中：</p>
+<ul class="simple">
+<li><p>Patchify将图像分割成patch</p></li>
+<li><p>Embed是嵌入函数</p></li>
+<li><p>DiT是Transformer模型主体</p></li>
+</ul>
+</section>
+</section>
+<section id="id9">
+<h3>扩散变换器的变种<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>扩散变换器有几种主要变种，每种都有不同的架构设计：</p>
+<ol class="arabic simple">
+<li><p><strong>DiT-XL</strong>：</p>
+<ul class="simple">
+<li><p>最大的DiT变种，具有约1B参数</p></li>
+<li><p>使用28个Transformer块</p></li>
+<li><p>隐藏维度为1152，注意力头数为16</p></li>
+</ul>
+</li>
+<li><p><strong>DiT-L</strong>：</p>
+<ul class="simple">
+<li><p>中等规模变种，约0.5B参数</p></li>
+<li><p>使用24个Transformer块</p></li>
+<li><p>隐藏维度为1024，注意力头数为16</p></li>
+</ul>
+</li>
+<li><p><strong>DiT-B</strong>：</p>
+<ul class="simple">
+<li><p>基础变种，约0.1B参数</p></li>
+<li><p>使用12个Transformer块</p></li>
+<li><p>隐藏维度为768，注意力头数为12</p></li>
+</ul>
+</li>
+<li><p><strong>DiT-S</strong>：</p>
+<ul class="simple">
+<li><p>最小变种，约0.03B参数</p></li>
+<li><p>使用12个Transformer块</p></li>
+<li><p>隐藏维度为384，注意力头数为6</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id10">
+<h3>扩散变换器的训练<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>扩散变换器的训练过程与标准扩散模型类似，但有一些特定的考虑：</p>
+<ol class="arabic simple">
+<li><p><strong>数据预处理</strong>：</p>
+<ul class="simple">
+<li><p>图像调整为固定分辨率(如256×256或512×512)</p></li>
+<li><p>可选的数据增强，如随机裁剪、翻转等</p></li>
+</ul>
+</li>
+<li><p><strong>损失函数</strong>：</p>
+<ul class="simple">
+<li><p>通常使用简单的MSE损失预测噪声</p></li>
+<li><p>L = E_{x₀,ε,t,c}[||ε - ε_θ(x_t, t, c)||²]</p></li>
+</ul>
+</li>
+<li><p><strong>采样策略</strong>：</p>
+<ul class="simple">
+<li><p>可以使用DDPM或DDIM采样</p></li>
+<li><p>通常使用分类器引导(classifier guidance)或CFG(classifier-free guidance)增强条件控制</p></li>
+</ul>
+</li>
+<li><p><strong>训练技巧</strong>：</p>
+<ul class="simple">
+<li><p>梯度累积以处理大批量</p></li>
+<li><p>混合精度训练以节省内存</p></li>
+<li><p>学习率预热和余弦衰减</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="python">
+<h3>扩散变换器的Python实现<a class="headerlink" href="#python" title="Link to this heading">#</a></h3>
+<p>下面是一个简化的扩散变换器实现，使用PyTorch：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="k">class</span> <span class="nc">SinusoidalPositionEmbeddings</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dim</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">device</span>
+        <span class="n">half_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">half_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">half_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">time</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">embeddings</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">embeddings</span><span class="o">.</span><span class="n">sin</span><span class="p">(),</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">cos</span><span class="p">()),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">embeddings</span>
+
+<span class="k">class</span> <span class="nc">PatchEmbed</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">patch_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">in_chans</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">embed_dim</span><span class="o">=</span><span class="mi">768</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_size</span> <span class="o">=</span> <span class="n">img_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patch_size</span> <span class="o">=</span> <span class="n">patch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid_size</span> <span class="o">=</span> <span class="n">img_size</span> <span class="o">//</span> <span class="n">patch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_patches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_size</span> <span class="o">**</span> <span class="mi">2</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_chans</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">patch_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="n">patch_size</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">assert</span> <span class="n">H</span> <span class="o">==</span> <span class="n">W</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_size</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Input image size (</span><span class="si">{</span><span class="n">H</span><span class="si">}</span><span class="s2">*</span><span class="si">{</span><span class="n">W</span><span class="si">}</span><span class="s2">) doesn&#39;t match model (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_size</span><span class="si">}</span><span class="s2">*</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_size</span><span class="si">}</span><span class="s2">).&quot;</span>
+        
+        <span class="c1"># (B, C, H, W) -&gt; (B, embed_dim, grid_size, grid_size)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># (B, embed_dim, grid_size, grid_size) -&gt; (B, embed_dim, num_patches)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># (B, embed_dim, num_patches) -&gt; (B, num_patches, embed_dim)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">Attention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">qkv_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">attn_drop</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">proj_drop</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">num_heads</span>
+        <span class="n">head_dim</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">//</span> <span class="n">num_heads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">head_dim</span> <span class="o">**</span> <span class="o">-</span><span class="mf">0.5</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">qkv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">qkv_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attn_drop</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">attn_drop</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj_drop</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">proj_drop</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">qkv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qkv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">C</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">qkv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">qkv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">qkv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        
+        <span class="n">attn</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span> <span class="o">@</span> <span class="n">k</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
+        <span class="n">attn</span> <span class="o">=</span> <span class="n">attn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">attn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attn_drop</span><span class="p">(</span><span class="n">attn</span><span class="p">)</span>
+        
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">attn</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">FeedForward</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">TransformerBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span> <span class="n">qkv_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">attn_drop</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attn</span> <span class="o">=</span> <span class="n">Attention</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">qkv_bias</span><span class="o">=</span><span class="n">qkv_bias</span><span class="p">,</span> <span class="n">attn_drop</span><span class="o">=</span><span class="n">attn_drop</span><span class="p">,</span> <span class="n">proj_drop</span><span class="o">=</span><span class="n">drop</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">FeedForward</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">mlp_ratio</span><span class="p">),</span> <span class="n">dropout</span><span class="o">=</span><span class="n">drop</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">attn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">DiT</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">img_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+        <span class="n">patch_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">in_chans</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">embed_dim</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span>
+        <span class="n">depth</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+        <span class="n">mlp_ratio</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span>
+        <span class="n">qkv_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">drop_rate</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+        <span class="n">attn_drop_rate</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+        <span class="n">num_classes</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">class_dropout_prob</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="c1"># 图像标记化</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span> <span class="o">=</span> <span class="n">PatchEmbed</span><span class="p">(</span><span class="n">img_size</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">in_chans</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">)</span>
+        <span class="n">num_patches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">num_patches</span>
+        
+        <span class="c1"># 位置嵌入</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos_embed</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_patches</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">))</span>
+        
+        <span class="c1"># 时间嵌入</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_embed</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">SinusoidalPositionEmbeddings</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">embed_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 类别嵌入</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_dropout_prob</span> <span class="o">=</span> <span class="n">class_dropout_prob</span>
+        <span class="k">if</span> <span class="n">num_classes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_embed</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">)</span>
+        
+        <span class="c1"># Transformer块</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">TransformerBlock</span><span class="p">(</span>
+                <span class="n">dim</span><span class="o">=</span><span class="n">embed_dim</span><span class="p">,</span>
+                <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+                <span class="n">mlp_ratio</span><span class="o">=</span><span class="n">mlp_ratio</span><span class="p">,</span>
+                <span class="n">qkv_bias</span><span class="o">=</span><span class="n">qkv_bias</span><span class="p">,</span>
+                <span class="n">drop</span><span class="o">=</span><span class="n">drop_rate</span><span class="p">,</span>
+                <span class="n">attn_drop</span><span class="o">=</span><span class="n">attn_drop_rate</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span>
+        <span class="p">])</span>
+        
+        <span class="c1"># 输出头</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">patch_size</span> <span class="o">*</span> <span class="n">patch_size</span> <span class="o">*</span> <span class="n">in_chans</span><span class="p">)</span>
+        
+        <span class="c1"># 初始化</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">trunc_normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos_embed</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_weights</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">_init_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">):</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">trunc_normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">):</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">class_label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># x: [B, C, H, W], t: [B], class_label: [B] or None</span>
+        
+        <span class="c1"># 图像标记化</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># [B, num_patches, embed_dim]</span>
+        
+        <span class="c1"># 添加位置嵌入</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_embed</span>
+        
+        <span class="c1"># 添加时间嵌入</span>
+        <span class="n">time_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_embed</span><span class="p">(</span><span class="n">t</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># [B, 1, embed_dim]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">time_embed</span>
+        
+        <span class="c1"># 添加类别嵌入（如果有）</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">class_label</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_dropout_prob</span><span class="p">):</span>
+                <span class="c1"># 无条件或随机丢弃类别信息（用于classifier-free guidance）</span>
+                <span class="n">class_embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">time_embed</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">class_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_embed</span><span class="p">(</span><span class="n">class_label</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># [B, 1, embed_dim]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">class_embed</span>
+        
+        <span class="c1"># 通过Transformer块</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">block</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># 输出投影</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># [B, num_patches, patch_size*patch_size*in_chans]</span>
+        
+        <span class="c1"># 重塑为图像形状</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">grid_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">grid_size</span><span class="p">,</span> 
+                     <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">patch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">patch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">img_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">img_size</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">DiffusionModel</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_size</span> <span class="o">=</span> <span class="n">img_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">):</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    
+    <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">class_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cfg_scale</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+        <span class="c1"># 初始化为纯噪声</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="c1"># 设置采样参数（这里使用DDIM采样）</span>
+        <span class="n">timesteps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="n">num_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="c1"># 预定义的beta调度</span>
+        <span class="n">betas</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">alphas</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">betas</span>
+        <span class="n">alphas_cumprod</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">alphas</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">timesteps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">t_next</span> <span class="o">=</span> <span class="n">timesteps</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            
+            <span class="c1"># 预测噪声</span>
+            <span class="k">if</span> <span class="n">cfg_scale</span> <span class="o">&gt;</span> <span class="mf">1.0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># 无条件预测</span>
+                <span class="n">noise_pred_uncond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                <span class="c1"># 条件预测</span>
+                <span class="n">noise_pred_cond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">class_label</span><span class="p">)</span>
+                <span class="c1"># 应用classifier-free guidance</span>
+                <span class="n">noise_pred</span> <span class="o">=</span> <span class="n">noise_pred_uncond</span> <span class="o">+</span> <span class="n">cfg_scale</span> <span class="o">*</span> <span class="p">(</span><span class="n">noise_pred_cond</span> <span class="o">-</span> <span class="n">noise_pred_uncond</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">noise_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">class_label</span><span class="p">)</span>
+            
+            <span class="c1"># DDIM更新步骤</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">alphas_cumprod</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">alpha_next</span> <span class="o">=</span> <span class="n">alphas_cumprod</span><span class="p">[</span><span class="n">t_next</span><span class="p">]</span>
+            
+            <span class="c1"># 计算x0预测</span>
+            <span class="n">x0_pred</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">noise_pred</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">())</span> <span class="o">/</span> <span class="n">alpha</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+            
+            <span class="c1"># 计算方差</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha_next</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">/</span> <span class="n">alpha_next</span><span class="p">))</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+            
+            <span class="c1"># 添加噪声</span>
+            <span class="n">noise</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num_steps</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            
+            <span class="c1"># 更新x</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">alpha_next</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">x0_pred</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha_next</span> <span class="o">-</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span> <span class="o">*</span> <span class="n">noise_pred</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">noise</span>
+        
+        <span class="c1"># 将像素值缩放到[0, 1]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h3>扩散变换器在文本到图像生成中的应用<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>扩散变换器在文本到图像生成任务中表现出色，这对于我们的故事讲述AI系统尤为重要。以下是将DiT应用于文本到图像生成的关键步骤：</p>
+<ol class="arabic simple">
+<li><p><strong>文本编码</strong>：</p>
+<ul class="simple">
+<li><p>使用预训练的文本编码器(如CLIP文本编码器)将文本提示编码为向量</p></li>
+<li><p>这些向量作为条件信息输入到DiT模型</p></li>
+</ul>
+</li>
+<li><p><strong>条件注入</strong>：</p>
+<ul class="simple">
+<li><p>可以通过多种方式将文本条件注入DiT：</p>
+<ul>
+<li><p>交叉注意力(Cross-Attention)：在Transformer块中添加交叉注意力层</p></li>
+<li><p>条件缩放和偏移(Conditioning Scale and Shift)：使用文本特征调制层归一化参数</p></li>
+<li><p>连接(Concatenation)：将文本特征与patch嵌入连接</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>分类器自由引导(Classifier-Free Guidance, CFG)</strong>：</p>
+<ul class="simple">
+<li><p>同时训练条件模型和无条件模型(或使用条件丢弃)</p></li>
+<li><p>在采样时结合两个预测：ε_pred = ε_uncond + s·(ε_cond - ε_uncond)</p></li>
+<li><p>缩放因子s控制条件的强度</p></li>
+</ul>
+</li>
+</ol>
+<p>下面是一个简化的文本到图像DiT实现：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TextConditionedDiT</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">img_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+        <span class="n">patch_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">in_chans</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">embed_dim</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span>
+        <span class="n">depth</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+        <span class="n">mlp_ratio</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span>
+        <span class="n">qkv_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">drop_rate</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+        <span class="n">attn_drop_rate</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+        <span class="n">text_embed_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+        <span class="n">text_dropout_prob</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="c1"># 图像标记化和基本组件（与前面的DiT类似）</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span> <span class="o">=</span> <span class="n">PatchEmbed</span><span class="p">(</span><span class="n">img_size</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">in_chans</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">)</span>
+        <span class="n">num_patches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">num_patches</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos_embed</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_patches</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_embed</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">SinusoidalPositionEmbeddings</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">embed_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 文本条件</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_dropout_prob</span> <span class="o">=</span> <span class="n">text_dropout_prob</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">text_embed_dim</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">)</span>
+        
+        <span class="c1"># 添加交叉注意力的Transformer块</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">TransformerBlockWithCrossAttention</span><span class="p">(</span>
+                <span class="n">dim</span><span class="o">=</span><span class="n">embed_dim</span><span class="p">,</span>
+                <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+                <span class="n">mlp_ratio</span><span class="o">=</span><span class="n">mlp_ratio</span><span class="p">,</span>
+                <span class="n">qkv_bias</span><span class="o">=</span><span class="n">qkv_bias</span><span class="p">,</span>
+                <span class="n">drop</span><span class="o">=</span><span class="n">drop_rate</span><span class="p">,</span>
+                <span class="n">attn_drop</span><span class="o">=</span><span class="n">attn_drop_rate</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span>
+        <span class="p">])</span>
+        
+        <span class="c1"># 输出头</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">patch_size</span> <span class="o">*</span> <span class="n">patch_size</span> <span class="o">*</span> <span class="n">in_chans</span><span class="p">)</span>
+        
+        <span class="c1"># 初始化</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">trunc_normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos_embed</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_weights</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">_init_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">):</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">trunc_normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">):</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">text_embed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># x: [B, C, H, W], t: [B], text_embed: [B, text_embed_dim] or None</span>
+        
+        <span class="c1"># 图像标记化</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># [B, num_patches, embed_dim]</span>
+        
+        <span class="c1"># 添加位置嵌入</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_embed</span>
+        
+        <span class="c1"># 添加时间嵌入</span>
+        <span class="n">time_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_embed</span><span class="p">(</span><span class="n">t</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># [B, 1, embed_dim]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">time_embed</span>
+        
+        <span class="c1"># 处理文本嵌入</span>
+        <span class="k">if</span> <span class="n">text_embed</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_dropout_prob</span><span class="p">):</span>
+            <span class="c1"># 无条件或随机丢弃文本信息（用于classifier-free guidance）</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_proj</span><span class="p">(</span><span class="n">text_embed</span><span class="p">)</span>  <span class="c1"># [B, text_embed_dim] -&gt; [B, embed_dim]</span>
+        
+        <span class="c1"># 通过Transformer块</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">block</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        
+        <span class="c1"># 输出投影</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># [B, num_patches, patch_size*patch_size*in_chans]</span>
+        
+        <span class="c1"># 重塑为图像形状</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">grid_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">grid_size</span><span class="p">,</span> 
+                     <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">patch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">patch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">img_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">img_size</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">TransformerBlockWithCrossAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">mlp_ratio</span><span class="o">=</span><span class="mf">4.</span><span class="p">,</span> <span class="n">qkv_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">attn_drop</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">self_attn</span> <span class="o">=</span> <span class="n">Attention</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">qkv_bias</span><span class="o">=</span><span class="n">qkv_bias</span><span class="p">,</span> <span class="n">attn_drop</span><span class="o">=</span><span class="n">attn_drop</span><span class="p">,</span> <span class="n">proj_drop</span><span class="o">=</span><span class="n">drop</span><span class="p">)</span>
+        
+        <span class="c1"># 交叉注意力</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cross_attn</span> <span class="o">=</span> <span class="n">CrossAttention</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">qkv_bias</span><span class="o">=</span><span class="n">qkv_bias</span><span class="p">,</span> <span class="n">attn_drop</span><span class="o">=</span><span class="n">attn_drop</span><span class="p">,</span> <span class="n">proj_drop</span><span class="o">=</span><span class="n">drop</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">FeedForward</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">mlp_ratio</span><span class="p">),</span> <span class="n">dropout</span><span class="o">=</span><span class="n">drop</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">self_attn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 如果有上下文，应用交叉注意力</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_attn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">context</span><span class="p">)</span>
+        
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm3</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">CrossAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">qkv_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">attn_drop</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">proj_drop</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">num_heads</span>
+        <span class="n">head_dim</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">//</span> <span class="n">num_heads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">head_dim</span> <span class="o">**</span> <span class="o">-</span><span class="mf">0.5</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">qkv_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">qkv_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">qkv_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attn_drop</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">attn_drop</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj_drop</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">proj_drop</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">context</span>  <span class="c1"># 确保context是[B, ?, C]</span>
+        
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">C</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># [B, num_heads, N, head_dim]</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">C</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># [B, num_heads, context_len, head_dim]</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">C</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># [B, num_heads, context_len, head_dim]</span>
+        
+        <span class="n">attn</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span> <span class="o">@</span> <span class="n">k</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>  <span class="c1"># [B, num_heads, N, context_len]</span>
+        <span class="n">attn</span> <span class="o">=</span> <span class="n">attn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">attn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attn_drop</span><span class="p">(</span><span class="n">attn</span><span class="p">)</span>
+        
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">attn</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>  <span class="c1"># [B, N, C]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+</section>
+<section id="ai">
+<h3>扩散变换器在故事讲述AI中的应用<a class="headerlink" href="#ai" title="Link to this heading">#</a></h3>
+<p>在我们的故事讲述AI系统中，扩散变换器可以发挥多种作用：</p>
+<ol class="arabic simple">
+<li><p><strong>故事场景生成</strong>：</p>
+<ul class="simple">
+<li><p>根据故事文本生成高质量的场景图像</p></li>
+<li><p>可以控制艺术风格、色调和构图</p></li>
+</ul>
+</li>
+<li><p><strong>角色可视化</strong>：</p>
+<ul class="simple">
+<li><p>根据角色描述生成一致的角色形象</p></li>
+<li><p>在不同场景中保持角色的视觉一致性</p></li>
+</ul>
+</li>
+<li><p><strong>情感表达</strong>：</p>
+<ul class="simple">
+<li><p>根据故事的情感基调生成相应氛围的图像</p></li>
+<li><p>通过视觉元素增强故事的情感影响</p></li>
+</ul>
+</li>
+<li><p><strong>交互式故事创作</strong>：</p>
+<ul class="simple">
+<li><p>允许用户通过文本提示迭代地精炼图像</p></li>
+<li><p>支持”文本+图像”的混合输入，进一步控制生成结果</p></li>
+</ul>
+</li>
+</ol>
+<p>以下是一个在故事讲述系统中使用扩散变换器的示例流程：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">StoryVisualizer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dit_model_path</span><span class="p">,</span> <span class="n">clip_model</span><span class="o">=</span><span class="s2">&quot;openai/clip-vit-base-patch32&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># 加载CLIP文本编码器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip_tokenizer</span> <span class="o">=</span> <span class="n">CLIPTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">clip_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clip_text_model</span> <span class="o">=</span> <span class="n">CLIPTextModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">clip_model</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="c1"># 加载DiT模型</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dit_model</span> <span class="o">=</span> <span class="n">TextConditionedDiT</span><span class="p">(</span><span class="n">img_size</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">patch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">embed_dim</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dit_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dit_model_path</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dit_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dit_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        
+        <span class="c1"># 创建扩散采样器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">DiffusionModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dit_model</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">encode_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="c1"># 使用CLIP编码文本</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clip_tokenizer</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;max_length&quot;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">77</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">text_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clip_text_model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        
+        <span class="k">return</span> <span class="n">text_features</span>
+    
+    <span class="k">def</span> <span class="nf">generate_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene_description</span><span class="p">,</span> <span class="n">style_prompt</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">num_images</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">guidance_scale</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+        <span class="c1"># 组合场景描述和风格提示</span>
+        <span class="k">if</span> <span class="n">style_prompt</span><span class="p">:</span>
+            <span class="n">full_prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scene_description</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">style_prompt</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">full_prompt</span> <span class="o">=</span> <span class="n">scene_description</span>
+        
+        <span class="c1"># 编码文本</span>
+        <span class="n">text_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_text</span><span class="p">(</span><span class="n">full_prompt</span><span class="p">)</span>
+        
+        <span class="c1"># 生成图像</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">num_images</span><span class="p">,</span>
+            <span class="n">channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">class_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># 我们使用文本嵌入而不是类别标签</span>
+            <span class="n">cfg_scale</span><span class="o">=</span><span class="n">guidance_scale</span><span class="p">,</span>
+            <span class="n">num_steps</span><span class="o">=</span><span class="n">num_steps</span><span class="p">,</span>
+            <span class="n">text_embed</span><span class="o">=</span><span class="n">text_embed</span>
+        <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">images</span>
+    
+    <span class="k">def</span> <span class="nf">generate_character</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character_description</span><span class="p">,</span> <span class="n">style_prompt</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">num_images</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">guidance_scale</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+        <span class="c1"># 类似于generate_scene，但可以添加特定于角色的处理</span>
+        <span class="n">full_prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;character portrait of </span><span class="si">{</span><span class="n">character_description</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">style_prompt</span><span class="p">:</span>
+            <span class="n">full_prompt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, </span><span class="si">{</span><span class="n">style_prompt</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="n">text_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_text</span><span class="p">(</span><span class="n">full_prompt</span><span class="p">)</span>
+        
+        <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">num_images</span><span class="p">,</span>
+            <span class="n">channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">cfg_scale</span><span class="o">=</span><span class="n">guidance_scale</span><span class="p">,</span>
+            <span class="n">num_steps</span><span class="o">=</span><span class="n">num_steps</span><span class="p">,</span>
+            <span class="n">text_embed</span><span class="o">=</span><span class="n">text_embed</span>
+        <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">images</span>
+    
+    <span class="k">def</span> <span class="nf">generate_story_illustrations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">story_text</span><span class="p">,</span> <span class="n">num_illustrations</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;children&#39;s book illustration&quot;</span><span class="p">):</span>
+        <span class="c1"># 将故事分成几个关键场景</span>
+        <span class="n">scenes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_key_scenes</span><span class="p">(</span><span class="n">story_text</span><span class="p">,</span> <span class="n">num_illustrations</span><span class="p">)</span>
+        
+        <span class="n">illustrations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">scenes</span><span class="p">:</span>
+            <span class="c1"># 为每个场景生成插图</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_scene</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">style_prompt</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">num_images</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">illustrations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scene</span><span class="p">,</span> <span class="n">image</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">illustrations</span>
+    
+    <span class="k">def</span> <span class="nf">_extract_key_scenes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">story_text</span><span class="p">,</span> <span class="n">num_scenes</span><span class="p">):</span>
+        <span class="c1"># 这里可以使用更复杂的方法来提取关键场景</span>
+        <span class="c1"># 简化版本：简单地将故事分成几个部分</span>
+        <span class="n">paragraphs</span> <span class="o">=</span> <span class="n">story_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">paragraphs</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">num_scenes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">paragraphs</span>
+        
+        <span class="c1"># 选择均匀分布的段落</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">paragraphs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_scenes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">paragraphs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="id12">
+<h3>扩散变换器与其他技术的比较<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>扩散变换器与其他图像生成技术相比有几个显著优势：</p>
+<ol class="arabic simple">
+<li><p><strong>与GAN的比较</strong>：</p>
+<ul class="simple">
+<li><p>DiT通常生成更多样化的图像，不容易出现模式崩溃</p></li>
+<li><p>训练更稳定，不需要平衡生成器和判别器</p></li>
+<li><p>缺点是采样速度较慢</p></li>
+</ul>
+</li>
+<li><p><strong>与基于CNN的扩散模型的比较</strong>：</p>
+<ul class="simple">
+<li><p>DiT在捕捉全局结构和长距离依赖关系方面更强</p></li>
+<li><p>更容易扩展到更大模型规模</p></li>
+<li><p>在高分辨率图像生成中表现更好</p></li>
+</ul>
+</li>
+<li><p><strong>与自回归模型的比较</strong>：</p>
+<ul class="simple">
+<li><p>DiT可以并行生成整个图像，而不是像自回归模型那样逐像素生成</p></li>
+<li><p>生成质量通常更高，特别是对于复杂场景</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id13">
+<h3>扩散变换器的最新进展<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>扩散变换器是一个快速发展的领域，最新的进展包括：</p>
+<ol class="arabic simple">
+<li><p><strong>Muse</strong>：</p>
+<ul class="simple">
+<li><p>由Stability AI开发的文本到图像模型</p></li>
+<li><p>使用扩散变换器架构，但在潜在空间中操作</p></li>
+<li><p>引入了掩码建模预训练策略</p></li>
+</ul>
+</li>
+<li><p><strong>DiT++</strong>：</p>
+<ul class="simple">
+<li><p>DiT的改进版本，引入了更高效的注意力机制</p></li>
+<li><p>使用窗口注意力和全局注意力的混合</p></li>
+<li><p>显著提高了训练和推理效率</p></li>
+</ul>
+</li>
+<li><p><strong>3D-DiT</strong>：</p>
+<ul class="simple">
+<li><p>扩展DiT到3D内容生成</p></li>
+<li><p>可用于生成3D场景、物体或动画</p></li>
+</ul>
+</li>
+<li><p><strong>Video DiT</strong>：</p>
+<ul class="simple">
+<li><p>将DiT应用于视频生成</p></li>
+<li><p>添加时间维度的注意力机制</p></li>
+<li><p>可用于创建动态故事场景</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id14">
+<h3>扩散变换器的局限性和未来方向<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<p>尽管扩散变换器在图像生成领域取得了显著成功，但它仍然面临一些挑战：</p>
+<ol class="arabic simple">
+<li><p><strong>计算开销</strong>：</p>
+<ul class="simple">
+<li><p>Transformer的计算复杂度随序列长度增加而快速增长</p></li>
+<li><p>高分辨率图像生成需要大量计算资源</p></li>
+</ul>
+</li>
+<li><p><strong>采样速度</strong>：</p>
+<ul class="simple">
+<li><p>扩散模型需要多步迭代采样</p></li>
+<li><p>尽管有DDIM等加速方法，但仍比GAN等单步生成模型慢</p></li>
+</ul>
+</li>
+<li><p><strong>训练数据需求</strong>：</p>
+<ul class="simple">
+<li><p>需要大量高质量的训练数据</p></li>
+<li><p>可能继承训练数据中的偏见和问题</p></li>
+</ul>
+</li>
+</ol>
+<p>未来的研究方向可能包括：</p>
+<ol class="arabic simple">
+<li><p><strong>更高效的架构</strong>：</p>
+<ul class="simple">
+<li><p>探索稀疏注意力、线性注意力等机制</p></li>
+<li><p>开发更高效的扩散采样算法</p></li>
+</ul>
+</li>
+<li><p><strong>多模态融合</strong>：</p>
+<ul class="simple">
+<li><p>更深入地集成文本、图像和其他模态</p></li>
+<li><p>改进条件控制机制</p></li>
+</ul>
+</li>
+<li><p><strong>可控生成</strong>：</p>
+<ul class="simple">
+<li><p>更精细的属性控制</p></li>
+<li><p>支持更复杂的编辑操作</p></li>
+</ul>
+</li>
+<li><p><strong>知识注入</strong>：</p>
+<ul class="simple">
+<li><p>将世界知识和常识融入模型</p></li>
+<li><p>提高生成内容的准确性和一致性</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id15">
+<h3>总结<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>扩散变换器(Diffusion Transformer)结合了扩散模型的生成能力和Transformer的序列建模能力，为多模态系统提供了强大的图像生成工具。在故事讲述AI系统中，DiT可以根据文本描述生成高质量的场景和角色图像，大大增强了故事的视觉表现力和用户体验。</p>
+<p>尽管DiT在计算开销和采样速度方面仍有改进空间，但其生成质量和灵活性使其成为多模态内容创作的理想选择。随着技术的不断发展，我们可以期待DiT在故事可视化、交互式内容创作等领域发挥越来越重要的作用。</p>
+<p>在下一节中，我们将探讨如何使用LoRA等参数高效微调方法来训练多模态模型，这将使我们能够以更少的计算资源适应特定的故事风格和内容需求。</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter17_2_vqvae_technique.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第17章：多模态-17.2 VQVAE技术详解</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter17_4_lora_multimodal_training.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第17章：多模态-基于LoRA的多模态模型训练</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffusion-transformer">17.3 扩散变换器(Diffusion Transformer)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">扩散模型基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">扩散过程</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">训练目标</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">扩散模型的变种</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">扩散变换器(Diffusion Transformer)的诞生</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">为什么需要扩散变换器？</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">扩散变换器的架构</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#dit">DiT的数学表示</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">扩散变换器的变种</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">扩散变换器的训练</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python">扩散变换器的Python实现</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">扩散变换器在文本到图像生成中的应用</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">扩散变换器在故事讲述AI中的应用</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">扩散变换器与其他技术的比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">扩散变换器的最新进展</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">扩散变换器的局限性和未来方向</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">总结</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

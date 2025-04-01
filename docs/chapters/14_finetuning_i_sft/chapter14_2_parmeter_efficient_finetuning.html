@@ -1,0 +1,762 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第14章：监督式微调 I: SFT-14.1 监督式微调基础 &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第14章：监督式微调 I: SFT-14.3 LoRA技术详解" href="chapter14_3_lora_technique.html" />
+    <link rel="prev" title="第14章：监督式微调 I-SFT-14.1 监督式微调基础" href="chapter14_1_supervised_finetuning_basics.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第14章：监督式微调 I: SFT-14.1 监督式微调基础</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#peft">14.2 参数高效微调技术(PEFT)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">PEFT的概念与必要性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">常见PEFT方法概述</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">计算资源与效果的权衡</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">PEFT在故事生成中的应用</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="i-sft-14-1">
+<h1>第14章：监督式微调 I: SFT-14.1 监督式微调基础<a class="headerlink" href="#i-sft-14-1" title="Link to this heading">#</a></h1>
+<section id="peft">
+<h2>14.2 参数高效微调技术(PEFT)<a class="headerlink" href="#peft" title="Link to this heading">#</a></h2>
+<p>随着大型语言模型（LLMs）规模的不断扩大，完整微调这些模型面临着巨大的计算资源挑战。以GPT-3（1750亿参数）或Llama 2（700亿参数）为例，对这些模型进行完整微调需要数百GB的GPU内存和大量计算时间，这对大多数研究者和开发者来说是难以承受的。参数高效微调技术（Parameter-Efficient Fine-Tuning，PEFT）应运而生，它提供了一种在有限资源条件下有效适应大型模型的方法。</p>
+<section id="id1">
+<h3>PEFT的概念与必要性<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>参数高效微调是一系列技术的统称，这些技术的共同目标是在仅更新模型参数的一小部分（通常少于1%）的情况下，实现接近完整微调的性能。PEFT的核心思想是识别并专注于对特定任务最重要的参数子集，而保持大部分预训练参数不变。</p>
+<p>PEFT在故事讲述AI开发中的必要性体现在以下几个方面：</p>
+<ol class="arabic simple">
+<li><p><strong>资源效率</strong>：</p>
+<ul class="simple">
+<li><p>显著减少GPU内存需求，使得在消费级硬件上微调大型模型成为可能</p></li>
+<li><p>降低计算成本，加快训练速度，缩短开发周期</p></li>
+<li><p>减少存储需求，因为只需保存少量参数而非完整模型</p></li>
+</ul>
+</li>
+<li><p><strong>减轻灾难性遗忘</strong>：</p>
+<ul class="simple">
+<li><p>由于大部分预训练参数保持不变，模型更好地保留了预训练阶段获得的知识</p></li>
+<li><p>这对故事讲述尤为重要，因为它需要平衡特定风格的学习与广泛世界知识的保留</p></li>
+</ul>
+</li>
+<li><p><strong>模型共享与部署便利</strong>：</p>
+<ul class="simple">
+<li><p>多个任务特定的PEFT模型可以共享同一个基础预训练模型</p></li>
+<li><p>只需分发和加载小型适配器，而非完整模型，简化了部署流程</p></li>
+</ul>
+</li>
+<li><p><strong>迭代开发</strong>：</p>
+<ul class="simple">
+<li><p>更快的训练周期使得反复实验和迭代优化变得更加实际</p></li>
+<li><p>开发者可以尝试不同的数据集、超参数和训练策略，找到最佳配置</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id2">
+<h3>常见PEFT方法概述<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>PEFT方法可以根据其修改模型的方式分为几个主要类别：</p>
+<ol class="arabic simple">
+<li><p><strong>适配器方法（Adapter Methods）</strong>：</p>
+<ul class="simple">
+<li><p><strong>基本原理</strong>：在预训练模型的层之间插入小型可训练模块（适配器），同时冻结原始模型参数</p></li>
+<li><p><strong>代表技术</strong>：</p>
+<ul>
+<li><p><strong>Adapter</strong>：在Transformer层之后添加包含下投影、激活函数和上投影的小型瓶颈层</p></li>
+<li><p><strong>AdapterFusion</strong>：允许组合多个预训练的适配器</p></li>
+<li><p><strong>Compacter</strong>：使用参数化矩阵分解减少适配器参数量</p></li>
+</ul>
+</li>
+<li><p><strong>优势</strong>：模块化设计，易于组合不同任务的适配器</p></li>
+<li><p><strong>局限性</strong>：增加了模型的深度，可能影响推理速度</p></li>
+</ul>
+</li>
+<li><p><strong>前缀调优（Prefix Tuning）</strong>：</p>
+<ul class="simple">
+<li><p><strong>基本原理</strong>：在输入序列前添加一组可训练的前缀向量，或在每一层添加前缀向量</p></li>
+<li><p><strong>代表技术</strong>：</p>
+<ul>
+<li><p><strong>Prefix Tuning</strong>：在每一层添加可训练的前缀向量</p></li>
+<li><p><strong>P-Tuning</strong>：在输入层添加连续的提示向量</p></li>
+<li><p><strong>P-Tuning v2</strong>：扩展到所有层的前缀调优</p></li>
+</ul>
+</li>
+<li><p><strong>优势</strong>：不改变模型架构，适用于各种序列任务</p></li>
+<li><p><strong>局限性</strong>：前缀长度的选择对性能有显著影响</p></li>
+</ul>
+</li>
+<li><p><strong>低秩适应（Low-Rank Adaptation）</strong>：</p>
+<ul class="simple">
+<li><p><strong>基本原理</strong>：使用低秩矩阵分解来参数化权重更新</p></li>
+<li><p><strong>代表技术</strong>：</p>
+<ul>
+<li><p><strong>LoRA</strong>：通过低秩分解矩阵表示权重更新（下一节将详细介绍）</p></li>
+<li><p><strong>AdaLoRA</strong>：自适应分配不同层的秩</p></li>
+</ul>
+</li>
+<li><p><strong>优势</strong>：不增加推理延迟，实现简单，效果显著</p></li>
+<li><p><strong>局限性</strong>：最优秩的选择需要实验确定</p></li>
+</ul>
+</li>
+<li><p><strong>软提示（Soft Prompting）</strong>：</p>
+<ul class="simple">
+<li><p><strong>基本原理</strong>：在输入空间中添加或修改可训练的嵌入向量</p></li>
+<li><p><strong>代表技术</strong>：</p>
+<ul>
+<li><p><strong>Prompt Tuning</strong>：在输入序列前添加可训练的软提示标记</p></li>
+<li><p><strong>Soft Prompts</strong>：使用连续向量替代离散标记</p></li>
+</ul>
+</li>
+<li><p><strong>优势</strong>：概念简单，仅修改输入层</p></li>
+<li><p><strong>局限性</strong>：表达能力可能受限，通常需要较大的提示长度</p></li>
+</ul>
+</li>
+<li><p><strong>选择性参数微调（Selective Parameter Fine-tuning）</strong>：</p>
+<ul class="simple">
+<li><p><strong>基本原理</strong>：基于某些标准选择性地微调部分原始模型参数</p></li>
+<li><p><strong>代表技术</strong>：</p>
+<ul>
+<li><p><strong>BitFit</strong>：仅微调偏置参数</p></li>
+<li><p><strong>Diff Pruning</strong>：学习稀疏参数更新</p></li>
+</ul>
+</li>
+<li><p><strong>优势</strong>：直接修改关键参数，概念简单</p></li>
+<li><p><strong>局限性</strong>：参数选择策略对性能影响大</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id3">
+<h3>计算资源与效果的权衡<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>在选择PEFT方法时，需要考虑计算资源与效果之间的权衡：</p>
+<ol class="arabic simple">
+<li><p><strong>参数效率 vs. 性能</strong>：</p>
+<ul class="simple">
+<li><p>可训练参数越少，资源需求越低，但可能会限制模型的适应能力</p></li>
+<li><p>不同任务对参数效率的敏感度不同，故事生成等创造性任务可能需要相对更多的可训练参数</p></li>
+</ul>
+</li>
+<li><p><strong>内存效率 vs. 计算效率</strong>：</p>
+<ul class="simple">
+<li><p>某些PEFT方法（如适配器）节省内存但可能增加计算量</p></li>
+<li><p>其他方法（如LoRA）在内存和计算效率之间取得了良好平衡</p></li>
+</ul>
+</li>
+<li><p><strong>训练效率 vs. 推理效率</strong>：</p>
+<ul class="simple">
+<li><p>一些方法在训练时高效但在推理时引入额外开销</p></li>
+<li><p>理想的PEFT方法应在不增加推理延迟的情况下实现高效训练</p></li>
+</ul>
+</li>
+<li><p><strong>实现复杂性 vs. 灵活性</strong>：</p>
+<ul class="simple">
+<li><p>简单的PEFT方法易于实现但可能缺乏灵活性</p></li>
+<li><p>复杂的方法提供更多调整选项但增加了实现难度</p></li>
+</ul>
+</li>
+</ol>
+<p>下表比较了几种主要PEFT方法的关键特性：</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>方法</p></th>
+<th class="head"><p>可训练参数比例</p></th>
+<th class="head"><p>内存效率</p></th>
+<th class="head"><p>推理开销</p></th>
+<th class="head"><p>实现复杂度</p></th>
+<th class="head"><p>适用场景</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>完整微调</p></td>
+<td><p>100%</p></td>
+<td><p>低</p></td>
+<td><p>无</p></td>
+<td><p>低</p></td>
+<td><p>资源充足，追求最佳性能</p></td>
+</tr>
+<tr class="row-odd"><td><p>Adapter</p></td>
+<td><p>0.5-5%</p></td>
+<td><p>中</p></td>
+<td><p>有</p></td>
+<td><p>中</p></td>
+<td><p>多任务学习，模块化需求</p></td>
+</tr>
+<tr class="row-even"><td><p>Prefix Tuning</p></td>
+<td><p>0.1-1%</p></td>
+<td><p>高</p></td>
+<td><p>轻微</p></td>
+<td><p>中</p></td>
+<td><p>NLG任务，如故事生成</p></td>
+</tr>
+<tr class="row-odd"><td><p>LoRA</p></td>
+<td><p>0.1-1%</p></td>
+<td><p>高</p></td>
+<td><p>可合并消除</p></td>
+<td><p>低</p></td>
+<td><p>通用场景，尤其是生成任务</p></td>
+</tr>
+<tr class="row-even"><td><p>Prompt Tuning</p></td>
+<td><p>&lt;0.1%</p></td>
+<td><p>极高</p></td>
+<td><p>轻微</p></td>
+<td><p>低</p></td>
+<td><p>简单任务，极限资源约束</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id4">
+<h3>PEFT在故事生成中的应用<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>PEFT技术在故事生成任务中有着独特的应用价值：</p>
+<ol class="arabic simple">
+<li><p><strong>风格适应</strong>：</p>
+<ul class="simple">
+<li><p>使用PEFT可以快速适应不同的写作风格，如童话、科幻或悬疑</p></li>
+<li><p>每种风格可以使用单独的小型适配器，共享同一个基础模型</p></li>
+<li><p>这使得创建”多风格”故事生成系统变得可行</p></li>
+</ul>
+</li>
+<li><p><strong>角色定制</strong>：</p>
+<ul class="simple">
+<li><p>为不同角色创建专门的PEFT模块，捕捉其独特的语言模式和性格特征</p></li>
+<li><p>通过组合不同角色的PEFT模块，生成多角色互动的故事</p></li>
+</ul>
+</li>
+<li><p><strong>增量能力扩展</strong>：</p>
+<ul class="simple">
+<li><p>逐步添加新能力（如诗歌创作、对话生成）而不影响现有能力</p></li>
+<li><p>每种能力可以使用专门的PEFT模块进行训练</p></li>
+</ul>
+</li>
+<li><p><strong>个性化</strong>：</p>
+<ul class="simple">
+<li><p>基于用户偏好和反馈，使用极小的PEFT模块进行个性化调整</p></li>
+<li><p>即使在边缘设备上也能实现个性化，因为PEFT模块非常小</p></li>
+</ul>
+</li>
+<li><p><strong>多语言故事</strong>：</p>
+<ul class="simple">
+<li><p>使用语言特定的PEFT模块扩展到不同语言的故事生成</p></li>
+<li><p>保持核心叙事能力不变，只调整语言表达</p></li>
+</ul>
+</li>
+</ol>
+<p>在实际应用中，LoRA因其简单性和有效性，已成为故事生成任务中最受欢迎的PEFT方法之一。下一节，我们将深入探讨LoRA技术及其在故事讲述AI中的具体应用。</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter14_1_supervised_finetuning_basics.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第14章：监督式微调 I-SFT-14.1 监督式微调基础</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter14_3_lora_technique.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#peft">14.2 参数高效微调技术(PEFT)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">PEFT的概念与必要性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">常见PEFT方法概述</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">计算资源与效果的权衡</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">PEFT在故事生成中的应用</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

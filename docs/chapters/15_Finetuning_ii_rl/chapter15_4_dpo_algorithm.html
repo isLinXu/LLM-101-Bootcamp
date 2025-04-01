@@ -1,0 +1,1229 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法 &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第16章：部署-16.1 API开发基础" href="../16_deployment/chapter16_1_api_development.html" />
+    <link rel="prev" title="第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法" href="chapter15_3_ppo_algorithm.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dpo">15.4 直接偏好优化(DPO)算法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">DPO的基本原理</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rlhfdpo">从RLHF到DPO的理论推导</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">DPO的目标函数</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dpoppo-rlhf">DPO与PPO-RLHF的比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">DPO的实现细节</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">数据准备</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">DPO训练循环</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">超参数调整</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">DPO在故事生成中的应用</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">风格优化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">情节复杂度调整</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">教育价值增强</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">多维度优化</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">DPO的高级技术和扩展</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#dpo-contrastive-dpo">对比DPO (Contrastive DPO)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#dpo-iterative-dpo">迭代DPO (Iterative DPO)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#dpo-multi-objective-dpo">多目标DPO (Multi-objective DPO)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">DPO的实际案例：儿童故事优化</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">背景和目标</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">数据收集</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">DPO实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">评估和结果</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">DPO的局限性和未来发展</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="ii-rl-15-4-dpo">
+<h1>第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法<a class="headerlink" href="#ii-rl-15-4-dpo" title="Link to this heading">#</a></h1>
+<section id="dpo">
+<h2>15.4 直接偏好优化(DPO)算法<a class="headerlink" href="#dpo" title="Link to this heading">#</a></h2>
+<p>在前面的章节中，我们详细探讨了强化学习的基础概念、人类反馈的强化学习（RLHF）框架以及近端策略优化（PPO）算法。虽然PPO-RLHF已经成为优化大型语言模型的主流方法，但它的实现复杂且计算资源需求高，这限制了其在资源受限环境中的应用。为了解决这些挑战，研究人员开发了直接偏好优化（Direct Preference Optimization，DPO）算法，它提供了一种更简单、更高效的方法来将人类偏好整合到语言模型训练中。本节将深入探讨DPO的原理、实现和应用，特别是在故事讲述AI的背景下。</p>
+<section id="id1">
+<h3>DPO的基本原理<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>DPO的核心思想是直接从人类偏好数据中学习最优策略，而无需显式的奖励建模和强化学习过程。这种方法基于一个关键洞察：在RLHF中，奖励模型和PPO优化可以被一个统一的目标函数所替代，该函数直接从偏好数据中学习。</p>
+<section id="rlhfdpo">
+<h4>从RLHF到DPO的理论推导<a class="headerlink" href="#rlhfdpo" title="Link to this heading">#</a></h4>
+<p>为了理解DPO的原理，我们需要回顾RLHF的数学基础，并看看如何将其简化。</p>
+<p>在RLHF中，我们首先训练一个奖励模型 $r_\phi(x, y)$，然后使用强化学习（通常是PPO）来优化策略 $\pi_\theta(y|x)$。这个过程可以表示为以下优化问题：</p>
+<p>$$\max_\theta \mathbb{E}<em>{x \sim \mathcal{D}, y \sim \pi</em>\theta(y|x)}[r_\phi(x, y)] - \beta \cdot \text{KL}[\pi_\theta(y|x) || \pi_{\text{ref}}(y|x)]$$</p>
+<p>其中 $\beta$ 是KL散度的权重系数，$\pi_{\text{ref}}$ 是参考策略（通常是SFT模型）。</p>
+<p>DPO的关键洞察是，在最优条件下，策略 $\pi_\theta$ 和奖励函数 $r_\phi$ 之间存在一个明确的关系：</p>
+<p>$$\pi_\theta(y|x) \propto \pi_{\text{ref}}(y|x) \cdot \exp\left(\frac{1}{\beta}r_\phi(x, y)\right)$$</p>
+<p>这个关系表明，最优策略是参考策略的指数加权版本，权重由奖励函数决定。</p>
+<p>通过数学推导，我们可以将这个关系重写为：</p>
+<p>$$r_\phi(x, y_w) - r_\phi(x, y_l) = \beta \cdot \log\frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \cdot \log\frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}$$</p>
+<p>其中 $y_w$ 和 $y_l$ 分别是人类偏好的”获胜”和”失败”响应。</p>
+<p>这个等式的关键意义在于，我们可以直接从偏好数据中学习策略 $\pi_\theta$，而无需显式训练奖励模型 $r_\phi$。这就是DPO的核心思想。</p>
+</section>
+<section id="id2">
+<h4>DPO的目标函数<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
+<p>基于上述推导，DPO提出了以下目标函数：</p>
+<p>$$\mathcal{L}<em>{\text{DPO}}(\theta) = -\mathbb{E}</em>{(x, y_w, y_l) \sim \mathcal{D}}\left[\log\sigma\left(\beta \cdot \log\frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \cdot \log\frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)\right]$$</p>
+<p>其中 $\sigma$ 是sigmoid函数，$\mathcal{D}$ 是人类偏好数据集。</p>
+<p>这个目标函数可以解释为：我们希望最大化模型在人类偏好数据上正确预测偏好的概率。具体来说，如果人类偏好 $y_w$ 而不是 $y_l$，那么我们希望模型对 $y_w$ 的相对偏好（相对于参考模型）高于对 $y_l$ 的相对偏好。</p>
+</section>
+</section>
+<section id="dpoppo-rlhf">
+<h3>DPO与PPO-RLHF的比较<a class="headerlink" href="#dpoppo-rlhf" title="Link to this heading">#</a></h3>
+<p>DPO相比传统的PPO-RLHF有几个显著优势：</p>
+<ol class="arabic simple">
+<li><p><strong>简化的训练流程</strong>：</p>
+<ul class="simple">
+<li><p>DPO不需要单独训练奖励模型</p></li>
+<li><p>不需要复杂的强化学习优化</p></li>
+<li><p>整个训练过程类似于标准的监督学习</p></li>
+</ul>
+</li>
+<li><p><strong>计算效率</strong>：</p>
+<ul class="simple">
+<li><p>DPO通常比PPO-RLHF快10-100倍</p></li>
+<li><p>内存需求显著降低</p></li>
+<li><p>可以在单个GPU上训练较大的模型</p></li>
+</ul>
+</li>
+<li><p><strong>稳定性</strong>：</p>
+<ul class="simple">
+<li><p>避免了强化学习中的不稳定性</p></li>
+<li><p>不需要调整复杂的RL超参数</p></li>
+<li><p>训练过程更加稳定可靠</p></li>
+</ul>
+</li>
+<li><p><strong>理论保证</strong>：</p>
+<ul class="simple">
+<li><p>DPO与RLHF在理论上是等价的</p></li>
+<li><p>在理想条件下，两者应该收敛到相同的策略</p></li>
+</ul>
+</li>
+</ol>
+<p>然而，DPO也有一些潜在的局限性：</p>
+<ol class="arabic simple">
+<li><p><strong>灵活性</strong>：</p>
+<ul class="simple">
+<li><p>PPO-RLHF可以更灵活地调整奖励函数</p></li>
+<li><p>在复杂任务中，显式的奖励建模可能提供更多控制</p></li>
+</ul>
+</li>
+<li><p><strong>探索能力</strong>：</p>
+<ul class="simple">
+<li><p>DPO缺乏强化学习中的探索机制</p></li>
+<li><p>可能在某些需要创新性解决方案的任务中表现不佳</p></li>
+</ul>
+</li>
+<li><p><strong>多步决策</strong>：</p>
+<ul class="simple">
+<li><p>在需要长期规划的任务中，PPO可能有优势</p></li>
+<li><p>DPO主要针对单步决策优化</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id3">
+<h3>DPO的实现细节<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>实现DPO相对简单，主要包括数据准备、模型训练和超参数调整三个方面。</p>
+<section id="id4">
+<h4>数据准备<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
+<p>与RLHF类似，DPO需要人类偏好数据，通常是(提示, 获胜响应, 失败响应)的三元组：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prepare_dpo_dataset</span><span class="p">(</span><span class="n">preference_data</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;准备DPO训练数据集&quot;&quot;&quot;</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">preference_data</span><span class="p">:</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;prompt&quot;</span><span class="p">]</span>
+        <span class="n">chosen</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;chosen&quot;</span><span class="p">]</span>  <span class="c1"># 人类偏好的响应</span>
+        <span class="n">rejected</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;rejected&quot;</span><span class="p">]</span>  <span class="c1"># 人类不偏好的响应</span>
+        
+        <span class="c1"># 编码提示和响应</span>
+        <span class="n">prompt_tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">)</span>
+        <span class="n">chosen_tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">chosen</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">)</span>
+        <span class="n">rejected_tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">rejected</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">)</span>
+        
+        <span class="n">dataset</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span>
+            <span class="s2">&quot;chosen&quot;</span><span class="p">:</span> <span class="n">chosen</span><span class="p">,</span>
+            <span class="s2">&quot;rejected&quot;</span><span class="p">:</span> <span class="n">rejected</span><span class="p">,</span>
+            <span class="s2">&quot;prompt_tokens&quot;</span><span class="p">:</span> <span class="n">prompt_tokens</span><span class="p">,</span>
+            <span class="s2">&quot;chosen_tokens&quot;</span><span class="p">:</span> <span class="n">chosen_tokens</span><span class="p">,</span>
+            <span class="s2">&quot;rejected_tokens&quot;</span><span class="p">:</span> <span class="n">rejected_tokens</span>
+        <span class="p">})</span>
+    
+    <span class="k">return</span> <span class="n">dataset</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h4>DPO训练循环<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<p>DPO的训练循环相对简单，类似于标准的监督学习：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="k">class</span> <span class="nc">DPOTrainer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">policy_model</span><span class="p">,</span>
+        <span class="n">reference_model</span><span class="p">,</span>
+        <span class="n">tokenizer</span><span class="p">,</span>
+        <span class="n">beta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda&quot;</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-5</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">policy_model</span> <span class="o">=</span> <span class="n">policy_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span> <span class="o">=</span> <span class="n">reference_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        
+        <span class="c1"># 冻结参考模型</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+        
+        <span class="c1"># 设置优化器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">policy_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
+            <span class="n">lr</span><span class="o">=</span><span class="n">learning_rate</span>
+        <span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">get_logps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">prompt_tokens</span><span class="p">,</span> <span class="n">response_tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;计算模型对响应的对数概率&quot;&quot;&quot;</span>
+        <span class="c1"># 将提示和响应连接起来</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">prompt_tokens</span><span class="o">.</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">response_tokens</span><span class="o">.</span><span class="n">input_ids</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">prompt_tokens</span><span class="o">.</span><span class="n">attention_mask</span><span class="p">,</span> <span class="n">response_tokens</span><span class="o">.</span><span class="n">attention_mask</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># 前向传播</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="n">model</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy_model</span><span class="p">):</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">)</span>
+            <span class="n">logits</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">logits</span>
+            
+            <span class="c1"># 只考虑响应部分的logits</span>
+            <span class="n">response_logits</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[:,</span> <span class="n">prompt_tokens</span><span class="o">.</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+            
+            <span class="c1"># 获取目标标记</span>
+            <span class="n">response_targets</span> <span class="o">=</span> <span class="n">response_tokens</span><span class="o">.</span><span class="n">input_ids</span>
+            
+            <span class="c1"># 计算对数概率</span>
+            <span class="n">log_probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">response_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">token_log_probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+                <span class="n">log_probs</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">response_targets</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            
+            <span class="c1"># 计算序列对数概率（忽略padding）</span>
+            <span class="n">response_mask</span> <span class="o">=</span> <span class="n">response_tokens</span><span class="o">.</span><span class="n">attention_mask</span>
+            <span class="n">sequence_log_probs</span> <span class="o">=</span> <span class="p">(</span><span class="n">token_log_probs</span> <span class="o">*</span> <span class="n">response_mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">response_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">sequence_log_probs</span>
+    
+    <span class="k">def</span> <span class="nf">compute_dpo_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt_tokens</span><span class="p">,</span> <span class="n">chosen_tokens</span><span class="p">,</span> <span class="n">rejected_tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;计算DPO损失&quot;&quot;&quot;</span>
+        <span class="c1"># 获取策略模型的对数概率</span>
+        <span class="n">policy_chosen_logps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_logps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy_model</span><span class="p">,</span> <span class="n">prompt_tokens</span><span class="p">,</span> <span class="n">chosen_tokens</span><span class="p">)</span>
+        <span class="n">policy_rejected_logps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_logps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy_model</span><span class="p">,</span> <span class="n">prompt_tokens</span><span class="p">,</span> <span class="n">rejected_tokens</span><span class="p">)</span>
+        
+        <span class="c1"># 获取参考模型的对数概率</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">reference_chosen_logps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_logps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="p">,</span> <span class="n">prompt_tokens</span><span class="p">,</span> <span class="n">chosen_tokens</span><span class="p">)</span>
+            <span class="n">reference_rejected_logps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_logps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="p">,</span> <span class="n">prompt_tokens</span><span class="p">,</span> <span class="n">rejected_tokens</span><span class="p">)</span>
+        
+        <span class="c1"># 计算对数比率</span>
+        <span class="n">chosen_logratios</span> <span class="o">=</span> <span class="n">policy_chosen_logps</span> <span class="o">-</span> <span class="n">reference_chosen_logps</span>
+        <span class="n">rejected_logratios</span> <span class="o">=</span> <span class="n">policy_rejected_logps</span> <span class="o">-</span> <span class="n">reference_rejected_logps</span>
+        
+        <span class="c1"># 计算DPO损失</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">chosen_logratios</span> <span class="o">-</span> <span class="n">rejected_logratios</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">F</span><span class="o">.</span><span class="n">logsigmoid</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        
+        <span class="c1"># 计算准确率（预测正确的偏好比例）</span>
+        <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">logits</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">,</span> <span class="n">chosen_logratios</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">rejected_logratios</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;执行一个DPO训练步骤&quot;&quot;&quot;</span>
+        <span class="c1"># 将数据移到设备</span>
+        <span class="n">prompt_tokens</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;prompt_tokens&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">chosen_tokens</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;chosen_tokens&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">rejected_tokens</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;rejected_tokens&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        
+        <span class="c1"># 计算损失</span>
+        <span class="n">loss</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">,</span> <span class="n">chosen_logratio</span><span class="p">,</span> <span class="n">rejected_logratio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dpo_loss</span><span class="p">(</span>
+            <span class="n">prompt_tokens</span><span class="p">,</span> <span class="n">chosen_tokens</span><span class="p">,</span> <span class="n">rejected_tokens</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 反向传播和优化</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+            <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+            <span class="s2">&quot;chosen_logratio&quot;</span><span class="p">:</span> <span class="n">chosen_logratio</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+            <span class="s2">&quot;rejected_logratio&quot;</span><span class="p">:</span> <span class="n">rejected_logratio</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;执行完整的DPO训练循环&quot;&quot;&quot;</span>
+        <span class="c1"># 创建数据加载器</span>
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+            <span class="n">train_dataset</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 训练循环</span>
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+            <span class="n">epoch_stats</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+                <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_step</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+                <span class="n">epoch_stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+            
+            <span class="c1"># 计算平均统计信息</span>
+            <span class="n">avg_stats</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">k</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">epoch_stats</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">epoch_stats</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">epoch_stats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="p">}</span>
+            
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> stats: </span><span class="si">{</span><span class="n">avg_stats</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy_model</span>
+
+<span class="k">class</span> <span class="nc">DPODataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DPO训练数据集&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+    
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h4>超参数调整<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<p>DPO的主要超参数是 $\beta$，它控制KL散度的权重。较小的 $\beta$ 允许模型更大程度地偏离参考模型，而较大的 $\beta$ 则限制模型的变化。</p>
+<p>一般来说，$\beta$ 的取值范围在0.1到0.5之间，具体取值需要根据任务和数据集进行调整。以下是一些调整建议：</p>
+<ol class="arabic simple">
+<li><p><strong>初始值</strong>：从0.1开始，这是一个相对保守的值</p></li>
+<li><p><strong>增大 $\beta$</strong>：如果模型偏离参考模型太多，导致语言质量下降</p></li>
+<li><p><strong>减小 $\beta$</strong>：如果模型变化太小，无法有效学习人类偏好</p></li>
+</ol>
+<p>除了 $\beta$ 外，其他重要的超参数包括：</p>
+<ol class="arabic simple">
+<li><p><strong>学习率</strong>：通常在1e-6到5e-5之间，比标准微调略小</p></li>
+<li><p><strong>批量大小</strong>：尽可能大，受限于GPU内存</p></li>
+<li><p><strong>训练轮次</strong>：通常1-3轮足够，过多可能导致过拟合</p></li>
+</ol>
+</section>
+</section>
+<section id="id7">
+<h3>DPO在故事生成中的应用<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>DPO特别适合故事生成任务，因为故事质量的评估高度主观，难以通过显式规则捕捉。以下是DPO在故事讲述AI中的几个具体应用：</p>
+<section id="id8">
+<h4>风格优化<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<p>DPO可以用来优化故事的风格，使其符合特定的文学风格或目标受众：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 收集风格偏好数据</span>
+<span class="n">style_preference_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="s2">&quot;写一个关于宇航员的故事&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chosen&quot;</span><span class="p">:</span> <span class="s2">&quot;星辰大海的召唤，让李明选择了宇航员这条艰难的道路...&quot;</span><span class="p">,</span>  <span class="c1"># 成人风格</span>
+        <span class="s2">&quot;rejected&quot;</span><span class="p">:</span> <span class="s2">&quot;小明想成为宇航员，他每天努力学习，希望有一天能飞向太空...&quot;</span>  <span class="c1"># 儿童风格</span>
+    <span class="p">},</span>
+    <span class="c1"># 更多风格偏好对...</span>
+<span class="p">]</span>
+
+<span class="c1"># 使用DPO优化风格</span>
+<span class="n">style_model</span> <span class="o">=</span> <span class="n">train_dpo</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">style_preference_data</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h4>情节复杂度调整<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
+<p>DPO可以用来调整故事的情节复杂度，使其适合不同年龄段的读者：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 收集情节复杂度偏好数据</span>
+<span class="n">complexity_preference_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="s2">&quot;写一个关于寻宝的冒险故事&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chosen&quot;</span><span class="p">:</span> <span class="s2">&quot;藏宝图上的线索指向了三个不同的地点，每个地点都隐藏着解开最终宝藏位置的关键...&quot;</span><span class="p">,</span>  <span class="c1"># 复杂情节</span>
+        <span class="s2">&quot;rejected&quot;</span><span class="p">:</span> <span class="s2">&quot;小明找到了一张藏宝图，他按照地图找到了宝藏，非常开心。&quot;</span>  <span class="c1"># 简单情节</span>
+    <span class="p">},</span>
+    <span class="c1"># 更多复杂度偏好对...</span>
+<span class="p">]</span>
+
+<span class="c1"># 使用DPO优化情节复杂度</span>
+<span class="n">complexity_model</span> <span class="o">=</span> <span class="n">train_dpo</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">complexity_preference_data</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h4>教育价值增强<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<p>对于儿童故事，DPO可以用来增强故事的教育价值：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 收集教育价值偏好数据</span>
+<span class="n">educational_preference_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="s2">&quot;写一个关于友谊的故事&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chosen&quot;</span><span class="p">:</span> <span class="s2">&quot;小明和小红一开始总是争吵，但通过一次共同解决问题的经历，他们学会了相互理解和尊重...&quot;</span><span class="p">,</span>  <span class="c1"># 有教育价值</span>
+        <span class="s2">&quot;rejected&quot;</span><span class="p">:</span> <span class="s2">&quot;小明和小红是好朋友，他们每天一起玩耍，非常开心。&quot;</span>  <span class="c1"># 缺乏教育价值</span>
+    <span class="p">},</span>
+    <span class="c1"># 更多教育价值偏好对...</span>
+<span class="p">]</span>
+
+<span class="c1"># 使用DPO优化教育价值</span>
+<span class="n">educational_model</span> <span class="o">=</span> <span class="n">train_dpo</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">educational_preference_data</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h4>多维度优化<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<p>在实际应用中，我们通常需要同时优化故事的多个方面。这可以通过组合不同类型的偏好数据来实现：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 组合多维度偏好数据</span>
+<span class="n">combined_preference_data</span> <span class="o">=</span> <span class="n">style_preference_data</span> <span class="o">+</span> <span class="n">complexity_preference_data</span> <span class="o">+</span> <span class="n">educational_preference_data</span>
+
+<span class="c1"># 使用DPO进行多维度优化</span>
+<span class="n">combined_model</span> <span class="o">=</span> <span class="n">train_dpo</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">combined_preference_data</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>或者，可以使用多阶段训练，先优化一个方面，再优化另一个方面：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 第一阶段：优化风格</span>
+<span class="n">style_model</span> <span class="o">=</span> <span class="n">train_dpo</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">style_preference_data</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c1"># 第二阶段：在风格模型基础上优化情节复杂度</span>
+<span class="n">complexity_model</span> <span class="o">=</span> <span class="n">train_dpo</span><span class="p">(</span><span class="n">style_model</span><span class="p">,</span> <span class="n">complexity_preference_data</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+
+<span class="c1"># 第三阶段：在复杂度模型基础上优化教育价值</span>
+<span class="n">final_model</span> <span class="o">=</span> <span class="n">train_dpo</span><span class="p">(</span><span class="n">complexity_model</span><span class="p">,</span> <span class="n">educational_preference_data</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id12">
+<h3>DPO的高级技术和扩展<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>随着研究的深入，DPO已经发展出了一些高级技术和扩展，进一步提升了其性能和适用性。</p>
+<section id="dpo-contrastive-dpo">
+<h4>对比DPO (Contrastive DPO)<a class="headerlink" href="#dpo-contrastive-dpo" title="Link to this heading">#</a></h4>
+<p>对比DPO是DPO的一个变体，它通过对比学习的方式优化模型。具体来说，它不仅考虑偏好对之间的差异，还考虑不同提示下的响应之间的差异：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_contrastive_dpo_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;计算对比DPO损失&quot;&quot;&quot;</span>
+    <span class="c1"># 标准DPO损失</span>
+    <span class="n">dpo_loss</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dpo_loss</span><span class="p">(</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;prompt_tokens&quot;</span><span class="p">],</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;chosen_tokens&quot;</span><span class="p">],</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;rejected_tokens&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># 对比损失</span>
+    <span class="n">contrastive_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;prompt&quot;</span><span class="p">])</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">:</span>
+                <span class="c1"># 计算不同提示下的对比损失</span>
+                <span class="n">cross_prompt_loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dpo_loss</span><span class="p">(</span>
+                    <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;prompt_tokens&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;chosen_tokens&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;chosen_tokens&quot;</span><span class="p">][</span><span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">contrastive_loss</span> <span class="o">+=</span> <span class="n">cross_prompt_loss</span>
+    
+    <span class="n">contrastive_loss</span> <span class="o">/=</span> <span class="n">batch_size</span> <span class="o">*</span> <span class="p">(</span><span class="n">batch_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># 组合损失</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="n">dpo_loss</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrastive_weight</span> <span class="o">*</span> <span class="n">contrastive_loss</span>
+    
+    <span class="k">return</span> <span class="n">total_loss</span><span class="p">,</span> <span class="n">accuracy</span>
+</pre></div>
+</div>
+<p>对比DPO在某些任务上表现优于标准DPO，特别是在数据有限的情况下。</p>
+</section>
+<section id="dpo-iterative-dpo">
+<h4>迭代DPO (Iterative DPO)<a class="headerlink" href="#dpo-iterative-dpo" title="Link to this heading">#</a></h4>
+<p>迭代DPO是一种迭代优化策略，它通过多轮DPO训练逐步改进模型：</p>
+<ol class="arabic simple">
+<li><p>使用初始模型生成响应</p></li>
+<li><p>收集这些响应的人类偏好</p></li>
+<li><p>使用DPO优化模型</p></li>
+<li><p>使用优化后的模型生成新的响应</p></li>
+<li><p>重复步骤2-4</p></li>
+</ol>
+<p>这种方法可以逐步提升模型性能，特别是在初始模型质量不高的情况下。</p>
+</section>
+<section id="dpo-multi-objective-dpo">
+<h4>多目标DPO (Multi-objective DPO)<a class="headerlink" href="#dpo-multi-objective-dpo" title="Link to this heading">#</a></h4>
+<p>多目标DPO旨在同时优化多个可能相互冲突的目标，如创意性和连贯性：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_multi_objective_dpo_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;计算多目标DPO损失&quot;&quot;&quot;</span>
+    <span class="c1"># 计算不同目标的DPO损失</span>
+    <span class="n">coherence_loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dpo_loss</span><span class="p">(</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;prompt_tokens&quot;</span><span class="p">],</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;coherence_chosen_tokens&quot;</span><span class="p">],</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;coherence_rejected_tokens&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    
+    <span class="n">creativity_loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dpo_loss</span><span class="p">(</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;prompt_tokens&quot;</span><span class="p">],</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;creativity_chosen_tokens&quot;</span><span class="p">],</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;creativity_rejected_tokens&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    
+    <span class="n">engagement_loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dpo_loss</span><span class="p">(</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;prompt_tokens&quot;</span><span class="p">],</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;engagement_chosen_tokens&quot;</span><span class="p">],</span>
+        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;engagement_rejected_tokens&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># 加权组合</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coherence_weight</span> <span class="o">*</span> <span class="n">coherence_loss</span> <span class="o">+</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creativity_weight</span> <span class="o">*</span> <span class="n">creativity_loss</span> <span class="o">+</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engagement_weight</span> <span class="o">*</span> <span class="n">engagement_loss</span>
+    <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">total_loss</span>
+</pre></div>
+</div>
+<p>多目标DPO可以在不同目标之间取得平衡，生成更全面优化的故事。</p>
+</section>
+</section>
+<section id="id13">
+<h3>DPO的实际案例：儿童故事优化<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>为了具体说明DPO在故事讲述AI中的应用，让我们考虑一个实际案例：优化一个儿童故事生成器。</p>
+<section id="id14">
+<h4>背景和目标<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<p>我们有一个通过SFT初步训练的儿童故事生成模型，但发现它存在以下问题：</p>
+<ul class="simple">
+<li><p>有时使用过于复杂的语言和概念</p></li>
+<li><p>故事结构不够清晰，缺乏明确的开始、中间和结束</p></li>
+<li><p>教育信息传递不够有效</p></li>
+</ul>
+<p>我们的目标是使用DPO优化模型，使其生成：</p>
+<ul class="simple">
+<li><p>语言简单明了，适合5-8岁儿童</p></li>
+<li><p>结构清晰，有明确的故事弧</p></li>
+<li><p>包含积极的教育信息，但不生硬</p></li>
+</ul>
+</section>
+<section id="id15">
+<h4>数据收集<a class="headerlink" href="#id15" title="Link to this heading">#</a></h4>
+<p>首先，我们收集人类偏好数据：</p>
+<ol class="arabic simple">
+<li><p>生成多个故事对：</p>
+<ul class="simple">
+<li><p>使用SFT模型为100个不同的提示生成多个故事版本</p></li>
+<li><p>每个提示生成3-5个不同的版本，使用不同的采样参数</p></li>
+</ul>
+</li>
+<li><p>收集人类评估：</p>
+<ul class="simple">
+<li><p>招募儿童教育专家、家长和儿童文学作家作为评估者</p></li>
+<li><p>让他们比较同一提示下的不同故事版本</p></li>
+<li><p>记录他们的偏好和评价理由</p></li>
+</ul>
+</li>
+<li><p>构建偏好数据集：</p>
+<ul class="simple">
+<li><p>从评估结果中提取偏好对（获胜版本和失败版本）</p></li>
+<li><p>确保数据集覆盖不同类型的故事和主题</p></li>
+<li><p>最终收集约500个偏好对</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id16">
+<h4>DPO实现<a class="headerlink" href="#id16" title="Link to this heading">#</a></h4>
+<p>接下来，我们使用DPO优化模型：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+<span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+
+<span class="c1"># 加载模型和分词器</span>
+<span class="n">sft_model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;children-story-sft-model&quot;</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;children-story-sft-model&quot;</span><span class="p">)</span>
+
+<span class="c1"># 创建参考模型（复制SFT模型）</span>
+<span class="n">ref_model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;children-story-sft-model&quot;</span><span class="p">)</span>
+
+<span class="c1"># 加载偏好数据</span>
+<span class="n">preference_data</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="n">data_files</span><span class="o">=</span><span class="s2">&quot;children_story_preferences.jsonl&quot;</span><span class="p">)</span>
+
+<span class="c1"># 准备DPO数据集</span>
+<span class="k">def</span> <span class="nf">preprocess_function</span><span class="p">(</span><span class="n">examples</span><span class="p">):</span>
+    <span class="c1"># 编码提示和响应</span>
+    <span class="n">prompt_tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;prompt&quot;</span><span class="p">],</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">chosen_tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;chosen&quot;</span><span class="p">],</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">rejected_tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="s2">&quot;rejected&quot;</span><span class="p">],</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">examples</span><span class="p">[</span><span class="s2">&quot;prompt&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;chosen&quot;</span><span class="p">:</span> <span class="n">examples</span><span class="p">[</span><span class="s2">&quot;chosen&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;rejected&quot;</span><span class="p">:</span> <span class="n">examples</span><span class="p">[</span><span class="s2">&quot;rejected&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;prompt_tokens&quot;</span><span class="p">:</span> <span class="n">prompt_tokens</span><span class="p">,</span>
+        <span class="s2">&quot;chosen_tokens&quot;</span><span class="p">:</span> <span class="n">chosen_tokens</span><span class="p">,</span>
+        <span class="s2">&quot;rejected_tokens&quot;</span><span class="p">:</span> <span class="n">rejected_tokens</span>
+    <span class="p">}</span>
+
+<span class="n">processed_data</span> <span class="o">=</span> <span class="n">preference_data</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">preprocess_function</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 创建DPO训练器</span>
+<span class="n">dpo_trainer</span> <span class="o">=</span> <span class="n">DPOTrainer</span><span class="p">(</span>
+    <span class="n">policy_model</span><span class="o">=</span><span class="n">sft_model</span><span class="p">,</span>
+    <span class="n">reference_model</span><span class="o">=</span><span class="n">ref_model</span><span class="p">,</span>
+    <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+    <span class="n">beta</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>  <span class="c1"># 适中的KL权重</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">2e-5</span>
+<span class="p">)</span>
+
+<span class="c1"># 训练模型</span>
+<span class="n">optimized_model</span> <span class="o">=</span> <span class="n">dpo_trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span>
+    <span class="n">processed_data</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">],</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">)</span>
+
+<span class="c1"># 保存优化后的模型</span>
+<span class="n">optimized_model</span><span class="o">.</span><span class="n">save_pretrained</span><span class="p">(</span><span class="s2">&quot;children-story-dpo-model&quot;</span><span class="p">)</span>
+<span class="n">tokenizer</span><span class="o">.</span><span class="n">save_pretrained</span><span class="p">(</span><span class="s2">&quot;children-story-dpo-model&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id17">
+<h4>评估和结果<a class="headerlink" href="#id17" title="Link to this heading">#</a></h4>
+<p>训练完成后，我们对优化后的模型进行全面评估：</p>
+<ol class="arabic simple">
+<li><p><strong>自动评估</strong>：</p>
+<ul class="simple">
+<li><p>计算语言复杂度指标（如Flesch-Kincaid可读性分数）</p></li>
+<li><p>分析故事结构（如引言、冲突、解决方案的存在）</p></li>
+<li><p>检测教育元素的存在</p></li>
+</ul>
+</li>
+<li><p><strong>人工评估</strong>：</p>
+<ul class="simple">
+<li><p>让评估者比较SFT模型和DPO模型生成的故事</p></li>
+<li><p>收集关于语言适当性、结构清晰度和教育价值的反馈</p></li>
+<li><p>进行盲测，评估者不知道哪个故事来自哪个模型</p></li>
+</ul>
+</li>
+<li><p><strong>目标受众测试</strong>：</p>
+<ul class="simple">
+<li><p>让5-8岁的儿童听取或阅读生成的故事</p></li>
+<li><p>观察他们的参与度和理解程度</p></li>
+<li><p>收集他们的喜好和反馈</p></li>
+</ul>
+</li>
+</ol>
+<p>评估结果显示，DPO优化后的模型在以下方面取得了显著改进：</p>
+<ol class="arabic simple">
+<li><p><strong>语言适当性</strong>：</p>
+<ul class="simple">
+<li><p>可读性分数降低，更适合目标年龄段</p></li>
+<li><p>句子长度减少，词汇更简单</p></li>
+<li><p>减少了抽象概念和复杂表达</p></li>
+</ul>
+</li>
+<li><p><strong>故事结构</strong>：</p>
+<ul class="simple">
+<li><p>93%的故事有明确的开始、中间和结束（相比SFT模型的78%）</p></li>
+<li><p>角色和情节更加清晰</p></li>
+<li><p>故事弧更加完整和连贯</p></li>
+</ul>
+</li>
+<li><p><strong>教育价值</strong>：</p>
+<ul class="simple">
+<li><p>85%的故事包含明确的教育信息（相比SFT模型的62%）</p></li>
+<li><p>教育信息更加自然地融入故事</p></li>
+<li><p>积极信息的传递更加有效</p></li>
+</ul>
+</li>
+<li><p><strong>整体质量</strong>：</p>
+<ul class="simple">
+<li><p>在盲测中，评估者在72%的情况下偏好DPO模型生成的故事</p></li>
+<li><p>儿童对DPO模型生成的故事表现出更高的参与度和理解度</p></li>
+<li><p>家长和教育工作者对DPO模型的评价更高</p></li>
+</ul>
+</li>
+</ol>
+<p>这个案例展示了DPO在优化故事讲述AI方面的有效性，特别是在需要平衡多个目标（如语言适当性、结构清晰度和教育价值）的情况下。</p>
+</section>
+</section>
+<section id="id18">
+<h3>DPO的局限性和未来发展<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<p>虽然DPO提供了一种简单高效的方法来优化语言模型，但它仍然存在一些局限性：</p>
+<ol class="arabic simple">
+<li><p><strong>数据依赖</strong>：</p>
+<ul class="simple">
+<li><p>DPO严重依赖高质量的人类偏好数据</p></li>
+<li><p>收集这样的数据可能成本高昂且耗时</p></li>
+<li><p>数据中的偏见可能被模型放大</p></li>
+</ul>
+</li>
+<li><p><strong>长期规划</strong>：</p>
+<ul class="simple">
+<li><p>DPO主要针对单步决策优化</p></li>
+<li><p>在需<response clipped><NOTE>To save on context only part of this file has been shown to you. You should retry this tool after you have searched inside the file with <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">-n</span></code> in order to find the line numbers of what you are looking for.</NOTE></p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter15_3_ppo_algorithm.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../16_deployment/chapter16_1_api_development.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第16章：部署-16.1 API开发基础</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dpo">15.4 直接偏好优化(DPO)算法</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">DPO的基本原理</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rlhfdpo">从RLHF到DPO的理论推导</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">DPO的目标函数</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dpoppo-rlhf">DPO与PPO-RLHF的比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">DPO的实现细节</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">数据准备</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">DPO训练循环</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">超参数调整</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">DPO在故事生成中的应用</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">风格优化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">情节复杂度调整</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">教育价值增强</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">多维度优化</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">DPO的高级技术和扩展</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#dpo-contrastive-dpo">对比DPO (Contrastive DPO)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#dpo-iterative-dpo">迭代DPO (Iterative DPO)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#dpo-multi-objective-dpo">多目标DPO (Multi-objective DPO)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">DPO的实际案例：儿童故事优化</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">背景和目标</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">数据收集</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">DPO实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">评估和结果</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">DPO的局限性和未来发展</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

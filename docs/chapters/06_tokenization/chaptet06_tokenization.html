@@ -1,0 +1,1117 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第6章：分词技术(Tokenization) &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/06_tokenization/chaptet06_tokenization';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第7章：优化技术(Optimization)" href="../07_optimization/chapter07_optimization.html" />
+    <link rel="prev" title="第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）" href="../05_transformer/chapter05_transformer.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/06_tokenization/chaptet06_tokenization.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/06_tokenization/chaptet06_tokenization.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/06_tokenization/chaptet06_tokenization.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第6章：分词技术(Tokenization)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">6.1 分词的基本概念与重要性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#byte-pair-encoding-bpe">6.2 字节对编码(Byte Pair Encoding, BPE)原理</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minbpe">6.3 minBPE算法详解</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">6.4 实现一个简单的分词器</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">6.5 分词器训练与优化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">6.5.1 词汇量选择</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">6.5.2 训练语料选择</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">6.5.3 预处理策略</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bpe">6.5.4 高级BPE变种</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">6.5.5 性能优化</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">6.6 在故事生成中的应用</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">6.6.1 多语言故事生成</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">6.6.2 风格和语调控制</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">6.6.3 角色语音和对话</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">6.6.4 情感和氛围控制</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">6.6.5 故事结构和节奏</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">6.7 总结与展望</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="tokenization">
+<h1>第6章：分词技术(Tokenization)<a class="headerlink" href="#tokenization" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>6.1 分词的基本概念与重要性<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>在构建故事讲述AI大语言模型的过程中，分词（Tokenization）是我们需要面对的第一个关键技术挑战。分词是将原始文本转换为模型可以处理的数字序列的过程，它是连接人类语言和机器语言的桥梁。无论多么复杂的语言模型，其本质上都是对数字序列而非直接对文本进行操作的。</p>
+<p>分词的重要性不言而喻。首先，它直接影响模型的词汇量和表达能力。一个设计良好的分词器能够用有限的词元（token）表示丰富的语言现象，使模型能够理解和生成多样化的文本。其次，分词策略会影响模型的训练效率和推理速度。合理的分词可以减少序列长度，降低计算复杂度。最后，分词还会影响模型对不同语言、特殊符号和罕见词的处理能力，这对于构建一个通用的故事生成模型尤为重要。</p>
+<p>在早期的自然语言处理中，分词通常基于简单的规则，如按空格分割英文单词或使用字典匹配中文词语。然而，这些方法难以处理未登录词（out-of-vocabulary words）和跨语言场景。现代大语言模型普遍采用的是基于统计的子词（subword）分词方法，其中最具代表性的就是字节对编码（Byte Pair Encoding, BPE）及其变种。</p>
+</section>
+<section id="byte-pair-encoding-bpe">
+<h2>6.2 字节对编码(Byte Pair Encoding, BPE)原理<a class="headerlink" href="#byte-pair-encoding-bpe" title="Link to this heading">#</a></h2>
+<p>字节对编码最初是一种数据压缩算法，由Gage于1994年提出。在自然语言处理领域，BPE被Sennrich等人于2016年引入用于神经机器翻译的分词任务，随后在GPT、BERT等大语言模型中得到广泛应用。</p>
+<p>BPE的核心思想非常直观：频繁一起出现的字符序列应该被视为一个整体。具体来说，BPE算法首先将文本分解为最小单位（通常是单个字符或字节），然后迭代地合并最频繁出现的相邻符号对，直到达到预设的词汇量或无法找到频率超过阈值的符号对为止。</p>
+<p>让我们通过一个简单的例子来理解BPE的工作原理：</p>
+<p>假设我们有以下训练语料：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">低碳生活</span> <span class="n">低碳出行</span> <span class="n">低碳饮食</span>
+</pre></div>
+</div>
+<ol class="arabic">
+<li><p>初始化词汇表为单个字符：{‘低’, ‘碳’, ‘生’, ‘活’, ‘出’, ‘行’, ‘饮’, ‘食’, ‘ ‘}</p></li>
+<li><p>统计所有相邻字符对的频率：</p>
+<ul class="simple">
+<li><p>(‘低’, ‘碳’): 3次</p></li>
+<li><p>(‘碳’, ‘ ‘): 1次</p></li>
+<li><p>(’ ‘, ‘生’): 1次</p></li>
+<li><p>(‘生’, ‘活’): 1次</p></li>
+<li><p>(’ ‘, ‘出’): 1次</p></li>
+<li><p>(‘出’, ‘行’): 1次</p></li>
+<li><p>(’ ‘, ‘饮’): 1次</p></li>
+<li><p>(‘饮’, ‘食’): 1次</p></li>
+<li><p>(‘碳’, ‘生’): 1次</p></li>
+<li><p>(‘碳’, ‘出’): 1次</p></li>
+<li><p>(‘碳’, ‘饮’): 1次</p></li>
+</ul>
+</li>
+<li><p>合并最频繁的字符对(‘低’, ‘碳’)为新符号’低碳’</p></li>
+<li><p>更新词汇表：{‘低’, ‘碳’, ‘生’, ‘活’, ‘出’, ‘行’, ‘饮’, ‘食’, ‘ ‘, ‘低碳’}</p></li>
+<li><p>更新语料：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">低碳生活</span> <span class="n">低碳出行</span> <span class="n">低碳饮食</span>
+</pre></div>
+</div>
+</li>
+<li><p>继续迭代，直到达到预设的词汇量或合并条件不再满足</p></li>
+</ol>
+<p>通过这个过程，BPE算法能够自动发现语料中的常见模式，并将其作为独立的词元。这使得模型可以高效地表示常见词，同时保留处理罕见词和未见词的能力（通过将其分解为更小的子词单元）。</p>
+</section>
+<section id="minbpe">
+<h2>6.3 minBPE算法详解<a class="headerlink" href="#minbpe" title="Link to this heading">#</a></h2>
+<p>minBPE是BPE算法的一个简化和优化版本，由Jurafsky和Martin在他们的自然语言处理教材中提出。它保留了BPE的核心思想，但在实现上更加高效和易于理解。</p>
+<p>minBPE算法的主要步骤如下：</p>
+<ol class="arabic simple">
+<li><p><strong>初始化</strong>：将训练语料分解为最小单位（通常是Unicode字符或字节），并统计每个单位的频率。</p></li>
+<li><p><strong>构建初始词汇表</strong>：初始词汇表包含所有出现在语料中的基本单位。</p></li>
+<li><p><strong>迭代合并</strong>：
+a. 统计所有相邻词元对的频率
+b. 选择频率最高的词元对进行合并
+c. 将新合并的词元添加到词汇表中
+d. 更新语料中的词元表示
+e. 重复上述步骤，直到达到预设的词汇量或满足停止条件</p></li>
+<li><p><strong>构建编码器和解码器</strong>：基于最终的词汇表，构建从文本到词元ID的映射（编码器）和从词元ID到文本的映射（解码器）。</p></li>
+</ol>
+<p>minBPE相比原始BPE的主要优化在于：</p>
+<ul class="simple">
+<li><p>使用更高效的数据结构来跟踪词元对的频率</p></li>
+<li><p>简化了合并过程中的语料更新操作</p></li>
+<li><p>提供了更清晰的编码和解码接口</p></li>
+</ul>
+<p>下面是一个简化的minBPE实现示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_minbpe</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">):</span>
+    <span class="c1"># 初始化词汇表为单个字符</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">corpus</span><span class="p">)))</span>
+    
+    <span class="c1"># 将语料转换为字符列表的列表</span>
+    <span class="n">corpus_tokens</span> <span class="o">=</span> <span class="p">[[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">text</span><span class="p">]</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">corpus</span><span class="p">]</span>
+    
+    <span class="c1"># 迭代合并直到达到目标词汇量</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">vocab_size</span><span class="p">:</span>
+        <span class="c1"># 统计所有相邻词元对的频率</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">corpus_tokens</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="n">pairs</span><span class="p">[</span><span class="n">pair</span><span class="p">]</span> <span class="o">=</span> <span class="n">pairs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        
+        <span class="c1"># 如果没有可合并的词元对，提前结束</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pairs</span><span class="p">:</span>
+            <span class="k">break</span>
+        
+        <span class="c1"># 选择频率最高的词元对</span>
+        <span class="n">best_pair</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">pairs</span><span class="o">.</span><span class="n">get</span><span class="p">)</span>
+        <span class="n">new_token</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">best_pair</span><span class="p">)</span>
+        
+        <span class="c1"># 将新词元添加到词汇表</span>
+        <span class="n">vocab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_token</span><span class="p">)</span>
+        
+        <span class="c1"># 更新语料中的词元表示</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">corpus_tokens</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">text</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">best_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">text</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">best_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">text</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_token</span>
+                    <span class="n">text</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="k">return</span> <span class="n">vocab</span>
+</pre></div>
+</div>
+<p>这个简化实现展示了minBPE的核心逻辑，但在实际应用中，我们通常需要更多的优化和功能，如处理未知字符、支持特殊标记（如开始和结束标记）、处理空格和标点符号等。</p>
+</section>
+<section id="id2">
+<h2>6.4 实现一个简单的分词器<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>现在，让我们实现一个完整的minBPE分词器，包括训练、编码和解码功能。这个分词器将能够处理中英文混合文本，并支持基本的特殊标记。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="k">class</span> <span class="nc">MinBPETokenizer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># 从词元到ID的映射</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># 从ID到词元的映射</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span> <span class="o">=</span> <span class="p">[]</span>    <span class="c1"># 词汇表</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">special_tokens</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;&lt;PAD&gt;&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>    <span class="c1"># 填充标记</span>
+            <span class="s2">&quot;&lt;BOS&gt;&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>    <span class="c1"># 序列开始标记</span>
+            <span class="s2">&quot;&lt;EOS&gt;&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>    <span class="c1"># 序列结束标记</span>
+            <span class="s2">&quot;&lt;UNK&gt;&quot;</span><span class="p">:</span> <span class="mi">3</span>     <span class="c1"># 未知词标记</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corpus</span><span class="p">,</span> <span class="n">vocab_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_frequency</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;训练分词器&quot;&quot;&quot;</span>
+        <span class="c1"># 预处理语料</span>
+        <span class="n">processed_corpus</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">corpus</span><span class="p">]</span>
+        
+        <span class="c1"># 初始化词汇表为单个字符</span>
+        <span class="n">chars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">processed_corpus</span><span class="p">:</span>
+            <span class="n">chars</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">special_tokens</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
+        
+        <span class="c1"># 将语料转换为字符列表的列表</span>
+        <span class="n">corpus_tokens</span> <span class="o">=</span> <span class="p">[[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">text</span><span class="p">]</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">processed_corpus</span><span class="p">]</span>
+        
+        <span class="c1"># 迭代合并直到达到目标词汇量</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">vocab_size</span><span class="p">:</span>
+            <span class="c1"># 统计所有相邻词元对的频率</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">corpus_tokens</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="n">pairs</span><span class="p">[</span><span class="n">pair</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+            <span class="c1"># 过滤低频词元对</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="p">{</span><span class="n">pair</span><span class="p">:</span> <span class="n">freq</span> <span class="k">for</span> <span class="n">pair</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">pairs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">freq</span> <span class="o">&gt;=</span> <span class="n">min_frequency</span><span class="p">}</span>
+            
+            <span class="c1"># 如果没有可合并的词元对，提前结束</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pairs</span><span class="p">:</span>
+                <span class="k">break</span>
+            
+            <span class="c1"># 选择频率最高的词元对</span>
+            <span class="n">best_pair</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">pairs</span><span class="o">.</span><span class="n">get</span><span class="p">)</span>
+            <span class="n">new_token</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">best_pair</span><span class="p">)</span>
+            
+            <span class="c1"># 将新词元添加到词汇表</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_token</span><span class="p">)</span>
+            
+            <span class="c1"># 更新语料中的词元表示</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">corpus_tokens</span><span class="p">):</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">text</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">best_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">text</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">best_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">text</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_token</span>
+                        <span class="n">text</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="c1"># 构建编码器和解码器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="p">{</span><span class="n">token</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">token</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="p">)}</span>
+        
+        <span class="k">return</span> <span class="bp">self</span>
+    
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;将文本编码为词元ID序列&quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        
+        <span class="c1"># 贪婪分词</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+            <span class="c1"># 尝试匹配最长的词元</span>
+            <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>  <span class="c1"># 限制最大词元长度为100</span>
+                <span class="k">if</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">:</span>
+                    <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">[</span><span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]])</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="n">j</span>
+                    <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+            
+            <span class="c1"># 如果没有匹配到任何词元，使用未知词标记</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
+                <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">special_tokens</span><span class="p">[</span><span class="s2">&quot;&lt;UNK&gt;&quot;</span><span class="p">])</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="k">return</span> <span class="n">tokens</span>
+    
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;将词元ID序列解码为文本&quot;&quot;&quot;</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="s2">&quot;&lt;UNK&gt;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span>
+    
+    <span class="k">def</span> <span class="nf">_preprocess_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;预处理文本&quot;&quot;&quot;</span>
+        <span class="c1"># 可以添加各种预处理步骤，如小写化、规范化等</span>
+        <span class="k">return</span> <span class="n">text</span>
+</pre></div>
+</div>
+<p>这个实现包含了一个完整的minBPE分词器，具有以下功能：</p>
+<ul class="simple">
+<li><p>支持从语料库训练词汇表</p></li>
+<li><p>支持特殊标记（填充、序列开始/结束、未知词）</p></li>
+<li><p>提供编码（文本到ID）和解码（ID到文本）功能</p></li>
+<li><p>使用贪婪算法进行分词，优先匹配最长的词元</p></li>
+</ul>
+<p>在实际应用中，我们可能还需要添加更多功能，如保存和加载模型、批处理、多线程训练等。但这个基本实现已经足够用于理解分词的核心原理和实现方法。</p>
+</section>
+<section id="id3">
+<h2>6.5 分词器训练与优化<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>在实际应用中，分词器的训练和优化是一个复杂的过程，需要考虑多种因素。以下是一些关键的优化策略和最佳实践：</p>
+<section id="id4">
+<h3>6.5.1 词汇量选择<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>词汇量（vocabulary size）是分词器最重要的超参数之一。词汇量过小会导致分词过于细碎，增加序列长度并降低模型效率；词汇量过大则会增加模型参数量，并可能导致数据稀疏问题。</p>
+<p>对于英文为主的语料，通常的词汇量在30,000到50,000之间；对于多语言模型，词汇量可能需要更大，如100,000或更多。在我们的故事生成模型中，由于需要处理多种语言和创意文本，建议使用50,000左右的词汇量。</p>
+</section>
+<section id="id5">
+<h3>6.5.2 训练语料选择<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>分词器的性能很大程度上取决于训练语料的质量和多样性。理想的训练语料应该：</p>
+<ul class="simple">
+<li><p>覆盖模型将要处理的所有语言和领域</p></li>
+<li><p>包含足够的罕见词和特殊表达</p></li>
+<li><p>在不同类型的文本（如对话、叙述、描述）之间保持平衡</p></li>
+<li><p>具有足够的规模（通常需要几GB的文本）</p></li>
+</ul>
+<p>对于故事生成模型，我们应该收集各种类型的故事、小说、对话和描述性文本，确保语料的多样性和代表性。</p>
+</section>
+<section id="id6">
+<h3>6.5.3 预处理策略<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>在训练分词器之前，对语料进行适当的预处理可以显著提高分词质量：</p>
+<ul class="simple">
+<li><p>规范化：统一空格、标点符号和特殊字符的表示</p></li>
+<li><p>大小写处理：根据任务需求决定是否保留大小写信息</p></li>
+<li><p>去除噪声：过滤掉HTML标签、重复文本等噪声</p></li>
+<li><p>分段：将长文本分割为适当长度的段落</p></li>
+</ul>
+<p>对于故事生成，保留原始的大小写、标点和段落结构通常很重要，因为这些元素对故事的风格和可读性有重要影响。</p>
+</section>
+<section id="bpe">
+<h3>6.5.4 高级BPE变种<a class="headerlink" href="#bpe" title="Link to this heading">#</a></h3>
+<p>除了基本的minBPE算法，还有几种高级变种值得考虑：</p>
+<p><strong>1. WordPiece</strong></p>
+<p>WordPiece是Google在BERT中使用的分词算法，它与BPE类似，但使用不同的合并标准。WordPiece基于语言模型似然而非简单频率来选择合并的词元对，这有助于生成更有语言学意义的子词。</p>
+<p><strong>2. Unigram Language Model</strong></p>
+<p>Unigram是另一种流行的子词分词算法，它基于概率模型而非确定性规则。Unigram首先初始化一个大词汇表，然后迭代地移除对语料编码贡献最小的词元，直到达到目标词汇量。这种方法通常能产生更平衡的分词结果。</p>
+<p><strong>3. SentencePiece</strong></p>
+<p>SentencePiece是一个综合性的分词工具，支持BPE和Unigram算法，并具有以下特点：</p>
+<ul class="simple">
+<li><p>将空格视为普通字符，支持无空格语言（如中文、日文）</p></li>
+<li><p>直接从原始文本学习，无需语言特定的预处理</p></li>
+<li><p>支持字节级别的回退，确保任何文本都可以编码</p></li>
+</ul>
+<p>对于多语言故事生成模型，SentencePiece是一个很好的选择，因为它能够一致地处理不同语言的文本。</p>
+</section>
+<section id="id7">
+<h3>6.5.5 性能优化<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>在实际应用中，分词器的性能（速度和内存使用）也是一个重要考虑因素：</p>
+<p><strong>1. 并行处理</strong></p>
+<p>使用多线程或多进程并行处理大规模语料，加速训练过程。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ProcessPoolExecutor</span>
+
+<span class="k">def</span> <span class="nf">parallel_train</span><span class="p">(</span><span class="n">corpus_chunks</span><span class="p">,</span> <span class="n">vocab_size_per_chunk</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">ProcessPoolExecutor</span><span class="p">()</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+        <span class="n">tokenizers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">chunk</span><span class="p">:</span> <span class="n">MinBPETokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">vocab_size_per_chunk</span><span class="p">),</span>
+            <span class="n">corpus_chunks</span>
+        <span class="p">))</span>
+    
+    <span class="c1"># 合并多个分词器的词汇表</span>
+    <span class="n">merged_vocab</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">tokenizer</span> <span class="ow">in</span> <span class="n">tokenizers</span><span class="p">:</span>
+        <span class="n">merged_vocab</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
+    
+    <span class="c1"># 去重并选择最终词汇表</span>
+    <span class="n">final_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">merged_vocab</span><span class="p">))[:</span><span class="n">vocab_size</span><span class="p">]</span>
+    
+    <span class="c1"># 创建最终分词器</span>
+    <span class="n">final_tokenizer</span> <span class="o">=</span> <span class="n">MinBPETokenizer</span><span class="p">()</span>
+    <span class="n">final_tokenizer</span><span class="o">.</span><span class="n">vocab</span> <span class="o">=</span> <span class="n">final_vocab</span>
+    <span class="n">final_tokenizer</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="p">{</span><span class="n">token</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">final_vocab</span><span class="p">)}</span>
+    <span class="n">final_tokenizer</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">token</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">final_vocab</span><span class="p">)}</span>
+    
+    <span class="k">return</span> <span class="n">final_tokenizer</span>
+</pre></div>
+</div>
+<p><strong>2. 高效数据结构</strong></p>
+<p>使用高效的数据结构来存储和查询词汇表，如前缀树（Trie）或哈希表。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TrieNode</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_end</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">class</span> <span class="nc">Trie</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">TrieNode</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">token_id</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
+        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">token</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">char</span><span class="p">]</span> <span class="o">=</span> <span class="n">TrieNode</span><span class="p">()</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">char</span><span class="p">]</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">is_end</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">token_id</span> <span class="o">=</span> <span class="n">token_id</span>
+    
+    <span class="k">def</span> <span class="nf">find_longest_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">start_pos</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span>
+        <span class="n">longest_match</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">longest_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">match_length</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_pos</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)):</span>
+            <span class="n">char</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="k">break</span>
+            
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">char</span><span class="p">]</span>
+            <span class="n">match_length</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">is_end</span><span class="p">:</span>
+                <span class="n">longest_match</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="n">start_pos</span><span class="p">:</span><span class="n">start_pos</span> <span class="o">+</span> <span class="n">match_length</span><span class="p">]</span>
+                <span class="n">longest_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">token_id</span>
+        
+        <span class="k">return</span> <span class="n">longest_match</span><span class="p">,</span> <span class="n">longest_id</span><span class="p">,</span> <span class="n">match_length</span>
+</pre></div>
+</div>
+<p><strong>3. 缓存机制</strong></p>
+<p>对于常见的文本片段，使用缓存来避免重复计算。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CachedTokenizer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_tokenizer</span><span class="p">,</span> <span class="n">cache_size</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_tokenizer</span> <span class="o">=</span> <span class="n">base_tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_size</span> <span class="o">=</span> <span class="n">cache_size</span>
+    
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">text</span><span class="p">]</span>
+        
+        <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        
+        <span class="c1"># 简单的LRU缓存管理</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">)))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">text</span><span class="p">]</span> <span class="o">=</span> <span class="n">tokens</span>
+        <span class="k">return</span> <span class="n">tokens</span>
+    
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+        <span class="c1"># 解码通常不需要缓存，因为解码操作相对简单</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2>6.6 在故事生成中的应用<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<p>分词技术在故事生成中有着广泛的应用，它不仅影响模型的基本功能，还可以用来增强故事的质量和多样性。</p>
+<section id="id9">
+<h3>6.6.1 多语言故事生成<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>一个好的分词器能够处理多种语言的文本，使模型能够生成多语言故事或在故事中自然地混合不同语言。例如，一个角色可能说一句外语，或者故事可能包含不同文化背景的名称和术语。</p>
+<p>对于多语言支持，我们可以扩展之前的分词器实现：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MultilingualTokenizer</span><span class="p">(</span><span class="n">MinBPETokenizer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">language_specific_preprocessing</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;en&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_english</span><span class="p">,</span>
+            <span class="s1">&#39;zh&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_chinese</span><span class="p">,</span>
+            <span class="c1"># 可以添加更多语言的预处理函数</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">_preprocess_english</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="c1"># 英文特定的预处理，如处理缩写、标点等</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([.!?])&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>  <span class="c1"># 在标点符号前添加空格</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^a-zA-Z0-9.!?]+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>  <span class="c1"># 规范化空格</span>
+        <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>  <span class="c1"># 小写化</span>
+    
+    <span class="k">def</span> <span class="nf">_preprocess_chinese</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="c1"># 中文特定的预处理，如处理全角符号等</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[【】「」『』]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>  <span class="c1"># 移除特定括号</span>
+        <span class="k">return</span> <span class="n">text</span>  <span class="c1"># 中文通常不需要小写化</span>
+    
+    <span class="k">def</span> <span class="nf">_detect_language</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="c1"># 简单的语言检测，实际应用中可能需要更复杂的算法</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\u4e00-\u9fff]&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;zh&#39;</span>  <span class="c1"># 包含汉字，判断为中文</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;en&#39;</span>  <span class="c1"># 默认为英文</span>
+    
+    <span class="k">def</span> <span class="nf">_preprocess_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="c1"># 根据检测到的语言选择相应的预处理函数</span>
+        <span class="n">lang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect_language</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lang</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">language_specific_preprocessing</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">language_specific_preprocessing</span><span class="p">[</span><span class="n">lang</span><span class="p">](</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_preprocess_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h3>6.6.2 风格和语调控制<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>分词器可以帮助模型识别和生成特定风格的文本。例如，通过在训练数据中标记不同风格的文本，模型可以学会根据提示生成不同风格的故事。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_style_tokens</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">styles</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;formal&#39;</span><span class="p">,</span> <span class="s1">&#39;casual&#39;</span><span class="p">,</span> <span class="s1">&#39;poetic&#39;</span><span class="p">,</span> <span class="s1">&#39;humorous&#39;</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;向分词器添加风格标记&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">style</span> <span class="ow">in</span> <span class="n">styles</span><span class="p">:</span>
+        <span class="n">style_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+        <span class="k">if</span> <span class="n">style_token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">:</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">style_token</span><span class="p">)</span>
+            <span class="n">token_id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">)</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">[</span><span class="n">style_token</span><span class="p">]</span> <span class="o">=</span> <span class="n">token_id</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">decoder</span><span class="p">[</span><span class="n">token_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">style_token</span>
+    
+    <span class="k">return</span> <span class="n">tokenizer</span>
+
+<span class="c1"># 使用风格标记</span>
+<span class="k">def</span> <span class="nf">encode_with_style</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;formal&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;使用指定风格标记编码文本&quot;&quot;&quot;</span>
+    <span class="n">style_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+    <span class="n">style_id</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">style_token</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">style_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;未知的风格: </span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 在文本开头添加风格标记</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">style_id</span><span class="p">]</span> <span class="o">+</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ids</span>
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h3>6.6.3 角色语音和对话<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>在故事中，不同角色可能有不同的说话方式。通过特殊的角色标记，模型可以学会模仿特定角色的语音和对话风格。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_character_tokens</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">characters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;narrator&#39;</span><span class="p">,</span> <span class="s1">&#39;protagonist&#39;</span><span class="p">,</span> <span class="s1">&#39;antagonist&#39;</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;向分词器添加角色标记&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">character</span> <span class="ow">in</span> <span class="n">characters</span><span class="p">:</span>
+        <span class="n">char_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">character</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+        <span class="k">if</span> <span class="n">char_token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">:</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char_token</span><span class="p">)</span>
+            <span class="n">token_id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">)</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">[</span><span class="n">char_token</span><span class="p">]</span> <span class="o">=</span> <span class="n">token_id</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">decoder</span><span class="p">[</span><span class="n">token_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">char_token</span>
+    
+    <span class="k">return</span> <span class="n">tokenizer</span>
+
+<span class="c1"># 使用角色标记处理对话</span>
+<span class="k">def</span> <span class="nf">process_dialogue</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">dialogue</span><span class="p">,</span> <span class="n">character</span><span class="o">=</span><span class="s1">&#39;narrator&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;处理特定角色的对话&quot;&quot;&quot;</span>
+    <span class="n">char_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">character</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+    <span class="n">char_id</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">char_token</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">char_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;未知的角色: </span><span class="si">{</span><span class="n">character</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 在对话开头添加角色标记</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">char_id</span><span class="p">]</span> <span class="o">+</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">dialogue</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ids</span>
+</pre></div>
+</div>
+</section>
+<section id="id12">
+<h3>6.6.4 情感和氛围控制<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>类似地，我们可以使用特殊标记来控制故事的情感和氛围，使模型能够生成符合特定情感基调的故事。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_emotion_tokens</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">emotions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;happy&#39;</span><span class="p">,</span> <span class="s1">&#39;sad&#39;</span><span class="p">,</span> <span class="s1">&#39;tense&#39;</span><span class="p">,</span> <span class="s1">&#39;mysterious&#39;</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;向分词器添加情感标记&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">emotion</span> <span class="ow">in</span> <span class="n">emotions</span><span class="p">:</span>
+        <span class="n">emotion_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">emotion</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+        <span class="k">if</span> <span class="n">emotion_token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">:</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">emotion_token</span><span class="p">)</span>
+            <span class="n">token_id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">)</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">[</span><span class="n">emotion_token</span><span class="p">]</span> <span class="o">=</span> <span class="n">token_id</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">decoder</span><span class="p">[</span><span class="n">token_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">emotion_token</span>
+    
+    <span class="k">return</span> <span class="n">tokenizer</span>
+
+<span class="c1"># 使用情感标记</span>
+<span class="k">def</span> <span class="nf">encode_with_emotion</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">emotion</span><span class="o">=</span><span class="s1">&#39;happy&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;使用指定情感标记编码文本&quot;&quot;&quot;</span>
+    <span class="n">emotion_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">emotion</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+    <span class="n">emotion_id</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">emotion_token</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">emotion_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;未知的情感: </span><span class="si">{</span><span class="n">emotion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 在文本开头添加情感标记</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">emotion_id</span><span class="p">]</span> <span class="o">+</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ids</span>
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h3>6.6.5 故事结构和节奏<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>分词器还可以帮助模型理解和生成具有特定结构和节奏的故事。通过添加表示故事结构元素（如开场、高潮、结局）的特殊标记，模型可以学会构建结构完整的故事。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_structure_tokens</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;intro&#39;</span><span class="p">,</span> <span class="s1">&#39;rising_action&#39;</span><span class="p">,</span> <span class="s1">&#39;climax&#39;</span><span class="p">,</span> <span class="s1">&#39;falling_action&#39;</span><span class="p">,</span> <span class="s1">&#39;resolution&#39;</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;向分词器添加故事结构标记&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+        <span class="n">structure_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">element</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+        <span class="k">if</span> <span class="n">structure_token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">:</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">structure_token</span><span class="p">)</span>
+            <span class="n">token_id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">)</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="p">[</span><span class="n">structure_token</span><span class="p">]</span> <span class="o">=</span> <span class="n">token_id</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">decoder</span><span class="p">[</span><span class="n">token_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">structure_token</span>
+    
+    <span class="k">return</span> <span class="n">tokenizer</span>
+
+<span class="c1"># 使用故事结构标记</span>
+<span class="k">def</span> <span class="nf">encode_story_section</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="s1">&#39;intro&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;使用指定故事结构标记编码文本段落&quot;&quot;&quot;</span>
+    <span class="n">section_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">section</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+    <span class="n">section_id</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section_token</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">section_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;未知的故事结构元素: </span><span class="si">{</span><span class="n">section</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 在文本开头添加结构标记</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">section_id</span><span class="p">]</span> <span class="o">+</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ids</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id14">
+<h2>6.7 总结与展望<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<p>在本章中，我们深入探讨了分词技术的原理和实现，特别是字节对编码（BPE）及其变种minBPE算法。我们实现了一个基本的分词器，并讨论了如何优化它以适应故事生成的需求。我们还探索了分词技术在多语言支持、风格控制、角色对话、情感氛围和故事结构方面的应用。</p>
+<p>分词是构建大语言模型的基础步骤，它直接影响模型的表达能力和效率。一个设计良好的分词器可以帮助模型更好地理解和生成自然、流畅、多样化的故事。</p>
+<p>在接下来的章节中，我们将基于这个基础，探索如何优化模型训练过程，提高训练速度和效率，并最终构建一个完整的故事讲述AI系统。</p>
+<p><strong>练习与思考</strong></p>
+<ol class="arabic simple">
+<li><p>尝试使用本章实现的minBPE分词器处理一段中英文混合的故事文本，观察分词结果，并思考如何改进。</p></li>
+<li><p>比较不同词汇量（如1000、5000、10000）对分词结果的影响，讨论在故事生成场景中的最佳词汇量选择。</p></li>
+<li><p>设计一个实验，比较基本BPE、WordPiece和Unigram算法在故事文本上的性能差异。</p></li>
+<li><p>思考如何扩展分词器以支持更多语言，特别是结构差异较大的语言（如阿拉伯语、日语等）。</p></li>
+<li><p>探索如何使用分词技术来增强故事的创意性和多样性，例如通过特殊标记控制故事的风格、情感和结构。</p></li>
+</ol>
+<p><strong>参考资料</strong></p>
+<ol class="arabic simple">
+<li><p>Sennrich, R., Haddow, B., &amp; Birch, A. (2016). Neural Machine Translation of Rare Words with Subword Units. In Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics.</p></li>
+<li><p>Kudo, T., &amp; Richardson, J. (2018). SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing. In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing: System Demonstrations.</p></li>
+<li><p>Radford, A., Wu, J., Child, R., Luan, D., Amodei, D., &amp; Sutskever, I. (2019). Language Models are Unsupervised Multitask Learners. OpenAI Blog.</p></li>
+<li><p>Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., … &amp; Amodei, D. (2020). Language Models are Few-Shot Learners. In Advances in Neural Information Processing Systems.</p></li>
+<li><p>Jurafsky, D., &amp; Martin, J. H. (2021). Speech and Language Processing (3rd ed. draft). Chapter on Subword Models.</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../05_transformer/chapter05_transformer.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../07_optimization/chapter07_optimization.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第7章：优化技术(Optimization)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">6.1 分词的基本概念与重要性</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#byte-pair-encoding-bpe">6.2 字节对编码(Byte Pair Encoding, BPE)原理</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minbpe">6.3 minBPE算法详解</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">6.4 实现一个简单的分词器</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">6.5 分词器训练与优化</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">6.5.1 词汇量选择</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">6.5.2 训练语料选择</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">6.5.3 预处理策略</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bpe">6.5.4 高级BPE变种</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">6.5.5 性能优化</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">6.6 在故事生成中的应用</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">6.6.1 多语言故事生成</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">6.6.2 风格和语调控制</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">6.6.3 角色语音和对话</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">6.6.4 情感和氛围控制</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">6.6.5 故事结构和节奏</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">6.7 总结与展望</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

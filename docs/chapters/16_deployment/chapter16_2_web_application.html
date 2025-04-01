@@ -1,0 +1,2743 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第16章：部署-16.2 Web应用开发 &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/16_deployment/chapter16_2_web_application';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第17章：多模态-17.1 多模态基础理论" href="../17_Multimodal/chapter17_1_multimodal_basics.html" />
+    <link rel="prev" title="第16章：部署-16.1 API开发基础" href="chapter16_1_api_development.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/16_deployment/chapter16_2_web_application.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/16_deployment/chapter16_2_web_application.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/16_deployment/chapter16_2_web_application.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第16章：部署-16.2 Web应用开发</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">16.2 Web应用开发</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Web应用设计原则</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">用户需求分析</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">目标用户群体</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">核心功能需求</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">技术栈选择</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">前端技术</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">后端技术</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">应用架构设计</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">组件说明</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">前端实现</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">项目初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">目录结构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">核心页面实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API服务集成</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">多模态集成</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">图像生成服务</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">图像生成组件</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">多场景故事创建</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">部署Web应用</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#vercel">使用Vercel部署</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">使用Docker容器部署</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#aws-amplify">使用AWS Amplify部署</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">性能优化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">安全考虑</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">多模态应用的未来发展</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">总结</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="web">
+<h1>第16章：部署-16.2 Web应用开发<a class="headerlink" href="#web" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>16.2 Web应用开发<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>在上一节中，我们探讨了如何将故事讲述AI模型通过API进行部署。虽然API为开发者提供了与模型交互的方式，但对于普通用户来说，一个直观、友好的Web界面会更加实用。本节将介绍如何构建一个完整的Web应用，使用户能够轻松地与我们的故事讲述AI进行交互，创建、编辑和分享精彩的故事。</p>
+<section id="id2">
+<h3>Web应用设计原则<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>设计一个成功的AI Web应用需要遵循一些关键原则：</p>
+<ol class="arabic simple">
+<li><p><strong>用户中心设计</strong>：</p>
+<ul class="simple">
+<li><p>以用户需求和体验为核心</p></li>
+<li><p>简化复杂功能，降低使用门槛</p></li>
+<li><p>提供清晰的引导和反馈</p></li>
+</ul>
+</li>
+<li><p><strong>响应式设计</strong>：</p>
+<ul class="simple">
+<li><p>适应不同设备和屏幕尺寸</p></li>
+<li><p>确保在移动设备上的良好体验</p></li>
+<li><p>优化加载时间和性能</p></li>
+</ul>
+</li>
+<li><p><strong>渐进式体验</strong>：</p>
+<ul class="simple">
+<li><p>提供基本功能的快速访问</p></li>
+<li><p>逐步引导用户探索高级功能</p></li>
+<li><p>根据用户熟悉度调整界面复杂度</p></li>
+</ul>
+</li>
+<li><p><strong>可访问性</strong>：</p>
+<ul class="simple">
+<li><p>遵循WCAG (Web内容可访问性指南)</p></li>
+<li><p>支持屏幕阅读器和键盘导航</p></li>
+<li><p>考虑色盲和其他视觉障碍用户</p></li>
+</ul>
+</li>
+<li><p><strong>多模态交互</strong>：</p>
+<ul class="simple">
+<li><p>结合文本、图像和可能的音频</p></li>
+<li><p>提供多种输入和输出方式</p></li>
+<li><p>增强故事的表现力和吸引力</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id3">
+<h3>用户需求分析<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>在开始设计之前，我们需要明确目标用户和他们的核心需求：</p>
+<section id="id4">
+<h4>目标用户群体<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>家长</strong>：</p>
+<ul class="simple">
+<li><p>希望为孩子创建个性化故事</p></li>
+<li><p>关注教育价值和适龄内容</p></li>
+<li><p>可能希望保存和分享故事</p></li>
+</ul>
+</li>
+<li><p><strong>教育工作者</strong>：</p>
+<ul class="simple">
+<li><p>需要针对特定教育主题的故事</p></li>
+<li><p>希望能够调整故事复杂度</p></li>
+<li><p>可能需要批量生成或修改故事</p></li>
+</ul>
+</li>
+<li><p><strong>儿童</strong>：</p>
+<ul class="simple">
+<li><p>在成人监督下使用</p></li>
+<li><p>喜欢互动和视觉元素</p></li>
+<li><p>可能有有限的阅读和打字能力</p></li>
+</ul>
+</li>
+<li><p><strong>业余作家</strong>：</p>
+<ul class="simple">
+<li><p>寻求创意灵感和故事框架</p></li>
+<li><p>希望能够编辑和扩展AI生成的内容</p></li>
+<li><p>关注故事的质量和原创性</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id5">
+<h4>核心功能需求<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<p>基于用户群体分析，我们确定以下核心功能：</p>
+<ol class="arabic simple">
+<li><p><strong>故事生成</strong>：</p>
+<ul class="simple">
+<li><p>基于提示或主题创建故事</p></li>
+<li><p>控制故事风格、长度和复杂度</p></li>
+<li><p>指定教育主题或价值观</p></li>
+</ul>
+</li>
+<li><p><strong>故事编辑</strong>：</p>
+<ul class="simple">
+<li><p>修改和扩展生成的故事</p></li>
+<li><p>保存多个版本和草稿</p></li>
+<li><p>格式化和排版工具</p></li>
+</ul>
+</li>
+<li><p><strong>多模态集成</strong>：</p>
+<ul class="simple">
+<li><p>为故事生成配图</p></li>
+<li><p>文本与图像的协同创作</p></li>
+<li><p>可选的音频朗读功能</p></li>
+</ul>
+</li>
+<li><p><strong>分享与导出</strong>：</p>
+<ul class="simple">
+<li><p>导出为PDF或电子书格式</p></li>
+<li><p>分享链接或社交媒体集成</p></li>
+<li><p>打印友好版本</p></li>
+</ul>
+</li>
+<li><p><strong>用户管理</strong>：</p>
+<ul class="simple">
+<li><p>个人故事库</p></li>
+<li><p>偏好设置和历史记录</p></li>
+<li><p>可选的协作功能</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="id6">
+<h3>技术栈选择<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>为了构建一个现代、高效的Web应用，我们需要选择适当的技术栈：</p>
+<section id="id7">
+<h4>前端技术<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>框架</strong>：</p>
+<ul class="simple">
+<li><p>React：组件化开发，丰富的生态系统</p></li>
+<li><p>Next.js：服务器端渲染，优化SEO和首屏加载</p></li>
+<li><p>TypeScript：类型安全，提高代码质量</p></li>
+</ul>
+</li>
+<li><p><strong>UI组件库</strong>：</p>
+<ul class="simple">
+<li><p>Material-UI：成熟的组件系统，响应式设计</p></li>
+<li><p>TailwindCSS：高度可定制，快速开发</p></li>
+<li><p>Framer Motion：流畅的动画和过渡效果</p></li>
+</ul>
+</li>
+<li><p><strong>状态管理</strong>：</p>
+<ul class="simple">
+<li><p>Redux Toolkit：集中状态管理</p></li>
+<li><p>React Query：API数据获取和缓存</p></li>
+<li><p>Zustand：轻量级状态管理</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id8">
+<h4>后端技术<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>服务器</strong>：</p>
+<ul class="simple">
+<li><p>Node.js + Express：JavaScript全栈开发</p></li>
+<li><p>Python + FastAPI：与AI模型无缝集成</p></li>
+<li><p>或使用第一节中开发的Flask API</p></li>
+</ul>
+</li>
+<li><p><strong>数据库</strong>：</p>
+<ul class="simple">
+<li><p>MongoDB：灵活的文档存储</p></li>
+<li><p>PostgreSQL：关系型数据库，强大的查询能力</p></li>
+<li><p>Redis：缓存和会话管理</p></li>
+</ul>
+</li>
+<li><p><strong>部署</strong>：</p>
+<ul class="simple">
+<li><p>Docker：容器化部署</p></li>
+<li><p>Kubernetes：大规模编排</p></li>
+<li><p>Vercel/Netlify：前端托管</p></li>
+<li><p>AWS/GCP/Azure：云服务提供商</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="id9">
+<h3>应用架构设计<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>我们将采用现代的前后端分离架构，同时考虑多模态集成的需求：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────┐
+│              客户端浏览器                │
+└───────────────────┬─────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────┐
+│            CDN / 静态资源                │
+└───────────────────┬─────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────┐
+│            前端应用 (Next.js)            │
+└───────────────────┬─────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────┐
+│            API网关 / 负载均衡            │
+└──────┬─────────────┬──────────┬─────────┘
+       │             │          │
+       ▼             ▼          ▼
+┌──────────────┐ ┌──────────┐ ┌──────────────┐
+│  故事API服务  │ │ 用户服务 │ │  图像生成服务 │
+└───────┬──────┘ └────┬─────┘ └───────┬──────┘
+        │             │               │
+        ▼             ▼               ▼
+┌──────────────┐ ┌──────────┐ ┌──────────────┐
+│  故事模型    │ │ 用户数据库│ │  图像模型    │
+└──────────────┘ └──────────┘ └──────────────┘
+</pre></div>
+</div>
+<section id="id10">
+<h4>组件说明<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>前端应用</strong>：</p>
+<ul class="simple">
+<li><p>用户界面和交互逻辑</p></li>
+<li><p>响应式设计，支持多设备</p></li>
+<li><p>客户端状态管理和缓存</p></li>
+</ul>
+</li>
+<li><p><strong>故事API服务</strong>：</p>
+<ul class="simple">
+<li><p>处理故事生成和编辑请求</p></li>
+<li><p>与故事讲述模型交互</p></li>
+<li><p>故事存储和检索</p></li>
+</ul>
+</li>
+<li><p><strong>用户服务</strong>：</p>
+<ul class="simple">
+<li><p>用户认证和授权</p></li>
+<li><p>个人设置和偏好</p></li>
+<li><p>订阅和使用限制管理</p></li>
+</ul>
+</li>
+<li><p><strong>图像生成服务</strong>：</p>
+<ul class="simple">
+<li><p>基于故事内容生成配图</p></li>
+<li><p>图像编辑和自定义</p></li>
+<li><p>图像存储和优化</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="id11">
+<h3>前端实现<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>让我们开始实现前端应用，使用React和Next.js构建一个现代化的用户界面。</p>
+<section id="id12">
+<h4>项目初始化<a class="headerlink" href="#id12" title="Link to this heading">#</a></h4>
+<p>首先，创建一个新的Next.js项目：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npx<span class="w"> </span>create-next-app@latest<span class="w"> </span>storyteller-web<span class="w"> </span>--typescript
+<span class="nb">cd</span><span class="w"> </span>storyteller-web
+npm<span class="w"> </span>install<span class="w"> </span>@mui/material<span class="w"> </span>@emotion/react<span class="w"> </span>@emotion/styled<span class="w"> </span>@mui/icons-material
+npm<span class="w"> </span>install<span class="w"> </span>react-query<span class="w"> </span>axios<span class="w"> </span>framer-motion
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h4>目录结构<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>storyteller-web/
+├── public/
+│   ├── images/
+│   └── fonts/
+├── src/
+│   ├── components/
+│   │   ├── common/
+│   │   ├── layout/
+│   │   ├── story/
+│   │   └── user/
+│   ├── hooks/
+│   ├── pages/
+│   │   ├── api/
+│   │   ├── _app.tsx
+│   │   ├── index.tsx
+│   │   ├── create.tsx
+│   │   ├── stories/
+│   │   └── user/
+│   ├── services/
+│   ├── styles/
+│   ├── types/
+│   └── utils/
+├── .env.local
+├── next.config.js
+├── package.json
+└── tsconfig.json
+</pre></div>
+</div>
+</section>
+<section id="id14">
+<h4>核心页面实现<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>首页 (pages/index.tsx)</strong></p></li>
+</ol>
+<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span>import { useState } from &#39;react&#39;;
+import { Container, Typography, Box, Button, Grid, Paper } from &#39;@mui/material&#39;;
+import { motion } from &#39;framer-motion&#39;;
+import Head from &#39;next/head&#39;;
+import Link from &#39;next/link&#39;;
+import Image from &#39;next/image&#39;;
+
+// 示例故事
+const exampleStories = [
+  {
+    id: &#39;1&#39;,
+    title: &#39;小兔子的冒险&#39;,
+    excerpt: &#39;勇敢的小兔子踏上了一段奇妙的森林冒险...&#39;,
+    imageUrl: &#39;/images/stories/bunny-adventure.jpg&#39;,
+  },
+  {
+    id: &#39;2&#39;,
+    title: &#39;海底世界&#39;,
+    excerpt: &#39;深海探险家发现了一个神秘的水下王国...&#39;,
+    imageUrl: &#39;/images/stories/underwater-world.jpg&#39;,
+  },
+  {
+    id: &#39;3&#39;,
+    title: &#39;太空旅行&#39;,
+    excerpt: &#39;一群小朋友乘坐火箭飞向星空，探索未知的宇宙...&#39;,
+    imageUrl: &#39;/images/stories/space-journey.jpg&#39;,
+  },
+];
+
+export default function Home() {
+  const [isHovering, setIsHovering] = useState&lt;string | null&gt;(null);
+
+  return (
+    &lt;&gt;
+      &lt;Head&gt;
+        &lt;title&gt;故事讲述AI - 创造独特的儿童故事&lt;/title&gt;
+        &lt;meta name=&quot;description&quot; content=&quot;使用AI创建个性化的儿童故事，激发想象力和创造力&quot; /&gt;
+      &lt;/Head&gt;
+
+      &lt;Box
+        component=&quot;section&quot;
+        sx={{
+          background: &#39;linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)&#39;,
+          color: &#39;white&#39;,
+          py: 10,
+          textAlign: &#39;center&#39;,
+        }}
+      &gt;
+        &lt;Container maxWidth=&quot;md&quot;&gt;
+          &lt;motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          &gt;
+            &lt;Typography variant=&quot;h2&quot; component=&quot;h1&quot; gutterBottom&gt;
+              用AI创造精彩故事
+            &lt;/Typography&gt;
+            &lt;Typography variant=&quot;h5&quot; component=&quot;h2&quot; gutterBottom sx={{ mb: 4 }}&gt;
+              个性化的儿童故事，激发想象力和创造力
+            &lt;/Typography&gt;
+            &lt;Button
+              component={Link}
+              href=&quot;/create&quot;
+              variant=&quot;contained&quot;
+              size=&quot;large&quot;
+              sx={{
+                bgcolor: &#39;white&#39;,
+                color: &#39;#6a11cb&#39;,
+                &#39;&amp;:hover&#39;: {
+                  bgcolor: &#39;rgba(255,255,255,0.9)&#39;,
+                },
+                px: 4,
+                py: 1.5,
+                borderRadius: 2,
+                fontSize: &#39;1.1rem&#39;,
+              }}
+            &gt;
+              开始创作
+            &lt;/Button&gt;
+          &lt;/motion.div&gt;
+        &lt;/Container&gt;
+      &lt;/Box&gt;
+
+      &lt;Container maxWidth=&quot;lg&quot; sx={{ py: 8 }}&gt;
+        &lt;Typography variant=&quot;h4&quot; component=&quot;h2&quot; gutterBottom align=&quot;center&quot; sx={{ mb: 6 }}&gt;
+          探索示例故事
+        &lt;/Typography&gt;
+
+        &lt;Grid container spacing={4}&gt;
+          {exampleStories.map((story) =&gt; (
+            &lt;Grid item xs={12} md={4} key={story.id}&gt;
+              &lt;motion.div
+                whileHover={{ scale: 1.03 }}
+                onMouseEnter={() =&gt; setIsHovering(story.id)}
+                onMouseLeave={() =&gt; setIsHovering(null)}
+              &gt;
+                &lt;Paper
+                  elevation={isHovering === story.id ? 8 : 2}
+                  sx={{
+                    p: 0,
+                    overflow: &#39;hidden&#39;,
+                    transition: &#39;all 0.3s ease&#39;,
+                    height: &#39;100%&#39;,
+                    display: &#39;flex&#39;,
+                    flexDirection: &#39;column&#39;,
+                    borderRadius: 2,
+                  }}
+                &gt;
+                  &lt;Box sx={{ position: &#39;relative&#39;, width: &#39;100%&#39;, height: 200 }}&gt;
+                    &lt;Image
+                      src={story.imageUrl}
+                      alt={story.title}
+                      layout=&quot;fill&quot;
+                      objectFit=&quot;cover&quot;
+                    /&gt;
+                  &lt;/Box&gt;
+                  &lt;Box sx={{ p: 3, flexGrow: 1 }}&gt;
+                    &lt;Typography variant=&quot;h5&quot; component=&quot;h3&quot; gutterBottom&gt;
+                      {story.title}
+                    &lt;/Typography&gt;
+                    &lt;Typography variant=&quot;body1&quot; color=&quot;text.secondary&quot; paragraph&gt;
+                      {story.excerpt}
+                    &lt;/Typography&gt;
+                    &lt;Button
+                      component={Link}
+                      href={`/stories/${story.id}`}
+                      variant=&quot;outlined&quot;
+                      sx={{ mt: 2 }}
+                    &gt;
+                      阅读故事
+                    &lt;/Button&gt;
+                  &lt;/Box&gt;
+                &lt;/Paper&gt;
+              &lt;/motion.div&gt;
+            &lt;/Grid&gt;
+          ))}
+        &lt;/Grid&gt;
+      &lt;/Container&gt;
+
+      &lt;Box sx={{ bgcolor: &#39;#f5f5f5&#39;, py: 8 }}&gt;
+        &lt;Container maxWidth=&quot;md&quot;&gt;
+          &lt;Grid container spacing={6} alignItems=&quot;center&quot;&gt;
+            &lt;Grid item xs={12} md={6}&gt;
+              &lt;Typography variant=&quot;h4&quot; component=&quot;h2&quot; gutterBottom&gt;
+                为什么选择我们的故事讲述AI
+              &lt;/Typography&gt;
+              &lt;Typography variant=&quot;body1&quot; paragraph&gt;
+                我们的AI故事生成器使用先进的语言模型，结合了监督式微调和强化学习技术，创造出引人入胜、富有教育意义的儿童故事。
+              &lt;/Typography&gt;
+              &lt;Box component=&quot;ul&quot; sx={{ pl: 2 }}&gt;
+                &lt;Typography component=&quot;li&quot; variant=&quot;body1&quot; paragraph&gt;
+                  个性化内容，根据您的提示和偏好定制
+                &lt;/Typography&gt;
+                &lt;Typography component=&quot;li&quot; variant=&quot;body1&quot; paragraph&gt;
+                  多样化的故事风格和主题
+                &lt;/Typography&gt;
+                &lt;Typography component=&quot;li&quot; variant=&quot;body1&quot; paragraph&gt;
+                  适合不同年龄段的内容
+                &lt;/Typography&gt;
+                &lt;Typography component=&quot;li&quot; variant=&quot;body1&quot; paragraph&gt;
+                  配有AI生成的精美插图
+                &lt;/Typography&gt;
+              &lt;/Box&gt;
+            &lt;/Grid&gt;
+            &lt;Grid item xs={12} md={6}&gt;
+              &lt;Box sx={{ position: &#39;relative&#39;, width: &#39;100%&#39;, height: 350 }}&gt;
+                &lt;Image
+                  src=&quot;/images/ai-storytelling.jpg&quot;
+                  alt=&quot;AI故事讲述&quot;
+                  layout=&quot;fill&quot;
+                  objectFit=&quot;cover&quot;
+                  style={{ borderRadius: 16 }}
+                /&gt;
+              &lt;/Box&gt;
+            &lt;/Grid&gt;
+          &lt;/Grid&gt;
+        &lt;/Container&gt;
+      &lt;/Box&gt;
+    &lt;/&gt;
+  );
+}
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>故事创建页面 (pages/create.tsx)</strong></p></li>
+</ol>
+<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span>import { useState } from &#39;react&#39;;
+import { useRouter } from &#39;next/router&#39;;
+import {
+  Container,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  Grid,
+  Paper,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Slider,
+  CircularProgress,
+  Stepper,
+  Step,
+  StepLabel,
+  Divider,
+  Alert,
+} from &#39;@mui/material&#39;;
+import { motion } from &#39;framer-motion&#39;;
+import Head from &#39;next/head&#39;;
+import { createStory } from &#39;../services/storyService&#39;;
+
+// 故事风格选项
+const storyStyles = [
+  { value: &#39;fantasy&#39;, label: &#39;奇幻&#39; },
+  { value: &#39;adventure&#39;, label: &#39;冒险&#39; },
+  { value: &#39;educational&#39;, label: &#39;教育&#39; },
+  { value: &#39;scifi&#39;, label: &#39;科幻&#39; },
+  { value: &#39;fairytale&#39;, label: &#39;童话&#39; },
+];
+
+// 教育主题选项
+const educationalThemes = [
+  { value: &#39;friendship&#39;, label: &#39;友谊&#39; },
+  { value: &#39;courage&#39;, label: &#39;勇气&#39; },
+  { value: &#39;honesty&#39;, label: &#39;诚实&#39; },
+  { value: &#39;kindness&#39;, label: &#39;善良&#39; },
+  { value: &#39;perseverance&#39;, label: &#39;坚持&#39; },
+  { value: &#39;environment&#39;, label: &#39;环保&#39; },
+  { value: &#39;diversity&#39;, label: &#39;多样性&#39; },
+];
+
+// 创建步骤
+const steps = [&#39;设置故事参数&#39;, &#39;输入故事提示&#39;, &#39;生成故事&#39;];
+
+export default function CreateStory() {
+  const router = useRouter();
+  const [activeStep, setActiveStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+  
+  // 故事参数
+  const [storyParams, setStoryParams] = useState({
+    style: &#39;fairytale&#39;,
+    targetAge: 8,
+    length: &#39;medium&#39;,
+    educationalTheme: &#39;&#39;,
+    prompt: &#39;&#39;,
+    temperature: 0.7,
+  });
+  
+  // 生成的故事
+  const [generatedStory, setGeneratedStory] = useState&lt;{
+    id: string;
+    title: string;
+    content: string;
+    imageUrl?: string;
+  } | null&gt;(null);
+
+  // 处理参数变化
+  const handleParamChange = (param: string, value: any) =&gt; {
+    setStoryParams({
+      ...storyParams,
+      [param]: value,
+    });
+  };
+
+  // 处理步骤导航
+  const handleNext = () =&gt; {
+    if (activeStep === steps.length - 1) {
+      // 最后一步，生成故事
+      handleGenerateStory();
+    } else {
+      setActiveStep((prevStep) =&gt; prevStep + 1);
+    }
+  };
+
+  const handleBack = () =&gt; {
+    setActiveStep((prevStep) =&gt; prevStep - 1);
+  };
+
+  // 生成故事
+  const handleGenerateStory = async () =&gt; {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const result = await createStory({
+        prompt: storyParams.prompt,
+        style: storyParams.style,
+        target_age: storyParams.targetAge,
+        length: storyParams.length,
+        educational_theme: storyParams.educationalTheme || undefined,
+        parameters: {
+          temperature: storyParams.temperature,
+          top_p: 0.9,
+          max_tokens: storyParams.length === &#39;short&#39; ? 500 : 
+                      storyParams.length === &#39;medium&#39; ? 1000 : 1500,
+        }
+      });
+      
+      setGeneratedStory({
+        id: result.story_id,
+        title: result.title,
+        content: result.content,
+        imageUrl: result.image_url,
+      });
+      
+      // 导航到故事查看页面
+      router.push(`/stories/${result.story_id}`);
+      
+    } catch (err) {
+      console.error(&#39;Error generating story:&#39;, err);
+      setError(&#39;生成故事时出错，请稍后再试。&#39;);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 渲染当前步骤内容
+  const renderStepContent = () =&gt; {
+    switch (activeStep) {
+      case 0:
+        return (
+          &lt;Grid container spacing={4}&gt;
+            &lt;Grid item xs={12} md={6}&gt;
+              &lt;FormControl fullWidth margin=&quot;normal&quot;&gt;
+                &lt;InputLabel&gt;故事风格&lt;/InputLabel&gt;
+                &lt;Select
+                  value={storyParams.style}
+                  label=&quot;故事风格&quot;
+                  onChange={(e) =&gt; handleParamChange(&#39;style&#39;, e.target.value)}
+                &gt;
+                  {storyStyles.map((style) =&gt; (
+                    &lt;MenuItem key={style.value} value={style.value}&gt;
+                      {style.label}
+                    &lt;/MenuItem&gt;
+                  ))}
+                &lt;/Select&gt;
+              &lt;/FormControl&gt;
+            &lt;/Grid&gt;
+            
+            &lt;Grid item xs={12} md={6}&gt;
+              &lt;FormControl fullWidth margin=&quot;normal&quot;&gt;
+                &lt;InputLabel&gt;故事长度&lt;/InputLabel&gt;
+                &lt;Select
+                  value={storyParams.length}
+                  label=&quot;故事长度&quot;
+                  onChange={(e) =&gt; handleParamChange(&#39;length&#39;, e.target.value)}
+                &gt;
+                  &lt;MenuItem value=&quot;short&quot;&gt;短篇 (约300字)&lt;/MenuItem&gt;
+                  &lt;MenuItem value=&quot;medium&quot;&gt;中篇 (约600字)&lt;/MenuItem&gt;
+                  &lt;MenuItem value=&quot;long&quot;&gt;长篇 (约1200字)&lt;/MenuItem&gt;
+                &lt;/Select&gt;
+              &lt;/FormControl&gt;
+            &lt;/Grid&gt;
+            
+            &lt;Grid item xs={12} md={6}&gt;
+              &lt;Box sx={{ mt: 3 }}&gt;
+                &lt;Typography gutterBottom&gt;目标年龄&lt;/Typography&gt;
+                &lt;Slider
+                  value={storyParams.targetAge}
+                  min={3}
+                  max={12}
+                  step={1}
+                  marks
+                  valueLabelDisplay=&quot;auto&quot;
+                  onChange={(_, value) =&gt; handleParamChange(&#39;targetAge&#39;, value)}
+                /&gt;
+              &lt;/Box&gt;
+            &lt;/Grid&gt;
+            
+            &lt;Grid item xs={12} md={6}&gt;
+              &lt;FormControl fullWidth margin=&quot;normal&quot;&gt;
+                &lt;InputLabel&gt;教育主题 (可选)&lt;/InputLabel&gt;
+                &lt;Select
+                  value={storyParams.educationalTheme}
+                  label=&quot;教育主题 (可选)&quot;
+                  onChange={(e) =&gt; handleParamChange(&#39;educationalTheme&#39;, e.target.value)}
+                &gt;
+                  &lt;MenuItem value=&quot;&quot;&gt;
+                    &lt;em&gt;无特定主题&lt;/em&gt;
+                  &lt;/MenuItem&gt;
+                  {educationalThemes.map((theme) =&gt; (
+                    &lt;MenuItem key={theme.value} value={theme.value}&gt;
+                      {theme.label}
+                    &lt;/MenuItem&gt;
+                  ))}
+                &lt;/Select&gt;
+              &lt;/FormControl&gt;
+            &lt;/Grid&gt;
+            
+            &lt;Grid item xs={12}&gt;
+              &lt;Box sx={{ mt: 3 }}&gt;
+                &lt;Typography gutterBottom&gt;创意程度 (温度)&lt;/Typography&gt;
+                &lt;Slider
+                  value={storyParams.temperature}
+                  min={0.1}
+                  max={1.0}
+                  step={0.1}
+                  marks
+                  valueLabelDisplay=&quot;auto&quot;
+                  onChange={(_, value) =&gt; handleParamChange(&#39;temperature&#39;, value)}
+                /&gt;
+                &lt;Typography variant=&quot;caption&quot; color=&quot;text.secondary&quot;&gt;
+                  较低的值产生更可预测的故事，较高的值产生更有创意但可能不太连贯的故事。
+                &lt;/Typography&gt;
+              &lt;/Box&gt;
+            &lt;/Grid&gt;
+          &lt;/Grid&gt;
+        );
+        
+      case 1:
+        return (
+          &lt;Box&gt;
+            &lt;TextField
+              fullWidth
+              multiline
+              rows={6}
+              label=&quot;故事提示&quot;
+              placeholder=&quot;描述您想要的故事内容，例如：&#39;一只勇敢的小老鼠帮助森林里的动物们解决了一个大问题&#39;&quot;
+              value={storyParams.prompt}
+              onChange={(e) =&gt; handleParamChange(&#39;prompt&#39;, e.target.value)}
+              margin=&quot;normal&quot;
+              variant=&quot;outlined&quot;
+            /&gt;
+            &lt;Typography variant=&quot;caption&quot; color=&quot;text.secondary&quot;&gt;
+              提示越详细，生成的故事就越符合您的期望。您可以指定角色、场景、情节等元素。
+            &lt;/Typography&gt;
+            
+            &lt;Box sx={{ mt: 4 }}&gt;
+              &lt;Typography variant=&quot;h6&quot; gutterBottom&gt;
+                提示示例：
+              &lt;/Typography&gt;
+              &lt;Paper sx={{ p: 2, bgcolor: &#39;#f5f5f5&#39;, mb: 2 }}&gt;
+                &lt;Typography&gt;
+                  一个关于小女孩和她的神奇植物的故事。这个植物能够根据小女孩的情绪改变颜色。
+                &lt;/Typography&gt;
+              &lt;/Paper&gt;
+              &lt;Paper sx={{ p: 2, bgcolor: &#39;#f5f5f5&#39;, mb: 2 }}&gt;
+                &lt;Typography&gt;
+                  太空探险家小明和他的机器人朋友在一个未知星球上发现了奇怪的生物。
+                &lt;/Typography&gt;
+              &lt;/Paper&gt;
+              &lt;Paper sx={{ p: 2, bgcolor: &#39;#f5f5f5&#39; }}&gt;
+                &lt;Typography&gt;
+                  一群海洋动物合作清理海底垃圾，保护他们的家园。
+                &lt;/Typography&gt;
+              &lt;/Paper&gt;
+            &lt;/Box&gt;
+          &lt;/Box&gt;
+        );
+        
+      case 2:
+        return (
+          &lt;Box sx={{ textAlign: &#39;center&#39;, py: 4 }}&gt;
+            {loading ? (
+              &lt;Box sx={{ display: &#39;flex&#39;, flexDirection: &#39;column&#39;, alignItems: &#39;center&#39; }}&gt;
+                &lt;CircularProgress size={60} sx={{ mb: 3 }} /&gt;
+                &lt;Typography variant=&quot;h6&quot;&gt;
+                  正在创作您的故事...
+                &lt;/Typography&gt;
+                &lt;Typography variant=&quot;body2&quot; color=&quot;text.secondary&quot; sx={{ mt: 1 }}&gt;
+                  这可能需要几秒钟时间
+                &lt;/Typography&gt;
+              &lt;/Box&gt;
+            ) : error ? (
+              &lt;Alert severity=&quot;error&quot; sx={{ mb: 3 }}&gt;
+                {error}
+              &lt;/Alert&gt;
+            ) : (
+              &lt;Box&gt;
+                &lt;Typography variant=&quot;h6&quot; gutterBottom&gt;
+                  准备好生成您的故事了吗？
+                &lt;/Typography&gt;
+                &lt;Typography paragraph&gt;
+                  我们将根据您提供的参数和提示创作一个独特的故事。
+                &lt;/Typography&gt;
+                &lt;Typography paragraph&gt;
+                  点击&quot;生成故事&quot;按钮开始创作过程。
+                &lt;/Typography&gt;
+              &lt;/Box&gt;
+            )}
+          &lt;/Box&gt;
+        );
+        
+      default:
+        return null;
+    }
+  };
+
+  // 检查当前步骤是否可以前进
+  const canProceed = () =&gt; {
+    if (activeStep === 0) {
+      return true; // 参数设置步骤总是可以前进
+    } else if (activeStep === 1) {
+      return storyParams.prompt.trim().length &gt;= 10; // 提示至少10个字符
+    } else {
+      return !loading; // 生成步骤在加载时不能前进
+    }
+  };
+
+  return (
+    &lt;&gt;
+      &lt;Head&gt;
+        &lt;title&gt;创建新故事 | 故事讲述AI&lt;/title&gt;
+      &lt;/Head&gt;
+
+      &lt;Container maxWidth=&quot;md&quot; sx={{ py: 6 }}&gt;
+        &lt;Typography variant=&quot;h4&quot; component=&quot;h1&quot; gutterBottom align=&quot;center&quot;&gt;
+          创建新故事
+        &lt;/Typography&gt;
+        
+        &lt;Stepper activeStep={activeStep} sx={{ mb: 6, mt: 4 }}&gt;
+          {steps.map((label) =&gt; (
+            &lt;Step key={label}&gt;
+              &lt;StepLabel&gt;{label}&lt;/StepLabel&gt;
+            &lt;/Step&gt;
+          ))}
+        &lt;/Stepper&gt;
+        
+        &lt;Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}&gt;
+          &lt;motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            key={activeStep}
+          &gt;
+            {renderStepContent()}
+          &lt;/motion.div&gt;
+          
+          &lt;Divider sx={{ my: 4 }} /&gt;
+          
+          &lt;Box sx={{ display: &#39;flex&#39;, justifyContent: &#39;space-between&#39; }}&gt;
+            &lt;Button
+              variant=&quot;outlined&quot;
+              onClick={handleBack}
+              disabled={activeStep === 0 || loading}
+            &gt;
+              返回
+            &lt;/Button&gt;
+            &lt;Button
+              variant=&quot;contained&quot;
+              onClick={handleNext}
+              disabled={!canProceed()}
+            &gt;
+              {activeStep === steps.length - 1 ? &#39;生成故事&#39; : &#39;下一步&#39;}
+            &lt;/Button&gt;
+          &lt;/Box&gt;
+        &lt;/Paper&gt;
+      &lt;/Container&gt;
+    &lt;/&gt;
+  );
+}
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>故事查看页面 (pages/stories/[id].tsx)</strong></p></li>
+</ol>
+<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span>import { useState, useEffect } from &#39;react&#39;;
+import { useRouter } from &#39;next/router&#39;;
+import {
+  Container,
+  Typography,
+  Box,
+  Paper,
+  Button,
+  Grid,
+  Divider,
+  CircularProgress,
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from &#39;@mui/material&#39;;
+import {
+  Share as ShareIcon,
+  Download as DownloadIcon,
+  Edit as EditIcon,
+  MoreVert as MoreVertIcon,
+  VolumeUp as VolumeUpIcon,
+  Image as ImageIcon,
+  Favorite as FavoriteIcon,
+  FavoriteBorder as FavoriteBorderIcon,
+} from &#39;@mui/icons-material&#39;;
+import Head from &#39;next/head&#39;;
+import Image from &#39;next/image&#39;;
+import { motion } from &#39;framer-motion&#39;;
+import { getStory, generateStoryImage } from &#39;../../services/storyService&#39;;
+
+// 故事类型定义
+interface Story {
+  id: string;
+  title: string;
+  content: string;
+  metadata: {
+    word_count: number;
+    reading_time: string;
+    themes: string[];
+    educational_value: string[];
+    age_appropriate: {
+      rating: string;
+      avg_sentence_length: number;
+      complex_word_ratio: number;
+    };
+  };
+  imageUrl?: string;
+}
+
+export default function StoryView() {
+  const router = useRouter();
+  const { id } = router.query;
+  
+  const [story, setStory] = useState&lt;Story | null&gt;(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+  const [favorite, setFavorite] = useState(false);
+  const [imageGenerating, setImageGenerating] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  
+  // 菜单状态
+  const [anchorEl, setAnchorEl] = useState&lt;null | HTMLElement&gt;(null);
+  const open = Boolean(anchorEl);
+  
+  // 分享对话框状态
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  
+  // 获取故事数据
+  useEffect(() =&gt; {
+    if (id) {
+      fetchStory(id as string);
+    }
+  }, [id]);
+  
+  const fetchStory = async (storyId: string) =&gt; {
+    try {
+      setLoading(true);
+      const data = await getStory(storyId);
+      setStory(data);
+    } catch (err) {
+      console.error(&#39;Error fetching story:&#39;, err);
+      setError(&#39;无法加载故事，请稍后再试。&#39;);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // 生成故事配图
+  const handleGenerateImage = async () =&gt; {
+    if (!story) return;
+    
+    try {
+      setImageGenerating(true);
+      const result = await generateStoryImage(story.id, {
+        prompt: `Illustration for children&#39;s story: ${story.title}`,
+        style: &#39;children_book_illustration&#39;,
+      });
+      
+      setStory({
+        ...story,
+        imageUrl: result.image_url,
+      });
+    } catch (err) {
+      console.error(&#39;Error generating image:&#39;, err);
+      alert(&#39;生成图像时出错，请稍后再试。&#39;);
+    } finally {
+      setImageGenerating(false);
+    }
+  };
+  
+  // 文本转语音
+  const handleTextToSpeech = () =&gt; {
+    if (!story) return;
+    
+    if (isPlaying) {
+      // 停止播放
+      window.speechSynthesis.cancel();
+      setIsPlaying(false);
+    } else {
+      // 开始播放
+      const utterance = new SpeechSynthesisUtterance(story.content);
+      utterance.lang = &#39;zh-CN&#39;;
+      utterance.onend = () =&gt; setIsPlaying(false);
+      window.speechSynthesis.speak(utterance);
+      setIsPlaying(true);
+    }
+  };
+  
+  // 下载故事
+  const handleDownload = () =&gt; {
+    if (!story) return;
+    
+    const element = document.createElement(&#39;a&#39;);
+    const file = new Blob([
+      `# ${story.title}\n\n${story.content}\n\n---\n生成于: ${new Date().toLocaleDateString()}`
+    ], { type: &#39;text/plain&#39; });
+    
+    element.href = URL.createObjectURL(file);
+    element.download = `${story.title.replace(/\s+/g, &#39;_&#39;)}.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+  
+  // 菜单处理
+  const handleMenuClick = (event: React.MouseEvent&lt;HTMLElement&gt;) =&gt; {
+    setAnchorEl(event.currentTarget);
+  };
+  
+  const handleMenuClose = () =&gt; {
+    setAnchorEl(null);
+  };
+  
+  // 分享对话框
+  const handleShareDialogOpen = () =&gt; {
+    handleMenuClose();
+    setShareDialogOpen(true);
+  };
+  
+  const handleShareDialogClose = () =&gt; {
+    setShareDialogOpen(false);
+  };
+  
+  // 编辑故事
+  const handleEdit = () =&gt; {
+    handleMenuClose();
+    if (story) {
+      router.push(`/edit/${story.id}`);
+    }
+  };
+  
+  if (loading) {
+    return (
+      &lt;Container sx={{ py: 8, textAlign: &#39;center&#39; }}&gt;
+        &lt;CircularProgress size={60} /&gt;
+        &lt;Typography sx={{ mt: 2 }}&gt;加载故事中...&lt;/Typography&gt;
+      &lt;/Container&gt;
+    );
+  }
+  
+  if (error || !story) {
+    return (
+      &lt;Container sx={{ py: 8, textAlign: &#39;center&#39; }}&gt;
+        &lt;Typography variant=&quot;h5&quot; color=&quot;error&quot; gutterBottom&gt;
+          {error || &#39;故事不存在&#39;}
+        &lt;/Typography&gt;
+        &lt;Button variant=&quot;contained&quot; onClick={() =&gt; router.push(&#39;/&#39;)}&gt;
+          返回首页
+        &lt;/Button&gt;
+      &lt;/Container&gt;
+    );
+  }
+
+  return (
+    &lt;&gt;
+      &lt;Head&gt;
+        &lt;title&gt;{story.title} | 故事讲述AI&lt;/title&gt;
+        &lt;meta name=&quot;description&quot; content={story.content.substring(0, 160)} /&gt;
+      &lt;/Head&gt;
+
+      &lt;Container maxWidth=&quot;md&quot; sx={{ py: 6 }}&gt;
+        &lt;Paper elevation={3} sx={{ p: { xs: 3, md: 5 }, borderRadius: 2 }}&gt;
+          &lt;Box sx={{ display: &#39;flex&#39;, justifyContent: &#39;space-between&#39;, alignItems: &#39;center&#39;, mb: 3 }}&gt;
+            &lt;Typography variant=&quot;h4&quot; component=&quot;h1&quot;&gt;
+              {story.title}
+            &lt;/Typography&gt;
+            
+            &lt;Box&gt;
+              &lt;IconButton
+                onClick={() =&gt; setFavorite(!favorite)}
+                color={favorite ? &#39;primary&#39; : &#39;default&#39;}
+                aria-label={favorite ? &#39;取消收藏&#39; : &#39;收藏故事&#39;}
+              &gt;
+                {favorite ? &lt;FavoriteIcon /&gt; : &lt;FavoriteBorderIcon /&gt;}
+              &lt;/IconButton&gt;
+              
+              &lt;IconButton
+                onClick={handleTextToSpeech}
+                color={isPlaying ? &#39;primary&#39; : &#39;default&#39;}
+                aria-label={isPlaying ? &#39;停止朗读&#39; : &#39;朗读故事&#39;}
+              &gt;
+                &lt;VolumeUpIcon /&gt;
+              &lt;/IconButton&gt;
+              
+              &lt;IconButton
+                onClick={handleMenuClick}
+                aria-label=&quot;更多选项&quot;
+              &gt;
+                &lt;MoreVertIcon /&gt;
+              &lt;/IconButton&gt;
+              
+              &lt;Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleMenuClose}
+              &gt;
+                &lt;MenuItem onClick={handleEdit}&gt;
+                  &lt;EditIcon fontSize=&quot;small&quot; sx={{ mr: 1 }} /&gt;
+                  编辑故事
+                &lt;/MenuItem&gt;
+                &lt;MenuItem onClick={handleShareDialogOpen}&gt;
+                  &lt;ShareIcon fontSize=&quot;small&quot; sx={{ mr: 1 }} /&gt;
+                  分享故事
+                &lt;/MenuItem&gt;
+                &lt;MenuItem onClick={handleDownload}&gt;
+                  &lt;DownloadIcon fontSize=&quot;small&quot; sx={{ mr: 1 }} /&gt;
+                  下载故事
+                &lt;/MenuItem&gt;
+              &lt;/Menu&gt;
+            &lt;/Box&gt;
+          &lt;/Box&gt;
+          
+          &lt;Box sx={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: 1, mb: 3 }}&gt;
+            {story.metadata.themes.map((theme) =&gt; (
+              &lt;Chip key={theme} label={theme} size=&quot;small&quot; /&gt;
+            ))}
+          &lt;/Box&gt;
+          
+          &lt;Divider sx={{ mb: 4 }} /&gt;
+          
+          &lt;Grid container spacing={4}&gt;
+            &lt;Grid item xs={12} md={story.imageUrl ? 7 : 12}&gt;
+              &lt;Typography variant=&quot;body1&quot; sx={{ whiteSpace: &#39;pre-line&#39;, lineHeight: 1.8 }}&gt;
+                {story.content}
+              &lt;/Typography&gt;
+            &lt;/Grid&gt;
+            
+            {story.imageUrl ? (
+              &lt;Grid item xs={12} md={5}&gt;
+                &lt;motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                &gt;
+                  &lt;Box
+                    sx={{
+                      position: &#39;relative&#39;,
+                      width: &#39;100%&#39;,
+                      height: 350,
+                      borderRadius: 2,
+                      overflow: &#39;hidden&#39;,
+                      boxShadow: 3,
+                    }}
+                  &gt;
+                    &lt;Image
+                      src={story.imageUrl}
+                      alt={story.title}
+                      layout=&quot;fill&quot;
+                      objectFit=&quot;cover&quot;
+                    /&gt;
+                  &lt;/Box&gt;
+                &lt;/motion.div&gt;
+              &lt;/Grid&gt;
+            ) : (
+              &lt;Grid item xs={12} sx={{ mt: 2 }}&gt;
+                &lt;Button
+                  variant=&quot;outlined&quot;
+                  startIcon={&lt;ImageIcon /&gt;}
+                  onClick={handleGenerateImage}
+                  disabled={imageGenerating}
+                &gt;
+                  {imageGenerating ? &#39;生成图像中...&#39; : &#39;为故事生成配图&#39;}
+                &lt;/Button&gt;
+              &lt;/Grid&gt;
+            )}
+          &lt;/Grid&gt;
+          
+          &lt;Divider sx={{ my: 4 }} /&gt;
+          
+          &lt;Box sx={{ display: &#39;flex&#39;, justifyContent: &#39;space-between&#39;, flexWrap: &#39;wrap&#39; }}&gt;
+            &lt;Box&gt;
+              &lt;Typography variant=&quot;body2&quot; color=&quot;text.secondary&quot;&gt;
+                字数: {story.metadata.word_count} | 阅读时间: {story.metadata.reading_time}
+              &lt;/Typography&gt;
+              &lt;Typography variant=&quot;body2&quot; color=&quot;text.secondary&quot;&gt;
+                适龄评级: {story.metadata.age_appropriate.rating}
+              &lt;/Typography&gt;
+            &lt;/Box&gt;
+            
+            &lt;Box&gt;
+              &lt;Button
+                variant=&quot;contained&quot;
+                startIcon={&lt;EditIcon /&gt;}
+                onClick={handleEdit}
+                sx={{ mr: 2 }}
+              &gt;
+                编辑故事
+              &lt;/Button&gt;
+              &lt;Button
+                variant=&quot;outlined&quot;
+                startIcon={&lt;ShareIcon /&gt;}
+                onClick={handleShareDialogOpen}
+              &gt;
+                分享
+              &lt;/Button&gt;
+            &lt;/Box&gt;
+          &lt;/Box&gt;
+        &lt;/Paper&gt;
+      &lt;/Container&gt;
+      
+      {/* 分享对话框 */}
+      &lt;Dialog open={shareDialogOpen} onClose={handleShareDialogClose}&gt;
+        &lt;DialogTitle&gt;分享故事&lt;/DialogTitle&gt;
+        &lt;DialogContent&gt;
+          &lt;Typography paragraph&gt;
+            分享这个故事的链接:
+          &lt;/Typography&gt;
+          &lt;Paper
+            variant=&quot;outlined&quot;
+            sx={{ p: 2, bgcolor: &#39;#f5f5f5&#39;, wordBreak: &#39;break-all&#39; }}
+          &gt;
+            &lt;Typography&gt;
+              {typeof window !== &#39;undefined&#39; ? window.location.href : &#39;&#39;}
+            &lt;/Typography&gt;
+          &lt;/Paper&gt;
+        &lt;/DialogContent&gt;
+        &lt;DialogActions&gt;
+          &lt;Button onClick={handleShareDialogClose}&gt;关闭&lt;/Button&gt;
+          &lt;Button
+            variant=&quot;contained&quot;
+            onClick={() =&gt; {
+              navigator.clipboard.writeText(window.location.href);
+              alert(&#39;链接已复制到剪贴板&#39;);
+            }}
+          &gt;
+            复制链接
+          &lt;/Button&gt;
+        &lt;/DialogActions&gt;
+      &lt;/Dialog&gt;
+    &lt;/&gt;
+  );
+}
+</pre></div>
+</div>
+</section>
+<section id="api">
+<h4>API服务集成<a class="headerlink" href="#api" title="Link to this heading">#</a></h4>
+<p>创建API服务层，与后端API进行通信：</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/services/storyService.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">axios</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;axios&#39;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">API_BASE_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NEXT_PUBLIC_API_URL</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;http://localhost:5000/api/v1&#39;</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">API_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NEXT_PUBLIC_API_KEY</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">;</span>
+
+<span class="c1">// 创建axios实例</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">apiClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">axios</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">baseURL</span><span class="o">:</span><span class="w"> </span><span class="kt">API_BASE_URL</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;Authorization&#39;</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">API_KEY</span><span class="si">}</span><span class="sb">`</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// 生成故事</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">createStory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">storyData</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/stories/generate&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">storyData</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Error creating story:&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// 获取故事</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">getStory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">storyId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="sb">`/stories/</span><span class="si">${</span><span class="nx">storyId</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="sb">`Error fetching story </span><span class="si">${</span><span class="nx">storyId</span><span class="si">}</span><span class="sb">:`</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// 更新故事</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">updateStory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">storyId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">storyData</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="sb">`/stories/</span><span class="si">${</span><span class="nx">storyId</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="nx">storyData</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="sb">`Error updating story </span><span class="si">${</span><span class="nx">storyId</span><span class="si">}</span><span class="sb">:`</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// 生成故事配图</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">generateStoryImage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">storyId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">imageData</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="sb">`/stories/</span><span class="si">${</span><span class="nx">storyId</span><span class="si">}</span><span class="sb">/image`</span><span class="p">,</span><span class="w"> </span><span class="nx">imageData</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="sb">`Error generating image for story </span><span class="si">${</span><span class="nx">storyId</span><span class="si">}</span><span class="sb">:`</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// 获取用户故事列表</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">getUserStories</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/user/stories&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Error fetching user stories:&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id15">
+<h3>多模态集成<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>在我们的Web应用中，多模态集成是一个关键特性，它允许用户不仅生成文本故事，还能创建与故事相匹配的图像。以下是实现多模态功能的关键组件：</p>
+<section id="id16">
+<h4>图像生成服务<a class="headerlink" href="#id16" title="Link to this heading">#</a></h4>
+<p>首先，我们需要创建一个图像生成服务，与图像生成API进行交互：</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="c1">// src/services/imageService.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">axios</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;axios&#39;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">API_BASE_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NEXT_PUBLIC_API_URL</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;http://localhost:5000/api/v1&#39;</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">API_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NEXT_PUBLIC_API_KEY</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">;</span>
+
+<span class="c1">// 创建axios实例</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">apiClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">axios</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">baseURL</span><span class="o">:</span><span class="w"> </span><span class="kt">API_BASE_URL</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;Authorization&#39;</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">API_KEY</span><span class="si">}</span><span class="sb">`</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// 根据文本提示生成图像</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">generateImage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">params</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">prompt</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">style?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">negative_prompt?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">width?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">height?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/images/generate&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">params</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Error generating image:&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// 根据故事场景生成图像</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">generateSceneImage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">storyId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">sceneIndex</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">params</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">style?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">custom_prompt?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="sb">`/stories/</span><span class="si">${</span><span class="nx">storyId</span><span class="si">}</span><span class="sb">/scenes/</span><span class="si">${</span><span class="nx">sceneIndex</span><span class="si">}</span><span class="sb">/image`</span><span class="p">,</span><span class="w"> </span><span class="nx">params</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="sb">`Error generating scene image for story </span><span class="si">${</span><span class="nx">storyId</span><span class="si">}</span><span class="sb">:`</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// 修改现有图像</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">editImage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">imageId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">params</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">prompt</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">mask_area</span><span class="o">?:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">};</span>
+<span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="sb">`/images/</span><span class="si">${</span><span class="nx">imageId</span><span class="si">}</span><span class="sb">/edit`</span><span class="p">,</span><span class="w"> </span><span class="nx">params</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="sb">`Error editing image </span><span class="si">${</span><span class="nx">imageId</span><span class="si">}</span><span class="sb">:`</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="id17">
+<h4>图像生成组件<a class="headerlink" href="#id17" title="Link to this heading">#</a></h4>
+<p>接下来，创建一个图像生成组件，允许用户为故事生成配图：</p>
+<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span>// src/components/story/ImageGenerator.tsx
+import { useState } from &#39;react&#39;;
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
+  Slider,
+  Chip,
+} from &#39;@mui/material&#39;;
+import Image from &#39;next/image&#39;;
+import { generateImage } from &#39;../../services/imageService&#39;;
+
+// 图像风格选项
+const imageStyles = [
+  { value: &#39;children_book&#39;, label: &#39;儿童书插图&#39; },
+  { value: &#39;watercolor&#39;, label: &#39;水彩画&#39; },
+  { value: &#39;cartoon&#39;, label: &#39;卡通&#39; },
+  { value: &#39;pixel_art&#39;, label: &#39;像素艺术&#39; },
+  { value: &#39;realistic&#39;, label: &#39;写实风格&#39; },
+];
+
+interface ImageGeneratorProps {
+  storyTitle: string;
+  storyContent: string;
+  onImageGenerated: (imageUrl: string) =&gt; void;
+}
+
+export default function ImageGenerator({
+  storyTitle,
+  storyContent,
+  onImageGenerated
+}: ImageGeneratorProps) {
+  const [prompt, setPrompt] = useState(&#39;&#39;);
+  const [style, setStyle] = useState(&#39;children_book&#39;);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+  const [generatedImage, setGeneratedImage] = useState&lt;string | null&gt;(null);
+  
+  // 自动生成提示
+  const generatePrompt = () =&gt; {
+    // 从故事内容中提取关键场景
+    const firstParagraph = storyContent.split(&#39;\n&#39;)[0];
+    const suggestedPrompt = `Illustration for children&#39;s story &quot;${storyTitle}&quot;: ${firstParagraph.substring(0, 100)}`;
+    setPrompt(suggestedPrompt);
+  };
+  
+  // 生成图像
+  const handleGenerateImage = async () =&gt; {
+    if (!prompt) {
+      setError(&#39;请输入图像提示&#39;);
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const result = await generateImage({
+        prompt,
+        style,
+        width: 512,
+        height: 512,
+      });
+      
+      setGeneratedImage(result.image_url);
+      onImageGenerated(result.image_url);
+    } catch (err) {
+      console.error(&#39;Error generating image:&#39;, err);
+      setError(&#39;生成图像时出错，请稍后再试&#39;);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // 提取故事关键词
+  const extractKeywords = () =&gt; {
+    // 简单的关键词提取逻辑
+    const words = storyContent.split(/\s+/);
+    const commonWords = new Set([&#39;的&#39;, &#39;了&#39;, &#39;和&#39;, &#39;在&#39;, &#39;是&#39;, &#39;有&#39;, &#39;就&#39;, &#39;不&#39;, &#39;人&#39;, &#39;我&#39;, &#39;他&#39;, &#39;她&#39;, &#39;它&#39;, &#39;们&#39;]);
+    const keywords = words
+      .filter(word =&gt; word.length &gt; 1 &amp;&amp; !commonWords.has(word))
+      .reduce((acc, word) =&gt; {
+        acc[word] = (acc[word] || 0) + 1;
+        return acc;
+      }, {} as Record&lt;string, number&gt;);
+    
+    // 返回出现频率最高的5个关键词
+    return Object.entries(keywords)
+      .sort((a, b) =&gt; b[1] - a[1])
+      .slice(0, 5)
+      .map(([word]) =&gt; word);
+  };
+  
+  return (
+    &lt;Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}&gt;
+      &lt;Typography variant=&quot;h6&quot; gutterBottom&gt;
+        为故事生成配图
+      &lt;/Typography&gt;
+      
+      &lt;Grid container spacing={3}&gt;
+        &lt;Grid item xs={12}&gt;
+          &lt;TextField
+            fullWidth
+            multiline
+            rows={3}
+            label=&quot;图像提示&quot;
+            placeholder=&quot;描述您想要的图像内容&quot;
+            value={prompt}
+            onChange={(e) =&gt; setPrompt(e.target.value)}
+            margin=&quot;normal&quot;
+            variant=&quot;outlined&quot;
+            helperText=&quot;描述您希望在图像中看到的场景、角色和元素&quot;
+          /&gt;
+          
+          &lt;Box sx={{ mt: 1, mb: 2 }}&gt;
+            &lt;Button
+              variant=&quot;outlined&quot;
+              size=&quot;small&quot;
+              onClick={generatePrompt}
+              sx={{ mr: 1 }}
+            &gt;
+              自动生成提示
+            &lt;/Button&gt;
+            
+            &lt;Box sx={{ display: &#39;flex&#39;, flexWrap: &#39;wrap&#39;, gap: 1, mt: 2 }}&gt;
+              {extractKeywords().map((keyword) =&gt; (
+                &lt;Chip
+                  key={keyword}
+                  label={keyword}
+                  size=&quot;small&quot;
+                  onClick={() =&gt; setPrompt(prompt ? `${prompt}, ${keyword}` : keyword)}
+                /&gt;
+              ))}
+            &lt;/Box&gt;
+          &lt;/Box&gt;
+        &lt;/Grid&gt;
+        
+        &lt;Grid item xs={12} sm={6}&gt;
+          &lt;FormControl fullWidth&gt;
+            &lt;InputLabel&gt;图像风格&lt;/InputLabel&gt;
+            &lt;Select
+              value={style}
+              label=&quot;图像风格&quot;
+              onChange={(e) =&gt; setStyle(e.target.value)}
+            &gt;
+              {imageStyles.map((style) =&gt; (
+                &lt;MenuItem key={style.value} value={style.value}&gt;
+                  {style.label}
+                &lt;/MenuItem&gt;
+              ))}
+            &lt;/Select&gt;
+          &lt;/FormControl&gt;
+        &lt;/Grid&gt;
+        
+        &lt;Grid item xs={12}&gt;
+          &lt;Button
+            variant=&quot;contained&quot;
+            onClick={handleGenerateImage}
+            disabled={loading || !prompt}
+            fullWidth
+          &gt;
+            {loading ? &lt;CircularProgress size={24} /&gt; : &#39;生成图像&#39;}
+          &lt;/Button&gt;
+          
+          {error &amp;&amp; (
+            &lt;Typography color=&quot;error&quot; sx={{ mt: 1 }}&gt;
+              {error}
+            &lt;/Typography&gt;
+          )}
+        &lt;/Grid&gt;
+        
+        {generatedImage &amp;&amp; (
+          &lt;Grid item xs={12}&gt;
+            &lt;Box sx={{ mt: 2 }}&gt;
+              &lt;Typography variant=&quot;subtitle1&quot; gutterBottom&gt;
+                生成的图像:
+              &lt;/Typography&gt;
+              &lt;Box
+                sx={{
+                  position: &#39;relative&#39;,
+                  width: &#39;100%&#39;,
+                  height: 300,
+                  borderRadius: 2,
+                  overflow: &#39;hidden&#39;,
+                  boxShadow: 2,
+                }}
+              &gt;
+                &lt;Image
+                  src={generatedImage}
+                  alt=&quot;生成的故事插图&quot;
+                  layout=&quot;fill&quot;
+                  objectFit=&quot;contain&quot;
+                /&gt;
+              &lt;/Box&gt;
+            &lt;/Box&gt;
+          &lt;/Grid&gt;
+        )}
+      &lt;/Grid&gt;
+    &lt;/Paper&gt;
+  );
+}
+</pre></div>
+</div>
+</section>
+<section id="id18">
+<h4>多场景故事创建<a class="headerlink" href="#id18" title="Link to this heading">#</a></h4>
+<p>为了增强多模态体验，我们可以创建一个多场景故事编辑器，允许用户为故事的不同场景生成配图：</p>
+<div class="highlight-tsx notranslate"><div class="highlight"><pre><span></span>// src/pages/create-multi-scene.tsx
+import { useState } from &#39;react&#39;;
+import { useRouter } from &#39;next/router&#39;;
+import {
+  Container,
+  Typography,
+  Box,
+  Paper,
+  Button,
+  Grid,
+  TextField,
+  Divider,
+  CircularProgress,
+  Stepper,
+  Step,
+  StepLabel,
+  IconButton,
+} from &#39;@mui/material&#39;;
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  Image as ImageIcon,
+  Save as SaveIcon,
+} from &#39;@mui/icons-material&#39;;
+import Head from &#39;next/head&#39;;
+import Image from &#39;next/image&#39;;
+import { motion, AnimatePresence } from &#39;framer-motion&#39;;
+import ImageGenerator from &#39;../components/story/ImageGenerator&#39;;
+import { createMultiSceneStory } from &#39;../services/storyService&#39;;
+
+// 场景类型定义
+interface Scene {
+  id: string;
+  content: string;
+  imageUrl?: string;
+}
+
+export default function CreateMultiSceneStory() {
+  const router = useRouter();
+  const [title, setTitle] = useState(&#39;&#39;);
+  const [scenes, setScenes] = useState&lt;Scene[]&gt;([
+    { id: &#39;1&#39;, content: &#39;&#39; }
+  ]);
+  const [activeScene, setActiveScene] = useState(0);
+  const [showImageGenerator, setShowImageGenerator] = useState&lt;number | null&gt;(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+  
+  // 添加新场景
+  const addScene = () =&gt; {
+    setScenes([
+      ...scenes,
+      { id: Date.now().toString(), content: &#39;&#39; }
+    ]);
+  };
+  
+  // 删除场景
+  const deleteScene = (index: number) =&gt; {
+    if (scenes.length &lt;= 1) return;
+    
+    const newScenes = [...scenes];
+    newScenes.splice(index, 1);
+    setScenes(newScenes);
+    
+    if (activeScene &gt;= newScenes.length) {
+      setActiveScene(newScenes.length - 1);
+    }
+  };
+  
+  // 更新场景内容
+  const updateSceneContent = (index: number, content: string) =&gt; {
+    const newScenes = [...scenes];
+    newScenes[index] = { ...newScenes[index], content };
+    setScenes(newScenes);
+  };
+  
+  // 设置场景图像
+  const setSceneImage = (index: number, imageUrl: string) =&gt; {
+    const newScenes = [...scenes];
+    newScenes[index] = { ...newScenes[index], imageUrl };
+    setScenes(newScenes);
+    setShowImageGenerator(null);
+  };
+  
+  // 保存故事
+  const saveStory = async () =&gt; {
+    if (!title) {
+      setError(&#39;请输入故事标题&#39;);
+      return;
+    }
+    
+    if (scenes.some(scene =&gt; !scene.content)) {
+      setError(&#39;所有场景都必须有内容&#39;);
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const result = await createMultiSceneStory({
+        title,
+        scenes: scenes.map(scene =&gt; ({
+          content: scene.content,
+          image_url: scene.imageUrl
+        }))
+      });
+      
+      router.push(`/stories/${result.story_id}`);
+    } catch (err) {
+      console.error(&#39;Error saving story:&#39;, err);
+      setError(&#39;保存故事时出错，请稍后再试&#39;);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return (
+    &lt;&gt;
+      &lt;Head&gt;
+        &lt;title&gt;创建多场景故事 | 故事讲述AI&lt;/title&gt;
+      &lt;/Head&gt;
+
+      &lt;Container maxWidth=&quot;lg&quot; sx={{ py: 6 }}&gt;
+        &lt;Typography variant=&quot;h4&quot; component=&quot;h1&quot; gutterBottom align=&quot;center&quot;&gt;
+          创建多场景故事
+        &lt;/Typography&gt;
+        
+        &lt;Paper elevation={3} sx={{ p: 4, borderRadius: 2, mb: 4 }}&gt;
+          &lt;TextField
+            fullWidth
+            label=&quot;故事标题&quot;
+            value={title}
+            onChange={(e) =&gt; setTitle(e.target.value)}
+            margin=&quot;normal&quot;
+            variant=&quot;outlined&quot;
+          /&gt;
+        &lt;/Paper&gt;
+        
+        &lt;Grid container spacing={4}&gt;
+          &lt;Grid item xs={12} md={3}&gt;
+            &lt;Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}&gt;
+              &lt;Typography variant=&quot;h6&quot; gutterBottom&gt;
+                场景列表
+              &lt;/Typography&gt;
+              &lt;Divider sx={{ mb: 2 }} /&gt;
+              
+              &lt;Box sx={{ display: &#39;flex&#39;, flexDirection: &#39;column&#39;, gap: 1 }}&gt;
+                {scenes.map((scene, index) =&gt; (
+                  &lt;Button
+                    key={scene.id}
+                    variant={activeScene === index ? &#39;contained&#39; : &#39;outlined&#39;}
+                    onClick={() =&gt; setActiveScene(index)}
+                    sx={{
+                      justifyContent: &#39;space-between&#39;,
+                      textTransform: &#39;none&#39;,
+                      py: 1,
+                    }}
+                    endIcon={
+                      scenes.length &gt; 1 ? (
+                        &lt;IconButton
+                          size=&quot;small&quot;
+                          onClick={(e) =&gt; {
+                            e.stopPropagation();
+                            deleteScene(index);
+                          }}
+                          sx={{ color: &#39;inherit&#39; }}
+                        &gt;
+                          &lt;DeleteIcon fontSize=&quot;small&quot; /&gt;
+                        &lt;/IconButton&gt;
+                      ) : null
+                    }
+                  &gt;
+                    场景 {index + 1}
+                    {scene.imageUrl &amp;&amp; &lt;ImageIcon fontSize=&quot;small&quot; sx={{ ml: 1 }} /&gt;}
+                  &lt;/Button&gt;
+                ))}
+                
+                &lt;Button
+                  variant=&quot;outlined&quot;
+                  startIcon={&lt;AddIcon /&gt;}
+                  onClick={addScene}
+                  sx={{ mt: 2 }}
+                &gt;
+                  添加场景
+                &lt;/Button&gt;
+              &lt;/Box&gt;
+            &lt;/Paper&gt;
+          &lt;/Grid&gt;
+          
+          &lt;Grid item xs={12} md={9}&gt;
+            &lt;AnimatePresence mode=&quot;wait&quot;&gt;
+              &lt;motion.div
+                key={activeScene}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              &gt;
+                &lt;Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}&gt;
+                  &lt;Box sx={{ display: &#39;flex&#39;, justifyContent: &#39;space-between&#39;, alignItems: &#39;center&#39;, mb: 3 }}&gt;
+                    &lt;Typography variant=&quot;h6&quot;&gt;
+                      编辑场景 {activeScene + 1}
+                    &lt;/Typography&gt;
+                    
+                    &lt;Button
+                      variant=&quot;outlined&quot;
+                      startIcon={&lt;ImageIcon /&gt;}
+                      onClick={() =&gt; setShowImageGenerator(activeScene)}
+                      disabled={!scenes[activeScene].content}
+                    &gt;
+                      生成场景图像
+                    &lt;/Button&gt;
+                  &lt;/Box&gt;
+                  
+                  &lt;TextField
+                    fullWidth
+                    multiline
+                    rows={8}
+                    label=&quot;场景内容&quot;
+                    placeholder=&quot;描述这个场景中发生的事情...&quot;
+                    value={scenes[activeScene].content}
+                    onChange={(e) =&gt; updateSceneContent(activeScene, e.target.value)}
+                    margin=&quot;normal&quot;
+                    variant=&quot;outlined&quot;
+                  /&gt;
+                  
+                  {scenes[activeScene].imageUrl &amp;&amp; (
+                    &lt;Box sx={{ mt: 3 }}&gt;
+                      &lt;Typography variant=&quot;subtitle1&quot; gutterBottom&gt;
+                        场景图像:
+                      &lt;/Typography&gt;
+                      &lt;Box
+                        sx={{
+                          position: &#39;relative&#39;,
+                          width: &#39;100%&#39;,
+                          height: 300,
+                          borderRadius: 2,
+                          overflow: &#39;hidden&#39;,
+                          boxShadow: 2,
+                        }}
+                      &gt;
+                        &lt;Image
+                          src={scenes[activeScene].imageUrl}
+                          alt={`场景 ${activeScene + 1} 图像`}
+                          layout=&quot;fill&quot;
+                          objectFit=&quot;contain&quot;
+                        /&gt;
+                      &lt;/Box&gt;
+                    &lt;/Box&gt;
+                  )}
+                &lt;/Paper&gt;
+                
+                {showImageGenerator === activeScene &amp;&amp; (
+                  &lt;Box sx={{ mt: 3 }}&gt;
+                    &lt;ImageGenerator
+                      storyTitle={title || `场景 ${activeScene + 1}`}
+                      storyContent={scenes[activeScene].content}
+                      onImageGenerated={(imageUrl) =&gt; setSceneImage(activeScene, imageUrl)}
+                    /&gt;
+                  &lt;/Box&gt;
+                )}
+              &lt;/motion.div&gt;
+            &lt;/AnimatePresence&gt;
+          &lt;/Grid&gt;
+        &lt;/Grid&gt;
+        
+        &lt;Box sx={{ mt: 4, display: &#39;flex&#39;, justifyContent: &#39;center&#39; }}&gt;
+          &lt;Button
+            variant=&quot;contained&quot;
+            size=&quot;large&quot;
+            startIcon={loading ? &lt;CircularProgress size={24} /&gt; : &lt;SaveIcon /&gt;}
+            onClick={saveStory}
+            disabled={loading}
+            sx={{ px: 4, py: 1.5 }}
+          &gt;
+            保存故事
+          &lt;/Button&gt;
+        &lt;/Box&gt;
+        
+        {error &amp;&amp; (
+          &lt;Typography color=&quot;error&quot; align=&quot;center&quot; sx={{ mt: 2 }}&gt;
+            {error}
+          &lt;/Typography&gt;
+        )}
+      &lt;/Container&gt;
+    &lt;/&gt;
+  );
+}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id19">
+<h3>部署Web应用<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<p>完成Web应用开发后，我们需要将其部署到生产环境。以下是部署Next.js应用的几种常见方法：</p>
+<section id="vercel">
+<h4>使用Vercel部署<a class="headerlink" href="#vercel" title="Link to this heading">#</a></h4>
+<p>Vercel是Next.js的创建者开发的平台，提供了最简单的部署方式：</p>
+<ol class="arabic simple">
+<li><p><strong>安装Vercel CLI</strong>：</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>vercel
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>配置部署</strong>：</p></li>
+</ol>
+<p>创建<code class="docutils literal notranslate"><span class="pre">vercel.json</span></code>文件：</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;builds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;src&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;package.json&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;use&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;@vercel/next&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;NEXT_PUBLIC_API_URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://your-api-url.com/api/v1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;NEXT_PUBLIC_API_KEY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;@api-key&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>部署命令</strong>：</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vercel
+</pre></div>
+</div>
+</section>
+<section id="docker">
+<h4>使用Docker容器部署<a class="headerlink" href="#docker" title="Link to this heading">#</a></h4>
+<p>对于更灵活的部署选项，可以使用Docker：</p>
+<ol class="arabic simple">
+<li><p><strong>创建Dockerfile</strong>：</p></li>
+</ol>
+<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="c"># 构建阶段</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">node:16-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+<span class="k">COPY</span><span class="w"> </span>package*.json<span class="w"> </span>./
+<span class="k">RUN</span><span class="w"> </span>npm<span class="w"> </span>ci
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.
+<span class="k">RUN</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>build
+
+<span class="c"># 生产阶段</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">node:16-alpine</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">runner</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+
+<span class="k">ENV</span><span class="w"> </span>NODE_ENV<span class="w"> </span>production
+
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/app/next.config.js<span class="w"> </span>./
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/app/public<span class="w"> </span>./public
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/app/.next<span class="w"> </span>./.next
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/app/node_modules<span class="w"> </span>./node_modules
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/app/package.json<span class="w"> </span>./package.json
+
+<span class="k">EXPOSE</span><span class="w"> </span><span class="s">3000</span>
+
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;npm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;start&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>创建docker-compose.yml</strong>：</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3&#39;</span>
+
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">web</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;3000:3000&quot;</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NEXT_PUBLIC_API_URL=https://your-api-url.com/api/v1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NEXT_PUBLIC_API_KEY=your-api-key</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>部署命令</strong>：</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="aws-amplify">
+<h4>使用AWS Amplify部署<a class="headerlink" href="#aws-amplify" title="Link to this heading">#</a></h4>
+<p>AWS Amplify提供了一个完整的CI/CD流程：</p>
+<ol class="arabic simple">
+<li><p><strong>登录AWS Amplify控制台</strong></p></li>
+<li><p><strong>选择”从Git存储库部署”</strong></p></li>
+<li><p><strong>连接GitHub/GitLab/Bitbucket账户</strong></p></li>
+<li><p><strong>选择项目仓库和分支</strong></p></li>
+<li><p><strong>配置构建设置</strong>：</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">frontend</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">phases</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">preBuild</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">commands</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">npm ci</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">commands</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">npm run build</span>
+<span class="w">  </span><span class="nt">artifacts</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">baseDirectory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.next</span>
+<span class="w">    </span><span class="nt">files</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;**/*&#39;</span>
+<span class="w">  </span><span class="nt">cache</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">node_modules/**/*</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p><strong>设置环境变量</strong></p></li>
+<li><p><strong>点击”保存并部署”</strong></p></li>
+</ol>
+</section>
+</section>
+<section id="id20">
+<h3>性能优化<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
+<p>为了确保Web应用的良好性能，我们应该实施以下优化：</p>
+<ol class="arabic simple">
+<li><p><strong>图像优化</strong>：</p>
+<ul class="simple">
+<li><p>使用Next.js的Image组件自动优化图像</p></li>
+<li><p>实现懒加载和适当的图像尺寸</p></li>
+<li><p>使用WebP等现代图像格式</p></li>
+</ul>
+</li>
+<li><p><strong>代码分割</strong>：</p>
+<ul class="simple">
+<li><p>利用Next.js的自动代码分割</p></li>
+<li><p>使用动态导入减少初始加载时间</p></li>
+<li><p>实现组件懒加载</p></li>
+</ul>
+</li>
+<li><p><strong>缓存策略</strong>：</p>
+<ul class="simple">
+<li><p>实现服务端缓存减少API调用</p></li>
+<li><p>使用React Query进行客户端缓存</p></li>
+<li><p>设置适当的HTTP缓存头</p></li>
+</ul>
+</li>
+<li><p><strong>预渲染</strong>：</p>
+<ul class="simple">
+<li><p>使用静态生成(SSG)预渲染常见页面</p></li>
+<li><p>实现增量静态再生(ISR)保持内容新鲜</p></li>
+<li><p>为动态内容使用服务端渲染(SSR)</p></li>
+</ul>
+</li>
+<li><p><strong>监控与分析</strong>：</p>
+<ul class="simple">
+<li><p>实现性能监控</p></li>
+<li><p>使用Lighthouse进行性能审计</p></li>
+<li><p>持续优化关键渲染路径</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id21">
+<h3>安全考虑<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<p>在部署Web应用时，安全性是一个重要考虑因素：</p>
+<ol class="arabic simple">
+<li><p><strong>API安全</strong>：</p>
+<ul class="simple">
+<li><p>使用环境变量存储API密钥</p></li>
+<li><p>实现适当的CORS策略</p></li>
+<li><p>使用HTTPS加密所有通信</p></li>
+</ul>
+</li>
+<li><p><strong>内容安全</strong>：</p>
+<ul class="simple">
+<li><p>实现内容安全策略(CSP)</p></li>
+<li><p>防止XSS攻击</p></li>
+<li><p>验证和净化用户输入</p></li>
+</ul>
+</li>
+<li><p><strong>认证与授权</strong>：</p>
+<ul class="simple">
+<li><p>实现安全的用户认证</p></li>
+<li><p>使用JWT或类似机制进行授权</p></li>
+<li><p>实施适当的权限控制</p></li>
+</ul>
+</li>
+<li><p><strong>数据保护</strong>：</p>
+<ul class="simple">
+<li><p>遵循数据保护法规(如GDPR)</p></li>
+<li><p>实现数据最小化原则</p></li>
+<li><p>提供明确的隐私政策</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id22">
+<h3>多模态应用的未来发展<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
+<p>随着技术的发展，多模态故事讲述应用还有许多令人兴奋的发展方向：</p>
+<ol class="arabic simple">
+<li><p><strong>语音交互</strong>：</p>
+<ul class="simple">
+<li><p>集成语音识别允许口述故事</p></li>
+<li><p>高质量文本转语音朗读</p></li>
+<li><p>角色配音和音效</p></li>
+</ul>
+</li>
+<li><p><strong>增强现实(AR)集成</strong>：</p>
+<ul class="simple">
+<li><p>将故事角色带入现实世界</p></li>
+<li><p>创建交互式AR故事体验</p></li>
+<li><p>结合物理和数字讲故事元素</p></li>
+</ul>
+</li>
+<li><p><strong>协作创作</strong>：</p>
+<ul class="simple">
+<li><p>多用户实时故事协作</p></li>
+<li><p>家长-儿童共同创作功能</p></li>
+<li><p>教师-学生互动故事项目</p></li>
+</ul>
+</li>
+<li><p><strong>个性化学习</strong>：</p>
+<ul class="simple">
+<li><p>基于阅读水平自适应内容</p></li>
+<li><p>跟踪理解和参与度</p></li>
+<li><p>针对特定学习目标的故事</p></li>
+</ul>
+</li>
+<li><p><strong>跨平台体验</strong>：</p>
+<ul class="simple">
+<li><p>移动应用与桌面体验同步</p></li>
+<li><p>智能设备(如智能音箱)集成</p></li>
+<li><p>打印和数字版本的无缝转换</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id23">
+<h3>总结<a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
+<p>在本节中，我们探讨了如何构建一个现代化的Web应用，为用户提供一个直观、友好的界面来与我们的故事讲述AI交互。我们讨论了设计原则、用户需求分析、技术栈选择和应用架构设计，并提供了核心页面的实现代码。特别是，我们深入探讨了多模态集成，展示了如何将文本和图像生成结合起来，创造更丰富的故事体验。</p>
+<p>通过这个Web应用，用户可以轻松地创建、编辑和分享个性化的故事，同时享受AI生成的配图增强视觉体验。我们还讨论了部署、性能优化和安全考虑，确保应用不仅功能丰富，而且可靠、高效和安全。</p>
+<p>随着技术的不断发展，多模态故事讲述应用还有广阔的发展空间，包括语音交互、增强现实集成、协作创作、个性化学习和跨平台体验等方向。这些创新将进一步丰富用户体验，使AI故事讲述更加引人入胜和有教育意义。</p>
+<p>在下一章中，我们将探讨多模态模型的更多可能性，包括如何将文本、图像、音频等多种模态结合起来，创造更加丰富和沉浸式的AI体验。</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter16_1_api_development.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第16章：部署-16.1 API开发基础</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../17_Multimodal/chapter17_1_multimodal_basics.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第17章：多模态-17.1 多模态基础理论</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">16.2 Web应用开发</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Web应用设计原则</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">用户需求分析</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">目标用户群体</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">核心功能需求</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">技术栈选择</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">前端技术</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">后端技术</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">应用架构设计</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">组件说明</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">前端实现</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">项目初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">目录结构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">核心页面实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API服务集成</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">多模态集成</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">图像生成服务</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">图像生成组件</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">多场景故事创建</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">部署Web应用</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#vercel">使用Vercel部署</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docker">使用Docker容器部署</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#aws-amplify">使用AWS Amplify部署</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">性能优化</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">安全考虑</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">多模态应用的未来发展</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">总结</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

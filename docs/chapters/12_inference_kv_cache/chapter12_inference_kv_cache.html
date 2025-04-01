@@ -1,0 +1,1064 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第12章：推理 I：KV缓存（KV-Cache） &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/12_inference_kv_cache/chapter12_inference_kv_cache';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第13章：推理 II：量化 (Quantization)" href="../13_inference_quantization/chapter13_inference_quantization.html" />
+    <link rel="prev" title="第11章：数据集（Datasets）" href="../11_datasets/chapter11_datasets.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/12_inference_kv_cache/chapter12_inference_kv_cache.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/12_inference_kv_cache/chapter12_inference_kv_cache.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/12_inference_kv_cache/chapter12_inference_kv_cache.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第12章：推理 I：KV缓存（KV-Cache）</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">12.1 推理过程概述</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transformer">12.2 Transformer架构回顾</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">12.2.1 Transformer基本结构</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">12.2.2 自注意力机制详解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">12.2.3 自回归生成中的计算冗余</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kv">12.3 KV缓存原理</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">12.3.1 基本原理</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">12.3.2 数学表示</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">12.3.3 多层多头注意力中的KV缓存</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">12.4 KV缓存实现</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">12.4.1 基本实现</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">12.4.2 高效实现考虑因素</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">12.4.3 主流框架中的KV缓存实现</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">12.5 KV缓存优化技术</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">12.5.1 内存优化</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="i-kv-kv-cache">
+<h1>第12章：推理 I：KV缓存（KV-Cache）<a class="headerlink" href="#i-kv-kv-cache" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>12.1 推理过程概述<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>在构建故事讲述AI大语言模型的过程中，除了训练阶段，推理阶段同样至关重要。推理是指使用训练好的模型生成文本的过程，这是用户最终与模型交互的环节。对于大型语言模型（LLM）来说，推理过程的效率和质量直接影响用户体验。</p>
+<p>大语言模型的推理过程通常是自回归的，即模型基于已生成的文本序列逐个生成下一个词或标记。这个过程可以表示为：</p>
+<p>$$P(x_1, x_2, …, x_n) = \prod_{i=1}^{n} P(x_i | x_1, x_2, …, x_{i-1})$$</p>
+<p>其中，$P(x_1, x_2, …, x_n)$是整个序列的概率，$P(x_i | x_1, x_2, …, x_{i-1})$是在已知前面所有标记的条件下，生成第$i$个标记的概率。</p>
+<p>在实际应用中，推理过程面临几个主要挑战：</p>
+<ol class="arabic simple">
+<li><p><strong>计算效率</strong>：大语言模型通常有数十亿甚至数千亿参数，每次推理都需要大量计算资源。</p></li>
+<li><p><strong>内存消耗</strong>：模型参数和中间状态需要占用大量内存，特别是在生成长文本时。</p></li>
+<li><p><strong>推理速度</strong>：自回归生成过程是顺序的，难以并行化，这限制了生成速度。</p></li>
+<li><p><strong>生成质量</strong>：需要平衡多样性和连贯性，避免生成重复或无意义的内容。</p></li>
+</ol>
+<p>为了解决这些挑战，研究人员提出了多种优化技术，其中KV缓存（Key-Value Cache）是最重要的优化技术之一，它显著提高了推理效率。在本章中，我们将深入探讨KV缓存的原理、实现和优化方法。</p>
+</section>
+<section id="transformer">
+<h2>12.2 Transformer架构回顾<a class="headerlink" href="#transformer" title="Link to this heading">#</a></h2>
+<p>在深入KV缓存之前，我们需要回顾Transformer架构，特别是自注意力机制，因为KV缓存主要优化的就是这一部分。</p>
+<section id="id2">
+<h3>12.2.1 Transformer基本结构<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>Transformer模型由编码器（Encoder）和解码器（Decoder）组成，对于像GPT这样的自回归语言模型，通常只使用解码器部分。Transformer解码器由多个相同的层堆叠而成，每一层包含以下子层：</p>
+<ol class="arabic simple">
+<li><p><strong>自注意力层（Self-Attention）</strong>：允许模型关注输入序列的不同位置，捕捉序列内的依赖关系。</p></li>
+<li><p><strong>前馈神经网络（Feed-Forward Network）</strong>：由两个线性变换和一个非线性激活函数组成，对每个位置的表示进行独立处理。</p></li>
+</ol>
+<p>此外，每个子层都使用残差连接（Residual Connection）和层归一化（Layer Normalization）。</p>
+</section>
+<section id="id3">
+<h3>12.2.2 自注意力机制详解<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>自注意力机制是Transformer的核心，它允许模型在处理序列中的每个位置时，考虑整个序列的信息。自注意力的计算过程如下：</p>
+<ol class="arabic simple">
+<li><p>对输入序列$X$进行线性变换，得到查询（Query）、键（Key）和值（Value）：
+$$Q = XW_Q, K = XW_K, V = XW_V$$
+其中，$W_Q$、$W_K$和$W_V$是可学习的权重矩阵。</p></li>
+<li><p>计算注意力权重：
+$$Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$$
+其中，$d_k$是键向量的维度，用于缩放点积，防止梯度消失。</p></li>
+<li><p>在多头注意力（Multi-Head Attention）中，上述过程被并行执行多次，然后将结果拼接：
+$$MultiHead(Q, K, V) = Concat(head_1, head_2, …, head_h)W_O$$
+其中，$head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)$，$W_O$是输出投影矩阵。</p></li>
+</ol>
+<p>在自回归生成过程中，为了保持因果关系（即当前位置只能看到之前的位置），通常使用掩码自注意力（Masked Self-Attention），通过掩码矩阵将未来位置的注意力权重设为负无穷，使其在softmax后接近于零。</p>
+</section>
+<section id="id4">
+<h3>12.2.3 自回归生成中的计算冗余<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>在自回归生成过程中，模型逐个生成标记。对于每个新生成的标记，模型需要重新计算整个序列的表示。具体来说，如果已经生成了$t$个标记，要生成第$t+1$个标记，需要：</p>
+<ol class="arabic simple">
+<li><p>将前$t$个标记输入模型。</p></li>
+<li><p>计算每一层的自注意力和前馈网络。</p></li>
+<li><p>基于最后一个位置的输出预测下一个标记。</p></li>
+</ol>
+<p>这个过程中存在明显的计算冗余：每次生成新标记时，都要重新计算前面所有标记的表示，而这些表示在之前的步骤中已经计算过了。这种冗余在生成长文本时尤为明显，严重影响推理效率。</p>
+<p>KV缓存正是为了解决这个问题而设计的，它通过缓存之前计算的键（Key）和值（Value）向量，避免重复计算，从而显著提高推理效率。</p>
+</section>
+</section>
+<section id="kv">
+<h2>12.3 KV缓存原理<a class="headerlink" href="#kv" title="Link to this heading">#</a></h2>
+<p>KV缓存（Key-Value Cache）是一种优化自回归生成过程的技术，通过缓存已计算的键（Key）和值（Value）向量，避免在生成新标记时重复计算，从而提高推理效率。</p>
+<section id="id5">
+<h3>12.3.1 基本原理<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>在自回归生成过程中，对于每个新生成的标记，模型需要计算其与之前所有标记的注意力权重。这涉及到计算查询（Query）、键（Key）和值（Value）向量，以及它们之间的交互。</p>
+<p>KV缓存的核心思想是：对于已经生成的标记，其键和值向量在不同的生成步骤中是不变的，因此可以计算一次并缓存起来，在后续步骤中直接使用。</p>
+<p>具体来说，如果已经生成了$t$个标记，要生成第$t+1$个标记，使用KV缓存的过程如下：</p>
+<ol class="arabic simple">
+<li><p>只对第$t$个标记计算查询、键和值向量（$Q_t$、$K_t$和$V_t$）。</p></li>
+<li><p>从缓存中获取前$t-1$个标记的键和值向量（$K_{1:t-1}$和$V_{1:t-1}$）。</p></li>
+<li><p>将当前的键和值向量与缓存中的拼接：$K_{1:t} = [K_{1:t-1}; K_t]$，$V_{1:t} = [V_{1:t-1}; V_t]$。</p></li>
+<li><p>计算注意力：$Attention(Q_t, K_{1:t}, V_{1:t})$。</p></li>
+<li><p>更新缓存，将$K_t$和$V_t$添加到缓存中。</p></li>
+</ol>
+<p>通过这种方式，每次只需要计算一个新标记的查询、键和值向量，而不是重新计算整个序列，从而显著减少计算量。</p>
+</section>
+<section id="id6">
+<h3>12.3.2 数学表示<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>为了更清晰地理解KV缓存，我们可以用数学公式表示这个过程。</p>
+<p>在没有KV缓存的情况下，生成第$t+1$个标记的自注意力计算如下：</p>
+<p>$$Q_{1:t} = X_{1:t}W_Q, K_{1:t} = X_{1:t}W_K, V_{1:t} = X_{1:t}W_V$$
+$$A_t = softmax(\frac{Q_t K_{1:t}^T}{\sqrt{d_k}})V_{1:t}$$</p>
+<p>其中，$X_{1:t}$是前$t$个标记的输入表示，$Q_t$是第$t$个位置的查询向量，$A_t$是第$t$个位置的注意力输出。</p>
+<p>使用KV缓存后，计算过程变为：</p>
+<p>$$Q_t = X_t W_Q$$
+$$K_t = X_t W_K, V_t = X_t W_V$$
+$$K_{1:t} = [K_{1:t-1}; K_t], V_{1:t} = [V_{1:t-1}; V_t]$$
+$$A_t = softmax(\frac{Q_t K_{1:t}^T}{\sqrt{d_k}})V_{1:t}$$</p>
+<p>其中，$K_{1:t-1}$和$V_{1:t-1}$是从缓存中获取的前$t-1$个位置的键和值向量。</p>
+<p>通过比较这两个过程，我们可以看到KV缓存的主要优势：</p>
+<ol class="arabic simple">
+<li><p>减少了矩阵乘法的计算量：从$O(t \times d^2)$减少到$O(d^2)$，其中$d$是模型维度。</p></li>
+<li><p>避免了重复计算：每个位置的键和值向量只计算一次。</p></li>
+</ol>
+<p>这些优势在生成长文本时尤为明显，可以显著提高推理速度。</p>
+</section>
+<section id="id7">
+<h3>12.3.3 多层多头注意力中的KV缓存<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>在实际的Transformer模型中，通常有多个注意力层和多个注意力头。KV缓存需要为每个层和每个头维护单独的缓存。</p>
+<p>假设模型有$L$层，每层有$h$个注意力头，则KV缓存的结构如下：</p>
+<p>$$Cache = {(K_{l,h}, V_{l,h}) | l \in [1, L], h \in [1, H]}$$</p>
+<p>其中，$K_{l,h}$和$V_{l,h}$分别是第$l$层第$h$个头的键和值缓存。</p>
+<p>在实现中，这通常表示为形状为$[L, 2, H, T, D/H]$的张量，其中：</p>
+<ul class="simple">
+<li><p>$L$是层数</p></li>
+<li><p>$2$表示键和值两种缓存</p></li>
+<li><p>$H$是头数</p></li>
+<li><p>$T$是当前序列长度</p></li>
+<li><p>$D/H$是每个头的维度</p></li>
+</ul>
+<p>随着生成过程的进行，$T$会不断增加，缓存需要相应地扩展。</p>
+</section>
+</section>
+<section id="id8">
+<h2>12.4 KV缓存实现<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<p>了解了KV缓存的原理后，我们来看如何在实际代码中实现它。我们将使用PyTorch作为示例，展示如何在Transformer模型中实现KV缓存。</p>
+<section id="id9">
+<h3>12.4.1 基本实现<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>首先，我们定义一个简化的Transformer层，包含自注意力和前馈网络：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+
+<span class="k">class</span> <span class="nc">TransformerLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span> <span class="o">=</span> <span class="n">nhead</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">=</span> <span class="n">d_model</span> <span class="o">//</span> <span class="n">nhead</span>
+        
+        <span class="c1"># 自注意力参数</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">o_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        
+        <span class="c1"># 前馈网络</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ff1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ff2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_ff</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        
+        <span class="c1"># 层归一化</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">kv_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_cache</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># 自注意力</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># 计算查询、键、值</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># 重塑为多头形式</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># 使用KV缓存</span>
+        <span class="k">if</span> <span class="n">kv_cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">past_k</span><span class="p">,</span> <span class="n">past_v</span> <span class="o">=</span> <span class="n">kv_cache</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">past_k</span><span class="p">,</span> <span class="n">k</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">past_v</span><span class="p">,</span> <span class="n">v</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># 计算注意力</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span>
+        
+        <span class="c1"># 掩码自注意力（因果关系）</span>
+        <span class="n">seq_len_k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">seq_len_k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">),</span> <span class="n">diagonal</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">scores</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">))</span>
+        
+        <span class="n">attn_weights</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">attn_output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">attn_weights</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        
+        <span class="c1"># 重塑回原始形状</span>
+        <span class="n">attn_output</span> <span class="o">=</span> <span class="n">attn_output</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="n">attn_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o_proj</span><span class="p">(</span><span class="n">attn_output</span><span class="p">)</span>
+        
+        <span class="c1"># 残差连接</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">residual</span> <span class="o">+</span> <span class="n">attn_output</span>
+        
+        <span class="c1"># 前馈网络</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ff2</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">gelu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ff1</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">residual</span> <span class="o">+</span> <span class="n">x</span>
+        
+        <span class="c1"># 返回输出和更新的缓存</span>
+        <span class="k">if</span> <span class="n">return_cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+<p>接下来，我们定义一个使用KV缓存的Transformer模型：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TransformerWithKVCache</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>  <span class="c1"># 假设最大长度为1024</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">TransformerLayer</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">)</span>
+        <span class="p">])</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lm_head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span> <span class="o">=</span> <span class="n">nhead</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">=</span> <span class="n">d_model</span> <span class="o">//</span> <span class="n">nhead</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">kv_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span>
+        
+        <span class="c1"># 获取词嵌入和位置嵌入</span>
+        <span class="n">token_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_embedding</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+        <span class="n">pos_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">input_ids</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pos_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_embedding</span><span class="p">(</span><span class="n">pos_ids</span><span class="p">)</span>
+        
+        <span class="n">x</span> <span class="o">=</span> <span class="n">token_emb</span> <span class="o">+</span> <span class="n">pos_emb</span>
+        
+        <span class="c1"># 初始化KV缓存</span>
+        <span class="k">if</span> <span class="n">kv_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kv_cache</span> <span class="o">=</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">)]</span>
+        
+        <span class="c1"># 更新后的KV缓存</span>
+        <span class="n">new_kv_cache</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># 通过每一层</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+            <span class="n">layer_cache</span> <span class="o">=</span> <span class="n">kv_cache</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">kv_cache</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">new_cache</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">layer_cache</span><span class="p">,</span> <span class="n">return_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">new_kv_cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_cache</span><span class="p">)</span>
+        
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lm_head</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">logits</span><span class="p">,</span> <span class="n">new_kv_cache</span>
+    
+    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">max_length</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;使用KV缓存生成文本&quot;&quot;&quot;</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">device</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># 初始输入和KV缓存</span>
+        <span class="n">current_ids</span> <span class="o">=</span> <span class="n">input_ids</span>
+        <span class="n">kv_cache</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="n">generated_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_length</span><span class="p">):</span>
+            <span class="c1"># 前向传播</span>
+            <span class="n">logits</span><span class="p">,</span> <span class="n">kv_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">current_ids</span><span class="p">,</span> <span class="n">kv_cache</span><span class="p">)</span>
+            
+            <span class="c1"># 只关注最后一个位置的预测</span>
+            <span class="n">next_token_logits</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">temperature</span>
+            
+            <span class="c1"># 采样下一个标记</span>
+            <span class="n">probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">next_token_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            
+            <span class="c1"># 添加到生成的序列中</span>
+            <span class="n">generated_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">next_token</span><span class="p">)</span>
+            
+            <span class="c1"># 更新当前输入（只包含新生成的标记）</span>
+            <span class="n">current_ids</span> <span class="o">=</span> <span class="n">next_token</span>
+        
+        <span class="c1"># 拼接所有生成的标记</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">generated_ids</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这个实现展示了KV缓存的基本原理：</p>
+<ol class="arabic simple">
+<li><p>在每一层的前向传播中，计算并返回更新后的KV缓存。</p></li>
+<li><p>在生成过程中，每次只输入新生成的标记，并使用缓存中的键和值向量。</p></li>
+<li><p>随着生成过程的进行，KV缓存不断扩展，包含所有已生成标记的信息。</p></li>
+</ol>
+</section>
+<section id="id10">
+<h3>12.4.2 高效实现考虑因素<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>在实际应用中，KV缓存的实现需要考虑更多因素，以实现最佳性能：</p>
+<ol class="arabic simple">
+<li><p><strong>内存布局</strong>：为了提高内存访问效率，KV缓存的张量应该是连续的（contiguous）。在PyTorch中，可以使用<code class="docutils literal notranslate"><span class="pre">contiguous()</span></code>方法确保张量是连续的。</p></li>
+<li><p><strong>预分配内存</strong>：为了避免频繁的内存分配和释放，可以预先分配足够大的缓存空间，然后在生成过程中逐步填充。</p></li>
+<li><p><strong>批处理支持</strong>：在处理批量输入时，每个样本可能有不同的序列长度，需要适当处理掩码和缓存。</p></li>
+<li><p><strong>内存优化</strong>：对于非常长的序列，KV缓存可能占用大量内存。可以考虑使用较低精度（如float16或int8）存储缓存，或者实现缓存清理策略。</p></li>
+</ol>
+<p>以下是一个考虑这些因素的更高效实现：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">EfficientTransformerWithKVCache</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="o">=</span><span class="mi">1024</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 模型定义与之前相同</span>
+        <span class="c1"># ...</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_seq_len</span> <span class="o">=</span> <span class="n">max_seq_len</span>
+    
+    <span class="k">def</span> <span class="nf">_create_kv_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;预分配KV缓存空间&quot;&quot;&quot;</span>
+        <span class="n">head_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span>
+        
+        <span class="c1"># 为每一层创建缓存</span>
+        <span class="n">kv_cache</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">):</span>
+            <span class="c1"># 键缓存：[batch_size, nhead, max_seq_len, head_dim]</span>
+            <span class="n">k_cache</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">),</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
+            <span class="p">)</span>
+            
+            <span class="c1"># 值缓存：[batch_size, nhead, max_seq_len, head_dim]</span>
+            <span class="n">v_cache</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">),</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
+            <span class="p">)</span>
+            
+            <span class="n">kv_cache</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">k_cache</span><span class="p">,</span> <span class="n">v_cache</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">kv_cache</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">kv_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache_position</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">device</span>
+        
+        <span class="c1"># 获取词嵌入和位置嵌入</span>
+        <span class="n">token_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_embedding</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+        <span class="n">pos_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">cache_position</span><span class="p">,</span> <span class="n">cache_position</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pos_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_embedding</span><span class="p">(</span><span class="n">pos_ids</span><span class="p">)</span>
+        
+        <span class="n">x</span> <span class="o">=</span> <span class="n">token_emb</span> <span class="o">+</span> <span class="n">pos_emb</span>
+        
+        <span class="c1"># 初始化或使用现有的KV缓存</span>
+        <span class="k">if</span> <span class="n">kv_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kv_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_kv_cache</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        
+        <span class="c1"># 通过每一层</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+            <span class="n">k_cache</span><span class="p">,</span> <span class="n">v_cache</span> <span class="o">=</span> <span class="n">kv_cache</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            
+            <span class="c1"># 自注意力</span>
+            <span class="n">residual</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            
+            <span class="c1"># 计算查询、键、值</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            
+            <span class="c1"># 重塑为多头形式</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nhead</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            
+            <span class="c1"># 更新KV缓存</span>
+            <span class="n">k_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">cache_position</span><span class="p">:</span><span class="n">cache_position</span><span class="o">+</span><span class="n">seq_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span>
+            <span class="n">v_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">cache_position</span><span class="p">:</span><span class="n">cache_position</span><span class="o">+</span><span class="n">seq_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            
+            <span class="c1"># 使用完整的KV缓存计算注意力</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">k_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">cache_position</span><span class="o">+</span><span class="n">seq_len</span><span class="p">]</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">v_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">cache_position</span><span class="o">+</span><span class="n">seq_len</span><span class="p">]</span>
+            
+            <span class="c1"># 计算注意力</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span>
+            
+            <span class="c1"># 掩码自注意力（因果关系）</span>
+            <span class="n">seq_len_k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">seq_len_k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span> <span class="n">diagonal</span><span class="o">=</span><span class="mi">1</span><span class="o">+</span><span class="n">cache_position</span><span class="p">)</span>
+            <span class="n">scores</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">))</span>
+            
+            <span class="n">attn_weights</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">attn_output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">attn_weights</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            
+            <span class="c1"># 重塑回原始形状</span>
+            <span class="n">attn_output</span> <span class="o">=</span> <span class="n">attn_output</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span><span class="p">)</span>
+            <span class="n">attn_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o_proj</span><span class="p">(</span><span class="n">attn_output</span><span class="p">)</span>
+            
+            <span class="c1"># 残差连接</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">residual</span> <span class="o">+</span> <span class="n">attn_output</span>
+            
+            <span class="c1"># 前馈网络</span>
+            <span class="n">residual</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ff2</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">gelu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ff1</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">residual</span> <span class="o">+</span> <span class="n">x</span>
+        
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lm_head</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">logits</span><span class="p">,</span> <span class="n">kv_cache</span><span class="p">,</span> <span class="n">cache_position</span> <span class="o">+</span> <span class="n">seq_len</span>
+    
+    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">max_length</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;使用KV缓存生成文本&quot;&quot;&quot;</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">device</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># 初始输入和KV缓存</span>
+        <span class="n">current_ids</span> <span class="o">=</span> <span class="n">input_ids</span>
+        <span class="n">kv_cache</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">cache_position</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="n">generated_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_ids</span><span class="p">]</span>
+        
+        <span class="c1"># 首先处理整个输入序列</span>
+        <span class="n">logits</span><span class="p">,</span> <span class="n">kv_cache</span><span class="p">,</span> <span class="n">cache_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">current_ids</span><span class="p">,</span> <span class="n">kv_cache</span><span class="p">,</span> <span class="n">cache_position</span><span class="p">)</span>
+        
+        <span class="c1"># 然后逐个生成新标记</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_length</span><span class="p">):</span>
+            <span class="c1"># 只取最后一个标记的预测</span>
+            <span class="n">next_token_logits</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">temperature</span>
+            
+            <span class="c1"># 采样下一个标记</span>
+            <span class="n">probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">next_token_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            
+            <span class="c1"># 添加到生成的序列中</span>
+            <span class="n">generated_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">next_token</span><span class="p">)</span>
+            
+            <span class="c1"># 使用KV缓存进行下一步预测</span>
+            <span class="n">logits</span><span class="p">,</span> <span class="n">kv_cache</span><span class="p">,</span> <span class="n">cache_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">next_token</span><span class="p">,</span> <span class="n">kv_cache</span><span class="p">,</span> <span class="n">cache_position</span><span class="p">)</span>
+            
+            <span class="c1"># 检查是否需要扩展缓存</span>
+            <span class="k">if</span> <span class="n">cache_position</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">:</span>
+                <span class="c1"># 简单策略：丢弃前一半的缓存</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kv_cache</span><span class="p">)):</span>
+                    <span class="n">k_cache</span><span class="p">,</span> <span class="n">v_cache</span> <span class="o">=</span> <span class="n">kv_cache</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">half_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_seq_len</span> <span class="o">//</span> <span class="mi">2</span>
+                    
+                    <span class="n">k_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">half_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">half_len</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">]</span>
+                    <span class="n">v_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">half_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">half_len</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">]</span>
+                    
+                    <span class="c1"># 清空后半部分</span>
+                    <span class="n">k_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">half_len</span><span class="p">:]</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+                    <span class="n">v_cache</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">half_len</span><span class="p">:]</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+                
+                <span class="n">cache_position</span> <span class="o">=</span> <span class="n">half_len</span>
+        
+        <span class="c1"># 拼接所有生成的标记</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">generated_ids</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这个实现增加了几个重要的优化：</p>
+<ol class="arabic simple">
+<li><p>预分配固定大小的KV缓存，避免频繁的内存分配。</p></li>
+<li><p>跟踪缓存位置（cache_position），只更新和使用需要的部分。</p></li>
+<li><p>当缓存接近满时，实现了一个简单的缓存清理策略（丢弃前一半）。</p></li>
+<li><p>使用连续的内存布局，提高内存访问效率。</p></li>
+</ol>
+</section>
+<section id="id11">
+<h3>12.4.3 主流框架中的KV缓存实现<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>在实际应用中，我们通常使用成熟的深度学习框架和库，如PyTorch、TensorFlow、Hugging Face Transformers等。这些框架已经实现了高效的KV缓存。</p>
+<p>以Hugging Face Transformers库为例，它在GPT-2、GPT-J、LLaMA等模型中都实现了KV缓存。以下是使用Hugging Face Transformers库进行文本生成的示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">GPT2LMHeadModel</span><span class="p">,</span> <span class="n">GPT2Tokenizer</span>
+
+<span class="c1"># 加载预训练模型和分词器</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">GPT2LMHeadModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2&quot;</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">GPT2Tokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2&quot;</span><span class="p">)</span>
+
+<span class="c1"># 准备输入</span>
+<span class="n">input_text</span> <span class="o">=</span> <span class="s2">&quot;Once upon a time&quot;</span>
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">input_text</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span>
+
+<span class="c1"># 使用KV缓存生成文本</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">input_ids</span><span class="p">,</span>
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">num_return_sequences</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+    <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># 启用KV缓存</span>
+<span class="p">)</span>
+
+<span class="c1"># 解码输出</span>
+<span class="n">generated_text</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">generated_text</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>在这个例子中，<code class="docutils literal notranslate"><span class="pre">use_cache=True</span></code>参数启用了KV缓存。Hugging Face Transformers库在内部实现了高效的KV缓存管理，包括预分配内存、批处理支持和内存优化等。</p>
+</section>
+</section>
+<section id="id12">
+<h2>12.5 KV缓存优化技术<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<p>虽然基本的KV缓存已经可以显著提高推理效率，但在实际应用中，我们可以使用更多优化技术来进一步提高性能。</p>
+<section id="id13">
+<h3>12.5.1 内存优化<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>KV缓存的主要挑战之一是内存消耗。对于长序列生成，缓存可能占用大量内存。以下是一些内存优化技术：</p>
+<ol class="arabic simple">
+<li><p><strong>低精度存储</strong>：使用较低精度（如float16或int8）存储KV缓存，可以减少内存占用。例如：</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_create_kv_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float16</span><span class="p">):</span>  <span class="c1"># 使用float16</span>
+    <span class="c1"># 创建缓存的代码...</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>稀疏注意力</strong>：对于非常长的序列，可以实现稀疏注意力机制，只关<response clipped><NOTE>To save on context only part of this file has been shown to you. You should retry this tool after you have searched inside the file with <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">-n</span></code> in order to find the line numbers of what you are looking for.</NOTE></p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../11_datasets/chapter11_datasets.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第11章：数据集（Datasets）</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../13_inference_quantization/chapter13_inference_quantization.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第13章：推理 II：量化 (Quantization)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">12.1 推理过程概述</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transformer">12.2 Transformer架构回顾</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">12.2.1 Transformer基本结构</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">12.2.2 自注意力机制详解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">12.2.3 自回归生成中的计算冗余</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kv">12.3 KV缓存原理</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">12.3.1 基本原理</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">12.3.2 数学表示</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">12.3.3 多层多头注意力中的KV缓存</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">12.4 KV缓存实现</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">12.4.1 基本实现</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">12.4.2 高效实现考虑因素</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">12.4.3 主流框架中的KV缓存实现</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">12.5 KV缓存优化技术</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">12.5.1 内存优化</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

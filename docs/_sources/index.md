@@ -15,7 +15,42 @@
 ```{toctree}
 :maxdepth: 3
 :caption: 目录
-chapters/index.md
+chapters/01_bigram/chapter01_bigram_language_model.md
+chapters/02_micrograd/chapter02_micrograd.md
+chapters/03_ngram_model/chapter03_ngram_model.md
+chapters/04_attention/chapter04_attention_model.md
+chapters/05_transformer/chapter05_transformer.md
+chapters/06_tokenization/chaptet06_tokenization.md
+chapters/07_optimization/chapter07_optimization.md
+chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.md
+chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.md
+chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.md
+chapters/11_datasets/chapter11_datasets.md
+chapters/12_inference_kv_cache/chapter12_inference_kv_cache.md
+chapters/13_inference_quantization/chapter13_inference_quantization.md
+chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.md
+chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.md
+chapters/14_finetuning_i_sft/chapter14_3_lora_technique.md
+chapters/14_finetuning_i_sft/chapter14_4_chat_model_finetuning.md
+chapters/14_finetuning_i_sft/chapter14_5_practical_case_study.md
+chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.md
+chapters/15_Finetuning_ii_rl/chapter15_2_rlhf.md
+chapters/15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.md
+chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.md
+chapters/16_deployment/chapter16_1_api_development.md
+chapters/16_deployment/chapter16_2_web_application.md
+chapters/17_Multimodal/chapter17_1_multimodal_basics.md
+chapters/17_Multimodal/chapter17_2_vqvae_technique.md
+chapters/17_Multimodal/chapter17_3_diffusion_transformer.md
+chapters/17_Multimodal/chapter17_4_lora_multimodal_training.md
+chapters/17_Multimodal/chapter17_5_multimodal_model_integration.md
+chapters/appendix/00_appendix_intro.md
+chapters/appendix/A1_programming_languages.md
+chapters/appendix/B1_data_types.md
+chapters/appendix/C1_tensor_operations.md
+chapters/appendix/D1_deep_learning_frameworks.md
+chapters/appendix/E1_neural_network_architectures.md
+chapters/appendix/F1_multimodal.md
 ```
 
 

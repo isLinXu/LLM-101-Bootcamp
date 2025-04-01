@@ -1,0 +1,941 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第01章：Bigram语言模型（语言建模） &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/01_bigram/chapter01_bigram_language_model';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第02章：Micrograd（机器学习，反向传播）" href="../02_micrograd/chapter02_micrograd.html" />
+    <link rel="prev" title="LLM-101-Bootcamp" href="../../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/01_bigram/chapter01_bigram_language_model.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/01_bigram/chapter01_bigram_language_model.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/01_bigram/chapter01_bigram_language_model.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第01章：Bigram语言模型（语言建模）</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. 语言模型基础概念</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">什么是语言模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">语言模型的历史发展</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">语言模型的应用场景</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2. 概率论基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">条件概率</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">联合概率</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">马尔可夫假设</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">3. Bigram模型详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Bigram模型的数学定义</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">从文本数据构建Bigram模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Bigram模型的参数估计</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">4. 实现一个简单的Bigram模型</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">数据预处理</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">模型训练</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">文本生成</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">完整示例</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">5. Bigram模型的局限性</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">稀疏性问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">上下文有限问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">平滑技术简介</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">总结</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="bigram">
+<h1>第01章：Bigram语言模型（语言建模）<a class="headerlink" href="#bigram" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>1. 语言模型基础概念<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>什么是语言模型<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>语言模型是自然语言处理（NLP）领域的核心技术，它的基本任务是预测文本序列中的下一个词或字符。从本质上讲，语言模型试图捕捉人类语言的统计规律，理解词与词之间的关联和依赖关系。一个优秀的语言模型能够生成流畅、连贯且符合语法规则的文本，就像是由人类撰写的一样。</p>
+<p>语言模型可以形式化地定义为：给定一个词序列 $w_1, w_2, …, w_{n-1}$，模型需要计算下一个词 $w_n$ 出现的概率分布 $P(w_n | w_1, w_2, …, w_{n-1})$。这个条件概率表示了在已知前面所有词的情况下，下一个词可能是什么。</p>
+</section>
+<section id="id3">
+<h3>语言模型的历史发展<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>语言模型的发展历程可以大致分为以下几个阶段：</p>
+<ol class="arabic simple">
+<li><p><strong>统计语言模型时代（1980s-2000s）</strong>：</p>
+<ul class="simple">
+<li><p><strong>N-gram模型</strong>：最早的语言模型主要基于N-gram统计，如Bigram（二元语法）和Trigram（三元语法）。这些模型假设一个词的出现只与其前面的N-1个词有关。</p></li>
+<li><p><strong>平滑技术</strong>：为了解决数据稀疏问题，研究者提出了各种平滑方法，如拉普拉斯平滑、Good-Turing平滑等。</p></li>
+<li><p><strong>回退模型</strong>：当高阶N-gram没有足够统计数据时，回退到低阶模型。</p></li>
+</ul>
+</li>
+<li><p><strong>神经网络语言模型时代（2003-2013）</strong>：</p>
+<ul class="simple">
+<li><p><strong>前馈神经网络语言模型</strong>：Bengio等人在2003年提出了第一个基于神经网络的语言模型，使用词嵌入和前馈神经网络来预测下一个词。</p></li>
+<li><p><strong>循环神经网络（RNN）</strong>：Mikolov等人使用RNN构建语言模型，能够捕捉更长距离的依赖关系。</p></li>
+<li><p><strong>长短期记忆网络（LSTM）和门控循环单元（GRU）</strong>：这些改进的RNN架构解决了标准RNN的梯度消失问题，能够学习更长序列的依赖关系。</p></li>
+</ul>
+</li>
+<li><p><strong>Transformer时代（2017-至今）</strong>：</p>
+<ul class="simple">
+<li><p><strong>Transformer架构</strong>：2017年，Vaswani等人提出的Transformer架构通过自注意力机制彻底改变了NLP领域。</p></li>
+<li><p><strong>预训练语言模型</strong>：GPT、BERT、T5等大型预训练模型的出现，将语言模型的能力提升到了新的高度。</p></li>
+<li><p><strong>大型语言模型（LLM）</strong>：如GPT-3、GPT-4、LLaMA、Claude等拥有数十亿到数千亿参数的模型，展现出了惊人的语言理解和生成能力。</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id4">
+<h3>语言模型的应用场景<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>语言模型在现代人工智能和自然语言处理中有着广泛的应用：</p>
+<ol class="arabic simple">
+<li><p><strong>文本生成</strong>：</p>
+<ul class="simple">
+<li><p>故事创作和内容生成</p></li>
+<li><p>自动写作辅助</p></li>
+<li><p>对话系统和聊天机器人</p></li>
+<li><p>诗歌、歌词创作</p></li>
+</ul>
+</li>
+<li><p><strong>机器翻译</strong>：</p>
+<ul class="simple">
+<li><p>语言模型可以帮助生成更流畅的翻译结果</p></li>
+<li><p>多语言翻译系统</p></li>
+</ul>
+</li>
+<li><p><strong>文本摘要</strong>：</p>
+<ul class="simple">
+<li><p>自动生成长文档的摘要</p></li>
+<li><p>新闻摘要和报告生成</p></li>
+</ul>
+</li>
+<li><p><strong>问答系统</strong>：</p>
+<ul class="simple">
+<li><p>基于知识的问答</p></li>
+<li><p>开放域问答</p></li>
+</ul>
+</li>
+<li><p><strong>语音识别</strong>：</p>
+<ul class="simple">
+<li><p>提高语音转文字的准确性</p></li>
+<li><p>语音助手系统</p></li>
+</ul>
+</li>
+<li><p><strong>代码生成与补全</strong>：</p>
+<ul class="simple">
+<li><p>编程辅助工具</p></li>
+<li><p>自动代码生成</p></li>
+</ul>
+</li>
+<li><p><strong>文本纠错与改写</strong>：</p>
+<ul class="simple">
+<li><p>语法检查和纠正</p></li>
+<li><p>风格转换和文本改写</p></li>
+</ul>
+</li>
+</ol>
+<p>随着大型语言模型的发展，语言模型的应用场景还在不断扩展，正在改变人类与计算机交互的方式。</p>
+</section>
+</section>
+<section id="id5">
+<h2>2. 概率论基础<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p>要理解语言模型，特别是统计语言模型，我们需要掌握一些基本的概率论概念。</p>
+<section id="id6">
+<h3>条件概率<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>条件概率是指在已知一个事件B发生的情况下，另一个事件A发生的概率，记作P(A|B)。</p>
+<p>数学定义：
+$$P(A|B) = \frac{P(A \cap B)}{P(B)}$$</p>
+<p>其中，P(A∩B)是事件A和B同时发生的概率，P(B)是事件B发生的概率。</p>
+<p>在语言模型中，我们关心的是在已知前面的词的条件下，下一个词出现的概率。例如，P(“学习”|”我喜欢”)表示在”我喜欢”之后出现”学习”的概率。</p>
+</section>
+<section id="id7">
+<h3>联合概率<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>联合概率是指多个事件同时发生的概率，记作P(A,B)或P(A∩B)。</p>
+<p>在语言模型中，一个句子的联合概率可以表示为：
+$$P(w_1, w_2, …, w_n) = P(w_1) \times P(w_2|w_1) \times P(w_3|w_1,w_2) \times … \times P(w_n|w_1,w_2,…,w_{n-1})$$</p>
+<p>这个公式使用了概率的链式法则，将联合概率分解为条件概率的乘积。</p>
+</section>
+<section id="id8">
+<h3>马尔可夫假设<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>在实际应用中，计算完整的条件概率$P(w_n|w_1,w_2,…,w_{n-1})$非常困难，因为随着历史长度的增加，可能的组合数量呈指数级增长，导致数据稀疏问题。</p>
+<p>为了简化计算，我们引入马尔可夫假设：假设当前状态只依赖于有限的前k个状态，而与更早的状态无关。</p>
+<p>在语言模型中，k阶马尔可夫假设可以表示为：
+$$P(w_n|w_1,w_2,…,w_{n-1}) \approx P(w_n|w_{n-k},…,w_{n-1})$$</p>
+<p>特别地，当k=1时，我们得到一阶马尔可夫假设：
+$$P(w_n|w_1,w_2,…,w_{n-1}) \approx P(w_n|w_{n-1})$$</p>
+<p>这就是Bigram模型的基础，它假设一个词的出现只与其前一个词有关。</p>
+</section>
+</section>
+<section id="id9">
+<h2>3. Bigram模型详解<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<section id="id10">
+<h3>Bigram模型的数学定义<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>Bigram（二元语法）模型是最简单的N-gram模型之一，它基于一阶马尔可夫假设，认为一个词的出现只与其前一个词相关。</p>
+<p>在Bigram模型中，一个句子的概率可以表示为：
+$$P(w_1, w_2, …, w_n) = P(w_1) \times P(w_2|w_1) \times P(w_3|w_2) \times … \times P(w_n|w_{n-1})$$</p>
+<p>其中，$P(w_i|w_{i-1})$是条件概率，表示在词$w_{i-1}$之后出现词$w_i$的概率。</p>
+<p>为了处理句子的开始，我们通常引入一个特殊的开始标记&lt;s&gt;，并将$P(w_1)$表示为$P(w_1|&lt;s&gt;)$。同样，为了处理句子的结束，我们引入结束标记&lt;/s&gt;。</p>
+</section>
+<section id="id11">
+<h3>从文本数据构建Bigram模型<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>构建Bigram模型的过程主要包括以下步骤：</p>
+<ol class="arabic simple">
+<li><p><strong>数据预处理</strong>：</p>
+<ul class="simple">
+<li><p>分词：将文本分割成词或字符序列</p></li>
+<li><p>添加特殊标记：在每个句子的开始和结束添加&lt;s&gt;和&lt;/s&gt;标记</p></li>
+<li><p>构建词汇表：统计所有不同的词，并为每个词分配一个唯一的索引</p></li>
+</ul>
+</li>
+<li><p><strong>统计频率</strong>：</p>
+<ul class="simple">
+<li><p>统计每个词对$(w_{i-1}, w_i)$在语料库中出现的次数，记为$count(w_{i-1}, w_i)$</p></li>
+<li><p>统计每个词$w_{i-1}$在语料库中出现的次数，记为$count(w_{i-1})$</p></li>
+</ul>
+</li>
+<li><p><strong>计算条件概率</strong>：</p>
+<ul class="simple">
+<li><p>使用最大似然估计（MLE）计算条件概率：
+$$P(w_i|w_{i-1}) = \frac{count(w_{i-1}, w_i)}{count(w_{i-1})}$$</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id12">
+<h3>Bigram模型的参数估计<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>最大似然估计是Bigram模型最基本的参数估计方法，但它存在一个严重问题：对于在训练数据中未出现的词对，其条件概率将为零，这会导致整个句子的概率为零，即使只有一个词对未在训练数据中出现。</p>
+<p>为了解决这个问题，我们需要使用平滑技术。以下是几种常见的平滑方法：</p>
+<ol class="arabic simple">
+<li><p><strong>拉普拉斯平滑（加一平滑）</strong>：
+$$P(w_i|w_{i-1}) = \frac{count(w_{i-1}, w_i) + 1}{count(w_{i-1}) + V}$$
+其中，V是词汇表的大小。</p></li>
+<li><p><strong>加k平滑</strong>：
+$$P(w_i|w_{i-1}) = \frac{count(w_{i-1}, w_i) + k}{count(w_{i-1}) + k \times V}$$
+其中，k是一个小于1的正数。</p></li>
+<li><p><strong>Good-Turing平滑</strong>：
+调整频率计数，使得未见事件获得一些概率质量。</p></li>
+<li><p><strong>插值平滑</strong>：
+将高阶模型与低阶模型结合：
+$$P(w_i|w_{i-1}) = \lambda P_{ML}(w_i|w_{i-1}) + (1-\lambda)P(w_i)$$
+其中，λ是一个介于0和1之间的插值参数，$P_{ML}$是最大似然估计，$P(w_i)$是一元语法概率。</p></li>
+<li><p><strong>回退平滑</strong>：
+当高阶N-gram没有足够的统计数据时，回退到低阶模型。</p></li>
+</ol>
+</section>
+</section>
+<section id="id13">
+<h2>4. 实现一个简单的Bigram模型<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<p>下面我们将实现一个简单的Bigram语言模型，包括数据预处理、模型训练和文本生成。</p>
+<section id="id14">
+<h3>数据预处理<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<p>首先，我们需要对文本数据进行预处理，包括分词、添加特殊标记和构建词汇表。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">preprocess_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="c1"># 分词（这里简单地按空格分割）</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    
+    <span class="c1"># 添加特殊标记</span>
+    <span class="n">sentences</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">current_sentence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&lt;s&gt;&#39;</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">]:</span>
+            <span class="n">current_sentence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;/s&gt;&#39;</span><span class="p">)</span>
+            <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_sentence</span><span class="p">)</span>
+            <span class="n">current_sentence</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&lt;s&gt;&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">current_sentence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    
+    <span class="c1"># 处理最后一个句子</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_sentence</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># 不只包含&lt;s&gt;</span>
+        <span class="n">current_sentence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;/s&gt;&#39;</span><span class="p">)</span>
+        <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_sentence</span><span class="p">)</span>
+    
+    <span class="c1"># 构建词汇表</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">sentence</span><span class="p">:</span>
+            <span class="n">vocab</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">sentences</span><span class="p">,</span> <span class="n">vocab</span>
+</pre></div>
+</div>
+</section>
+<section id="id15">
+<h3>模型训练<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>接下来，我们统计词对频率并计算条件概率：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_bigram_model</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="s1">&#39;laplace&#39;</span><span class="p">):</span>
+    <span class="c1"># 初始化计数器</span>
+    <span class="n">bigram_counts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">unigram_counts</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="c1"># 统计频率</span>
+    <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">w_prev</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">w_curr</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            
+            <span class="c1"># 更新二元语法计数</span>
+            <span class="k">if</span> <span class="n">w_prev</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bigram_counts</span><span class="p">:</span>
+                <span class="n">bigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">w_curr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">]:</span>
+                <span class="n">bigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">][</span><span class="n">w_curr</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">bigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">][</span><span class="n">w_curr</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+            <span class="c1"># 更新一元语法计数</span>
+            <span class="k">if</span> <span class="n">w_prev</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unigram_counts</span><span class="p">:</span>
+                <span class="n">unigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">unigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="c1"># 计算条件概率</span>
+    <span class="n">bigram_probs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">vocab_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">w_prev</span> <span class="ow">in</span> <span class="n">bigram_counts</span><span class="p">:</span>
+        <span class="n">bigram_probs</span><span class="p">[</span><span class="n">w_prev</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">w_curr</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">smoothing</span> <span class="o">==</span> <span class="s1">&#39;laplace&#39;</span><span class="p">:</span>
+                <span class="c1"># 拉普拉斯平滑</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="n">bigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w_curr</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">bigram_probs</span><span class="p">[</span><span class="n">w_prev</span><span class="p">][</span><span class="n">w_curr</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">unigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">]</span> <span class="o">+</span> <span class="n">vocab_size</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">smoothing</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+                <span class="c1"># 无平滑（最大似然估计）</span>
+                <span class="k">if</span> <span class="n">w_curr</span> <span class="ow">in</span> <span class="n">bigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">]:</span>
+                    <span class="n">bigram_probs</span><span class="p">[</span><span class="n">w_prev</span><span class="p">][</span><span class="n">w_curr</span><span class="p">]</span> <span class="o">=</span> <span class="n">bigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">][</span><span class="n">w_curr</span><span class="p">]</span> <span class="o">/</span> <span class="n">unigram_counts</span><span class="p">[</span><span class="n">w_prev</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bigram_probs</span><span class="p">[</span><span class="n">w_prev</span><span class="p">][</span><span class="n">w_curr</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">return</span> <span class="n">bigram_probs</span>
+</pre></div>
+</div>
+</section>
+<section id="id16">
+<h3>文本生成<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<p>有了训练好的Bigram模型，我们可以生成新的文本：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="k">def</span> <span class="nf">generate_text</span><span class="p">(</span><span class="n">bigram_probs</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="c1"># 从&lt;s&gt;开始</span>
+    <span class="n">current_word</span> <span class="o">=</span> <span class="s1">&#39;&lt;s&gt;&#39;</span>
+    <span class="n">generated_text</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="c1"># 生成文本，直到遇到&lt;/s&gt;或达到最大长度</span>
+    <span class="k">while</span> <span class="n">current_word</span> <span class="o">!=</span> <span class="s1">&#39;&lt;/s&gt;&#39;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">generated_text</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_length</span><span class="p">:</span>
+        <span class="c1"># 获取当前词之后可能出现的所有词及其概率</span>
+        <span class="n">next_word_probs</span> <span class="o">=</span> <span class="n">bigram_probs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">current_word</span><span class="p">,</span> <span class="p">{})</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">next_word_probs</span><span class="p">:</span>
+            <span class="k">break</span>
+        
+        <span class="c1"># 按概率随机选择下一个词</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">next_word_probs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">next_word_probs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        
+        <span class="c1"># 归一化概率</span>
+        <span class="n">sum_probs</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sum_probs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">probs</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="o">/</span> <span class="n">sum_probs</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">probs</span><span class="p">]</span>
+            <span class="n">next_word</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">probs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 如果所有概率都为0，随机选择</span>
+            <span class="n">next_word</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">next_word</span> <span class="o">!=</span> <span class="s1">&#39;&lt;/s&gt;&#39;</span><span class="p">:</span>
+            <span class="n">generated_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">next_word</span><span class="p">)</span>
+        
+        <span class="n">current_word</span> <span class="o">=</span> <span class="n">next_word</span>
+    
+    <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">generated_text</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id17">
+<h3>完整示例<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<p>下面是一个完整的示例，展示如何使用上述代码训练Bigram模型并生成文本：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 示例文本</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">The quick brown fox jumps over the lazy dog. </span>
+<span class="s2">The dog barks at the fox. </span>
+<span class="s2">The fox runs away quickly.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># 预处理文本</span>
+<span class="n">sentences</span><span class="p">,</span> <span class="n">vocab</span> <span class="o">=</span> <span class="n">preprocess_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;词汇表大小: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;句子数量: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 训练Bigram模型</span>
+<span class="n">bigram_probs</span> <span class="o">=</span> <span class="n">train_bigram_model</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="s1">&#39;laplace&#39;</span><span class="p">)</span>
+
+<span class="c1"># 生成文本</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">generated_text</span> <span class="o">=</span> <span class="n">generate_text</span><span class="p">(</span><span class="n">bigram_probs</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;生成的文本: </span><span class="si">{</span><span class="n">generated_text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这个简单的Bigram模型可以生成基本的文本，但由于只考虑了前一个词的影响，生成的文本通常缺乏长距离的连贯性和语义一致性。</p>
+</section>
+</section>
+<section id="id18">
+<h2>5. Bigram模型的局限性<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<p>尽管Bigram模型简单易实现，但它存在一些明显的局限性：</p>
+<section id="id19">
+<h3>稀疏性问题<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<p>Bigram模型面临的主要挑战之一是数据稀疏性。即使在大型语料库中，也会有许多合法的词对从未出现过。这导致模型对这些未见词对的概率估计为零或接近零，影响模型的泛化能力。</p>
+<p>例如，假设训练语料库中从未出现过”人工智能”后面跟着”革命”这个词对，但这是一个完全合理的组合。Bigram模型会给这个组合分配很低的概率，即使它在语义上是合理的。</p>
+</section>
+<section id="id20">
+<h3>上下文有限问题<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
+<p>Bigram模型只考虑前一个词的影响，忽略了更广泛的上下文。这导致生成的文本可能在局部上看起来合理，但整体上缺乏连贯性和一致性。</p>
+<p>例如，在句子”我昨天去了_____”中，填空词的选择应该受到整个前文的影响，而不仅仅是”了”这个词。Bigram模型无法捕捉这种长距离依赖关系。</p>
+</section>
+<section id="id21">
+<h3>平滑技术简介<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<p>为了缓解数据稀疏性问题，我们介绍了几种平滑技术。这些技术通过从高频事件中”偷取”一些概率质量并重新分配给低频或未见事件，使模型能够更好地处理未见词对。</p>
+<p>然而，平滑技术只能部分缓解问题，无法从根本上解决Bigram模型的局限性。为了构建更强大的语言模型，我们需要：</p>
+<ol class="arabic simple">
+<li><p><strong>考虑更长的上下文</strong>：使用更高阶的N-gram模型（如Trigram、4-gram等）或循环神经网络（RNN）、Transformer等能够捕捉长距离依赖的模型。</p></li>
+<li><p><strong>使用词嵌入</strong>：将离散的词表示为连续的向量，使模型能够捕捉词之间的语义相似性。</p></li>
+<li><p><strong>引入神经网络</strong>：利用神经网络的强大表示能力，学习更复杂的语言模式。</p></li>
+</ol>
+<p>在接下来的章节中，我们将逐步探索这些更先进的技术，最终构建一个强大的故事讲述AI大语言模型。</p>
+</section>
+</section>
+<section id="id22">
+<h2>总结<a class="headerlink" href="#id22" title="Link to this heading">#</a></h2>
+<p>在本章中，我们介绍了语言模型的基本概念、历史发展和应用场景，学习了概率论的基础知识，详细讲解了Bigram模型的原理和实现方法，并讨论了Bigram模型的局限性。</p>
+<p>Bigram模型是理解更复杂语言模型的基础，它通过简单的统计方法捕捉词与词之间的局部关系。尽管它存在明显的局限性，但Bigram模型为我们提供了一个理解语言建模核心思想的起点。</p>
+<p>在下一章中，我们将学习Micrograd，这是一个微型自动微分引擎，它将为我们构建神经网络语言模型奠定基础。通过Micrograd，我们将深入理解机器学习的核心概念和反向传播算法，为后续章节中更复杂模型的实现做好准备。</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">LLM-101-Bootcamp</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../02_micrograd/chapter02_micrograd.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第02章：Micrograd（机器学习，反向传播）</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. 语言模型基础概念</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">什么是语言模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">语言模型的历史发展</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">语言模型的应用场景</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2. 概率论基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">条件概率</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">联合概率</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">马尔可夫假设</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">3. Bigram模型详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Bigram模型的数学定义</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">从文本数据构建Bigram模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Bigram模型的参数估计</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">4. 实现一个简单的Bigram模型</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">数据预处理</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">模型训练</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">文本生成</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">完整示例</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">5. Bigram模型的局限性</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">稀疏性问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">上下文有限问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">平滑技术简介</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">总结</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

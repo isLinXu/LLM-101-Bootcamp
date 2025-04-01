@@ -1,0 +1,1897 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第17章：多模态-17.5 多模态模型整合 &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/17_Multimodal/chapter17_5_multimodal_model_integration';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="附录" href="../appendix/00_appendix_intro.html" />
+    <link rel="prev" title="第17章：多模态-基于LoRA的多模态模型训练" href="chapter17_4_lora_multimodal_training.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/17_Multimodal/chapter17_5_multimodal_model_integration.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/17_Multimodal/chapter17_5_multimodal_model_integration.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/17_Multimodal/chapter17_5_multimodal_model_integration.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第17章：多模态-17.5 多模态模型整合</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">17.5 多模态模型整合</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">多模态模型整合的挑战</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多模态整合架构设计</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1. 分层架构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2. 模块化设计</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">3. 通信协议</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clipblip2llavaqwen-vl">整合CLIP、BLIP2、LLaVA和Qwen-VL</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1. 模型角色定位</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">2. 统一接口设计</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">3. 模型管理器</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">4. 任务协调器</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">5. 故事讲述应用</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">6. 配置文件示例</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">7. 使用示例</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">多模态模型整合的优化策略</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">1. 内存优化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">2. 计算优化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">3. 延迟优化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">4. 质量优化</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">多模态模型整合的未来趋势</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">总结</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="id1">
+<h1>第17章：多模态-17.5 多模态模型整合<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<section id="id2">
+<h2>17.5 多模态模型整合<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>在前面的章节中，我们已经探讨了多模态基础理论、VQVAE技术、扩散变换器以及基于LoRA的多模态模型训练。本节将重点介绍如何将这些不同的多模态模型整合到一个统一的框架中，构建一个完整的多模态故事讲述AI系统。通过整合CLIP、BLIP2、LLaVA和Qwen-VL等模型，我们可以充分利用各个模型的优势，为用户提供丰富、沉浸式的故事体验。</p>
+<section id="id3">
+<h3>多模态模型整合的挑战<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>整合多个多模态模型面临以下挑战：</p>
+<ol class="arabic simple">
+<li><p><strong>接口不一致</strong>：</p>
+<ul class="simple">
+<li><p>不同模型具有不同的输入输出格式</p></li>
+<li><p>预处理和后处理步骤各不相同</p></li>
+<li><p>API设计和调用方式存在差异</p></li>
+</ul>
+</li>
+<li><p><strong>计算资源限制</strong>：</p>
+<ul class="simple">
+<li><p>同时加载多个大型模型需要大量GPU内存</p></li>
+<li><p>推理延迟可能影响用户体验</p></li>
+<li><p>资源分配需要精心设计</p></li>
+</ul>
+</li>
+<li><p><strong>模型协作</strong>：</p>
+<ul class="simple">
+<li><p>确保不同模型之间的输出兼容</p></li>
+<li><p>处理模型间的信息传递</p></li>
+<li><p>解决潜在的冲突和不一致</p></li>
+</ul>
+</li>
+<li><p><strong>一致性维护</strong>：</p>
+<ul class="simple">
+<li><p>保持跨模型的风格和内容一致性</p></li>
+<li><p>确保生成内容的连贯性</p></li>
+<li><p>维护角色和场景的一致表示</p></li>
+</ul>
+</li>
+<li><p><strong>可扩展性</strong>：</p>
+<ul class="simple">
+<li><p>设计灵活的架构以便添加新模型</p></li>
+<li><p>支持模型的动态加载和卸载</p></li>
+<li><p>适应不同的硬件环境</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id4">
+<h3>多模态整合架构设计<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>为了有效整合多个多模态模型，我们需要设计一个灵活、可扩展的架构。以下是一个推荐的架构设计：</p>
+<section id="id5">
+<h4>1. 分层架构<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<p>将整个系统分为以下几层：</p>
+<ol class="arabic simple">
+<li><p><strong>模型层</strong>：</p>
+<ul class="simple">
+<li><p>包含各个独立的多模态模型</p></li>
+<li><p>每个模型负责特定的任务</p></li>
+<li><p>提供标准化的接口</p></li>
+</ul>
+</li>
+<li><p><strong>适配器层</strong>：</p>
+<ul class="simple">
+<li><p>处理不同模型之间的接口转换</p></li>
+<li><p>标准化输入输出格式</p></li>
+<li><p>实现模型间的通信协议</p></li>
+</ul>
+</li>
+<li><p><strong>协调器层</strong>：</p>
+<ul class="simple">
+<li><p>管理模型的调用顺序和依赖关系</p></li>
+<li><p>处理任务分发和结果聚合</p></li>
+<li><p>实现高级任务编排</p></li>
+</ul>
+</li>
+<li><p><strong>应用层</strong>：</p>
+<ul class="simple">
+<li><p>提供面向用户的功能和界面</p></li>
+<li><p>实现特定的故事讲述应用逻辑</p></li>
+<li><p>处理用户交互和反馈</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id6">
+<h4>2. 模块化设计<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<p>采用模块化设计，使系统具有高度的灵活性和可扩展性：</p>
+<ol class="arabic simple">
+<li><p><strong>模型注册机制</strong>：</p>
+<ul class="simple">
+<li><p>允许动态注册和管理模型</p></li>
+<li><p>支持模型的热插拔</p></li>
+<li><p>提供模型发现和能力查询</p></li>
+</ul>
+</li>
+<li><p><strong>任务路由系统</strong>：</p>
+<ul class="simple">
+<li><p>根据任务类型自动选择合适的模型</p></li>
+<li><p>支持模型回退和替代策略</p></li>
+<li><p>实现负载均衡和资源优化</p></li>
+</ul>
+</li>
+<li><p><strong>缓存系统</strong>：</p>
+<ul class="simple">
+<li><p>缓存中间结果减少重复计算</p></li>
+<li><p>实现模型状态的持久化</p></li>
+<li><p>优化频繁请求的响应时间</p></li>
+</ul>
+</li>
+<li><p><strong>监控和日志系统</strong>：</p>
+<ul class="simple">
+<li><p>跟踪模型性能和资源使用</p></li>
+<li><p>记录模型调用和结果</p></li>
+<li><p>支持系统诊断和优化</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id7">
+<h4>3. 通信协议<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<p>定义标准化的通信协议，确保不同组件之间的无缝交互：</p>
+<ol class="arabic simple">
+<li><p><strong>数据格式标准化</strong>：</p>
+<ul class="simple">
+<li><p>定义统一的图像表示格式</p></li>
+<li><p>标准化文本输入输出格式</p></li>
+<li><p>规范元数据结构</p></li>
+</ul>
+</li>
+<li><p><strong>API标准化</strong>：</p>
+<ul class="simple">
+<li><p>为所有模型提供一致的API接口</p></li>
+<li><p>统一错误处理和异常机制</p></li>
+<li><p>标准化参数命名和含义</p></li>
+</ul>
+</li>
+<li><p><strong>事件系统</strong>：</p>
+<ul class="simple">
+<li><p>实现基于事件的组件通信</p></li>
+<li><p>支持异步处理和回调</p></li>
+<li><p>允许松耦合的组件交互</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="clipblip2llavaqwen-vl">
+<h3>整合CLIP、BLIP2、LLaVA和Qwen-VL<a class="headerlink" href="#clipblip2llavaqwen-vl" title="Link to this heading">#</a></h3>
+<p>下面我们将详细介绍如何整合CLIP、BLIP2、LLaVA和Qwen-VL这四个主要的多模态模型，构建一个完整的故事讲述系统。</p>
+<section id="id8">
+<h4>1. 模型角色定位<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<p>首先，我们需要明确每个模型在系统中的角色和职责：</p>
+<ol class="arabic simple">
+<li><p><strong>CLIP</strong>：</p>
+<ul class="simple">
+<li><p>主要负责图像-文本匹配和检索</p></li>
+<li><p>为故事场景和角色提供视觉参考</p></li>
+<li><p>实现风格一致性和主题匹配</p></li>
+</ul>
+</li>
+<li><p><strong>BLIP2</strong>：</p>
+<ul class="simple">
+<li><p>负责高质量的图像描述生成</p></li>
+<li><p>提供详细的场景和角色描述</p></li>
+<li><p>支持视觉问答功能</p></li>
+</ul>
+</li>
+<li><p><strong>LLaVA</strong>：</p>
+<ul class="simple">
+<li><p>处理复杂的多模态对话</p></li>
+<li><p>实现交互式故事创作</p></li>
+<li><p>提供深度的图像理解和推理</p></li>
+</ul>
+</li>
+<li><p><strong>Qwen-VL</strong>：</p>
+<ul class="simple">
+<li><p>负责中文多模态内容生成</p></li>
+<li><p>处理文化特定的视觉元素</p></li>
+<li><p>支持中英双语的故事创作</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id9">
+<h4>2. 统一接口设计<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
+<p>为了实现这些模型的无缝整合，我们设计一个统一的接口层：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="k">class</span> <span class="nc">MultimodalModel</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;多模态模型的抽象基类，定义统一接口&quot;&quot;&quot;</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">encode_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;将图像编码为特征向量&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">encode_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;将文本编码为特征向量&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">generate_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                     <span class="n">prompts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;根据图像和/或文本提示生成文本&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">answer_question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span> 
+                       <span class="n">questions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;回答关于图像的问题&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">texts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">target_images</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">target_texts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;计算图像-文本或图像-图像或文本-文本之间的相似度&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;返回模型的能力列表&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<span class="c1"># CLIP模型适配器</span>
+<span class="k">class</span> <span class="nc">CLIPAdapter</span><span class="p">(</span><span class="n">MultimodalModel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">CLIPProcessor</span><span class="p">,</span> <span class="n">CLIPModel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">CLIPModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processor</span> <span class="o">=</span> <span class="n">CLIPProcessor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">encode_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_image_features</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outputs</span>
+    
+    <span class="k">def</span> <span class="nf">encode_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">texts</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_text_features</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outputs</span>
+    
+    <span class="k">def</span> <span class="nf">generate_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;CLIP does not support text generation&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">answer_question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">questions</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;CLIP does not support direct question answering&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_texts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">texts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 图像-文本相似度</span>
+            <span class="n">image_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_image</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+            <span class="n">text_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_text</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">image_features</span><span class="p">,</span> <span class="n">text_features</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">target_images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 图像-图像相似度</span>
+            <span class="n">image_features1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_image</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+            <span class="n">image_features2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_image</span><span class="p">(</span><span class="n">target_images</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">image_features1</span><span class="p">,</span> <span class="n">image_features2</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">texts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">target_texts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 文本-文本相似度</span>
+            <span class="n">text_features1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_text</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+            <span class="n">text_features2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_text</span><span class="p">(</span><span class="n">target_texts</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">text_features1</span><span class="p">,</span> <span class="n">text_features2</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must provide either (images and texts) or (images and target_images) or (texts and target_texts)&quot;</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;image_encoding&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;text_encoding&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;text_generation&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;question_answering&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;similarity_computation&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;multilingual&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+
+<span class="c1"># BLIP2模型适配器</span>
+<span class="k">class</span> <span class="nc">BLIP2Adapter</span><span class="p">(</span><span class="n">MultimodalModel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">Blip2Processor</span><span class="p">,</span> <span class="n">Blip2ForConditionalGeneration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">Blip2ForConditionalGeneration</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processor</span> <span class="o">=</span> <span class="n">Blip2Processor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">encode_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">vision_model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">pooler_output</span>
+        <span class="k">return</span> <span class="n">outputs</span>
+    
+    <span class="k">def</span> <span class="nf">encode_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">texts</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">language_model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="n">outputs</span>
+    
+    <span class="k">def</span> <span class="nf">generate_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;BLIP2 requires images for text generation&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">prompts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Describe this image in detail:&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">prompts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">generated_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">)</span>
+            <span class="n">generated_texts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">batch_decode</span><span class="p">(</span><span class="n">generated_ids</span><span class="p">,</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">generated_texts</span>
+    
+    <span class="k">def</span> <span class="nf">answer_question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">questions</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_text</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="n">questions</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_texts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;BLIP2 adapter does not directly support similarity computation&quot;</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;image_encoding&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;text_encoding&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;text_generation&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;question_answering&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;similarity_computation&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;multilingual&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+
+<span class="c1"># LLaVA模型适配器</span>
+<span class="k">class</span> <span class="nc">LLaVAAdapter</span><span class="p">(</span><span class="n">MultimodalModel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoProcessor</span><span class="p">,</span> <span class="n">LlavaForConditionalGeneration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">LlavaForConditionalGeneration</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processor</span> <span class="o">=</span> <span class="n">AutoProcessor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">encode_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;LLaVA adapter does not support direct image encoding&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">encode_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;LLaVA adapter does not support direct text encoding&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">generate_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;LLaVA requires images for text generation&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">prompts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Describe this image in detail:&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">prompts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">generated_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">)</span>
+            <span class="n">generated_texts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">batch_decode</span><span class="p">(</span><span class="n">generated_ids</span><span class="p">,</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">generated_texts</span>
+    
+    <span class="k">def</span> <span class="nf">answer_question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">questions</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_text</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="n">questions</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_texts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;LLaVA adapter does not support similarity computation&quot;</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;image_encoding&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;text_encoding&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;text_generation&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;question_answering&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;similarity_computation&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;multilingual&quot;</span><span class="p">:</span> <span class="kc">True</span>  <span class="c1"># 支持多语言，但主要是英语</span>
+        <span class="p">}</span>
+
+<span class="c1"># Qwen-VL模型适配器</span>
+<span class="k">class</span> <span class="nc">QwenVLAdapter</span><span class="p">(</span><span class="n">MultimodalModel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">AutoProcessor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processor</span> <span class="o">=</span> <span class="n">AutoProcessor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">encode_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Qwen-VL adapter does not support direct image encoding&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">encode_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Qwen-VL adapter does not support direct text encoding&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">generate_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Qwen-VL requires images for text generation&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">prompts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;请详细描述这张图片:&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">prompts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">generated_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">)</span>
+            <span class="n">generated_texts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">batch_decode</span><span class="p">(</span><span class="n">generated_ids</span><span class="p">,</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">generated_texts</span>
+    
+    <span class="k">def</span> <span class="nf">answer_question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">questions</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_text</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="n">questions</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_images</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_texts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Qwen-VL adapter does not support similarity computation&quot;</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;image_encoding&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;text_encoding&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;text_generation&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;question_answering&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;similarity_computation&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;multilingual&quot;</span><span class="p">:</span> <span class="kc">True</span>  <span class="c1"># 特别支持中文</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h4>3. 模型管理器<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<p>接下来，我们实现一个模型管理器，负责加载、管理和协调不同的模型：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ModelManager</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_models</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">_load_models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;根据配置加载模型&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">model_config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">model_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enabled&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="k">continue</span>
+                
+            <span class="n">model_type</span> <span class="o">=</span> <span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+            <span class="n">model_path</span> <span class="o">=</span> <span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;clip&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">CLIPAdapter</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;blip2&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">BLIP2Adapter</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;llava&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">LLaVAAdapter</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;qwen-vl&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">QwenVLAdapter</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown model type: </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load model </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MultimodalModel</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;获取指定名称的模型&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">get_models_by_capability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capability</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;获取具有指定能力的所有模型名称&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> 
+                <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">capability</span><span class="p">,</span> <span class="kc">False</span><span class="p">)]</span>
+    
+    <span class="k">def</span> <span class="nf">unload_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;卸载指定模型以释放资源&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">model_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;加载指定模型&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> not found in config&quot;</span><span class="p">)</span>
+            
+        <span class="n">model_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
+        <span class="n">model_type</span> <span class="o">=</span> <span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+        <span class="n">model_path</span> <span class="o">=</span> <span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;clip&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">CLIPAdapter</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;blip2&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">BLIP2Adapter</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;llava&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">LLaVAAdapter</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;qwen-vl&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">QwenVLAdapter</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown model type: </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h4>4. 任务协调器<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<p>任务协调器负责根据任务类型选择合适的模型，并协调多个模型的协作：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TaskCoordinator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_manager</span><span class="p">:</span> <span class="n">ModelManager</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span> <span class="o">=</span> <span class="n">model_manager</span>
+        
+    <span class="k">def</span> <span class="nf">image_text_matching</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;图像-文本匹配任务&quot;&quot;&quot;</span>
+        <span class="c1"># 优先使用CLIP模型</span>
+        <span class="n">clip_models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;similarity_computation&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">clip_models</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No model with similarity computation capability available&quot;</span><span class="p">)</span>
+        
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">clip_models</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">texts</span><span class="o">=</span><span class="n">texts</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">image_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span> <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;detailed&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;图像描述生成任务&quot;&quot;&quot;</span>
+        <span class="c1"># 根据风格选择不同的模型</span>
+        <span class="k">if</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;detailed&quot;</span><span class="p">:</span>
+            <span class="c1"># BLIP2适合详细描述</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;text_generation&quot;</span><span class="p">)</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span> <span class="k">if</span> <span class="s2">&quot;blip&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;story&quot;</span><span class="p">:</span>
+            <span class="c1"># LLaVA适合故事风格</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;text_generation&quot;</span><span class="p">)</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span> <span class="k">if</span> <span class="s2">&quot;llava&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+            <span class="c1"># Qwen-VL适合中文描述</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;text_generation&quot;</span><span class="p">)</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span> <span class="k">if</span> <span class="s2">&quot;qwen&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 默认使用任何可用的生成模型</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;text_generation&quot;</span><span class="p">)</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+        
+        <span class="c1"># 根据风格设置不同的提示</span>
+        <span class="k">if</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;detailed&quot;</span><span class="p">:</span>
+            <span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Describe this image in great detail:&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;story&quot;</span><span class="p">:</span>
+            <span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tell a short story inspired by this image:&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+            <span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;请用中文详细描述这张图片:&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Describe this image:&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">generate_text</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="n">prompts</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">visual_question_answering</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span> <span class="n">questions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> 
+                                 <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;视觉问答任务&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">language</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+            <span class="c1"># 中文问答优先使用Qwen-VL</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;question_answering&quot;</span><span class="p">)</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span> <span class="k">if</span> <span class="s2">&quot;qwen&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 英文问答可以使用LLaVA或BLIP2</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;question_answering&quot;</span><span class="p">)</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span> <span class="k">if</span> <span class="s2">&quot;llava&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;blip&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">answer_question</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span> <span class="n">questions</span><span class="o">=</span><span class="n">questions</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">story_illustration_retrieval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">story_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_pool</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span> 
+                                    <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;故事插图检索任务&quot;&quot;&quot;</span>
+        <span class="c1"># 使用CLIP进行检索</span>
+        <span class="n">clip_models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;similarity_computation&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">clip_models</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No model with similarity computation capability available&quot;</span><span class="p">)</span>
+        
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">clip_models</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        
+        <span class="c1"># 计算文本与所有图像的相似度</span>
+        <span class="n">similarities</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">image_pool</span><span class="p">,</span> <span class="n">texts</span><span class="o">=</span><span class="p">[</span><span class="n">story_text</span><span class="p">])</span>
+        
+        <span class="c1"># 返回相似度最高的top_k个图像的索引</span>
+        <span class="n">top_indices</span> <span class="o">=</span> <span class="n">similarities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">descending</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="n">top_k</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">top_indices</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">multimodal_story_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_images</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">,</span> <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;多模态故事生成任务&quot;&quot;&quot;</span>
+        <span class="c1"># 首先使用图像生成描述</span>
+        <span class="n">descriptions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">reference_images</span><span class="p">:</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;chinese&quot;</span> <span class="k">if</span> <span class="n">language</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span> <span class="k">else</span> <span class="s2">&quot;detailed&quot;</span>
+            <span class="n">descriptions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_description</span><span class="p">(</span><span class="n">reference_images</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+        
+        <span class="c1"># 然后使用文本生成模型创建故事</span>
+        <span class="k">if</span> <span class="n">language</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+            <span class="c1"># 中文故事生成优先使用Qwen-VL</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;text_generation&quot;</span><span class="p">)</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span> <span class="k">if</span> <span class="s2">&quot;qwen&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            
+            <span class="c1"># 构建提示</span>
+            <span class="k">if</span> <span class="n">descriptions</span><span class="p">:</span>
+                <span class="n">full_prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">参考图片描述:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">descriptions</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">full_prompt</span> <span class="o">=</span> <span class="n">prompt</span>
+                
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 英文故事生成优先使用LLaVA</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_models_by_capability</span><span class="p">(</span><span class="s2">&quot;text_generation&quot;</span><span class="p">)</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span> <span class="k">if</span> <span class="s2">&quot;llava&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            
+            <span class="c1"># 构建提示</span>
+            <span class="k">if</span> <span class="n">descriptions</span><span class="p">:</span>
+                <span class="n">full_prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">Reference image descriptions:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">descriptions</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">full_prompt</span> <span class="o">=</span> <span class="n">prompt</span>
+        
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+        
+        <span class="c1"># 如果有参考图像，直接使用多模态生成</span>
+        <span class="k">if</span> <span class="n">reference_images</span><span class="p">:</span>
+            <span class="n">story</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate_text</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">reference_images</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="p">[</span><span class="n">full_prompt</span><span class="p">],</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 否则只使用文本提示</span>
+            <span class="c1"># 注意：这里简化处理，实际上可能需要调用纯文本模型</span>
+            <span class="n">story</span> <span class="o">=</span> <span class="s2">&quot;Story generation without images is not implemented in this example.&quot;</span>
+            
+        <span class="k">return</span> <span class="n">story</span>
+</pre></div>
+</div>
+</section>
+<section id="id12">
+<h4>5. 故事讲述应用<a class="headerlink" href="#id12" title="Link to this heading">#</a></h4>
+<p>最后，我们构建一个完整的故事讲述应用，整合所有组件：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">StorytellerAI</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">json</span>
+        
+        <span class="c1"># 加载配置</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            
+        <span class="c1"># 初始化模型管理器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span> <span class="o">=</span> <span class="n">ModelManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;models&quot;</span><span class="p">],</span> <span class="n">device</span><span class="p">)</span>
+        
+        <span class="c1"># 初始化任务协调器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_coordinator</span> <span class="o">=</span> <span class="n">TaskCoordinator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="p">)</span>
+        
+        <span class="c1"># 初始化故事状态</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;characters&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;scenes&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;current_scene_index&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;english&quot;</span>
+        <span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">set_language</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;设置故事语言&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">language</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">create_new_story</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;创建新故事&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+            <span class="s2">&quot;characters&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;scenes&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;current_scene_index&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Created new story: </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">add_character</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;添加角色&quot;&quot;&quot;</span>
+        <span class="n">character</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+            <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">image</span>
+        <span class="p">}</span>
+        
+        <span class="c1"># 如果提供了图像，生成详细描述</span>
+        <span class="k">if</span> <span class="n">image</span><span class="p">:</span>
+            <span class="n">lang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">]</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;chinese&quot;</span> <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span> <span class="k">else</span> <span class="s2">&quot;detailed&quot;</span>
+            <span class="n">visual_description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_coordinator</span><span class="o">.</span><span class="n">image_description</span><span class="p">([</span><span class="n">image</span><span class="p">],</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">character</span><span class="p">[</span><span class="s2">&quot;visual_description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">visual_description</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;characters&quot;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">character</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Added character: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">add_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;添加场景&quot;&quot;&quot;</span>
+        <span class="n">scene</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+            <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">image</span><span class="p">,</span>
+            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">}</span>
+        
+        <span class="c1"># 如果提供了图像，生成详细描述</span>
+        <span class="k">if</span> <span class="n">image</span><span class="p">:</span>
+            <span class="n">lang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">]</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;chinese&quot;</span> <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span> <span class="k">else</span> <span class="s2">&quot;detailed&quot;</span>
+            <span class="n">visual_description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_coordinator</span><span class="o">.</span><span class="n">image_description</span><span class="p">([</span><span class="n">image</span><span class="p">],</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;visual_description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">visual_description</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Added new scene&quot;</span><span class="p">,</span> <span class="s2">&quot;scene_index&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">generate_scene_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;生成场景内容&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">scene_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Scene index </span><span class="si">{</span><span class="n">scene_index</span><span class="si">}</span><span class="s2"> out of range&quot;</span><span class="p">}</span>
+            
+        <span class="n">scene</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">][</span><span class="n">scene_index</span><span class="p">]</span>
+        
+        <span class="c1"># 构建提示</span>
+        <span class="n">lang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">prompt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+                <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;请为故事《</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">》创作以下场景的内容: </span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Write the content for the following scene in the story &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># 收集角色信息</span>
+        <span class="n">characters_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;characters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+                <span class="n">characters_info</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;角色: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, 描述: </span><span class="si">{</span><span class="n">char</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">characters_info</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Character: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, Description: </span><span class="si">{</span><span class="n">char</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        
+        <span class="k">if</span> <span class="n">characters_info</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+                <span class="n">prompt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">故事中的角色:</span><span class="se">\n</span><span class="si">{</span><span class="n">characters_info</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prompt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Characters in the story:</span><span class="se">\n</span><span class="si">{</span><span class="n">characters_info</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># 使用场景图像(如果有)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">image</span><span class="p">]</span> <span class="k">if</span> <span class="n">image</span> <span class="k">else</span> <span class="kc">None</span>
+        
+        <span class="c1"># 生成内容</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_coordinator</span><span class="o">.</span><span class="n">multimodal_story_generation</span><span class="p">(</span>
+            <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">,</span>
+            <span class="n">reference_images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span>
+            <span class="n">language</span><span class="o">=</span><span class="n">lang</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 更新场景内容</span>
+        <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;current_scene_index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scene_index</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Generated scene content&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">content</span>
+        <span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">illustrate_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">image_pool</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;为场景选择插图&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">scene_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Scene index </span><span class="si">{</span><span class="n">scene_index</span><span class="si">}</span><span class="s2"> out of range&quot;</span><span class="p">}</span>
+            
+        <span class="n">scene</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">][</span><span class="n">scene_index</span><span class="p">]</span>
+        
+        <span class="c1"># 构建场景描述</span>
+        <span class="n">scene_text</span> <span class="o">=</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]:</span>
+            <span class="n">scene_text</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
+            
+        <span class="c1"># 检索最匹配的图像</span>
+        <span class="n">top_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_coordinator</span><span class="o">.</span><span class="n">story_illustration_retrieval</span><span class="p">(</span>
+            <span class="n">story_text</span><span class="o">=</span><span class="n">scene_text</span><span class="p">,</span>
+            <span class="n">image_pool</span><span class="o">=</span><span class="n">image_pool</span><span class="p">,</span>
+            <span class="n">top_k</span><span class="o">=</span><span class="n">top_k</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 返回最匹配的图像索引</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Retrieved illustrations&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;illustration_indices&quot;</span><span class="p">:</span> <span class="n">top_indices</span>
+        <span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">ask_about_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">question</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;询问关于场景的问题&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">scene_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Scene index </span><span class="si">{</span><span class="n">scene_index</span><span class="si">}</span><span class="s2"> out of range&quot;</span><span class="p">}</span>
+            
+        <span class="n">scene</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">][</span><span class="n">scene_index</span><span class="p">]</span>
+        
+        <span class="c1"># 需要场景图像</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">image</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Scene has no image&quot;</span><span class="p">}</span>
+            
+        <span class="c1"># 回答问题</span>
+        <span class="n">lang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">]</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_coordinator</span><span class="o">.</span><span class="n">visual_question_answering</span><span class="p">(</span>
+            <span class="n">images</span><span class="o">=</span><span class="p">[</span><span class="n">image</span><span class="p">],</span>
+            <span class="n">questions</span><span class="o">=</span><span class="p">[</span><span class="n">question</span><span class="p">],</span>
+            <span class="n">language</span><span class="o">=</span><span class="n">lang</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Answered question&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="n">answer</span>
+        <span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">generate_complete_story</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;生成完整故事&quot;&quot;&quot;</span>
+        <span class="n">lang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">]</span>
+        
+        <span class="c1"># 生成每个场景的内容(如果尚未生成)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">scene</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">generate_scene_content</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                
+        <span class="c1"># 组合所有场景内容</span>
+        <span class="n">story_parts</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># 添加标题</span>
+        <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+            <span class="n">story_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">story_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># 添加角色介绍</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;characters&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+                <span class="n">story_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;## 角色</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;characters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">story_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;### </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">char</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">story_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;## Characters</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;characters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">story_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;### </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">char</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># 添加场景内容</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">scene</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">lang</span> <span class="o">==</span> <span class="s2">&quot;chinese&quot;</span><span class="p">:</span>
+                <span class="n">story_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;## 场景 </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">story_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;## Scene </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                
+            <span class="n">story_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># 组合完整故事</span>
+        <span class="n">complete_story</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">story_parts</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Generated complete story&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;story&quot;</span><span class="p">:</span> <span class="n">complete_story</span>
+        <span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">save_story</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;保存故事状态&quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">json</span>
+        <span class="kn">import</span> <span class="nn">os</span>
+        
+        <span class="c1"># 创建输出目录</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># 准备可序列化的状态</span>
+        <span class="n">serializable_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># 处理图像(转换为路径或保存)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">serializable_state</span><span class="p">[</span><span class="s2">&quot;characters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">char</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">):</span>
+                <span class="c1"># 这里简化处理，实际应用中应该保存图像并存储路径</span>
+                <span class="n">char</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;image_data_placeholder&quot;</span>
+                
+        <span class="k">for</span> <span class="n">scene</span> <span class="ow">in</span> <span class="n">serializable_state</span><span class="p">[</span><span class="s2">&quot;scenes&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">scene</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">):</span>
+                <span class="c1"># 这里简化处理，实际应用中应该保存图像并存储路径</span>
+                <span class="n">scene</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;image_data_placeholder&quot;</span>
+        
+        <span class="c1"># 保存状态</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">serializable_state</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Saved story to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">load_story</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;加载故事状态&quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">json</span>
+        
+        <span class="c1"># 加载状态</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">loaded_state</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            
+        <span class="c1"># 这里简化处理，实际应用中应该加载图像</span>
+        <span class="c1"># 图像路径转换为实际图像对象的逻辑省略</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span> <span class="o">=</span> <span class="n">loaded_state</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Loaded story from </span><span class="si">{</span><span class="n">input_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_state</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h4>6. 配置文件示例<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
+<p>以下是一个配置文件示例，用于初始化故事讲述系统：</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;models&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;clip&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;clip&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openai/clip-vit-large-patch14&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;blip2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;blip2&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Salesforce/blip2-opt-2.7b&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;llava&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;llava&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;llava-hf/llava-1.5-7b&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;qwen-vl&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;qwen-vl&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwen/Qwen-VL&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;cache_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/tmp/storyteller_cache&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;max_memory_usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;default_language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;english&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id14">
+<h4>7. 使用示例<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<p>下面是一个使用故事讲述系统的完整示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># 初始化故事讲述系统</span>
+<span class="n">storyteller</span> <span class="o">=</span> <span class="n">StorytellerAI</span><span class="p">(</span><span class="s2">&quot;config.json&quot;</span><span class="p">)</span>
+
+<span class="c1"># 设置语言</span>
+<span class="n">storyteller</span><span class="o">.</span><span class="n">set_language</span><span class="p">(</span><span class="s2">&quot;english&quot;</span><span class="p">)</span>  <span class="c1"># 或 &quot;chinese&quot;</span>
+
+<span class="c1"># 创建新故事</span>
+<span class="n">storyteller</span><span class="o">.</span><span class="n">create_new_story</span><span class="p">(</span><span class="s2">&quot;The Crystal Guardian&quot;</span><span class="p">)</span>
+
+<span class="c1"># 添加角色</span>
+<span class="n">character_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;character.jpg&quot;</span><span class="p">)</span>
+<span class="n">storyteller</span><span class="o">.</span><span class="n">add_character</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Elara&quot;</span><span class="p">,</span> 
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A young sorceress with the ability to communicate with crystals&quot;</span><span class="p">,</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">character_image</span>
+<span class="p">)</span>
+
+<span class="c1"># 添加场景</span>
+<span class="n">scene1_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;forest_scene.jpg&quot;</span><span class="p">)</span>
+<span class="n">storyteller</span><span class="o">.</span><span class="n">add_scene</span><span class="p">(</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A mysterious forest with glowing crystals&quot;</span><span class="p">,</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">scene1_image</span>
+<span class="p">)</span>
+
+<span class="n">scene2_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;cave_scene.jpg&quot;</span><span class="p">)</span>
+<span class="n">storyteller</span><span class="o">.</span><span class="n">add_scene</span><span class="p">(</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A hidden cave beneath the ancient tree&quot;</span><span class="p">,</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">scene2_image</span>
+<span class="p">)</span>
+
+<span class="c1"># 生成场景内容</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">storyteller</span><span class="o">.</span><span class="n">generate_scene_content</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scene 1 content: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">][:</span><span class="mi">100</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">storyteller</span><span class="o">.</span><span class="n">generate_scene_content</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scene 2 content: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">][:</span><span class="mi">100</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+<span class="c1"># 询问关于场景的问题</span>
+<span class="n">question</span> <span class="o">=</span> <span class="s2">&quot;What magical elements are visible in this scene?&quot;</span>
+<span class="n">answer</span> <span class="o">=</span> <span class="n">storyteller</span><span class="o">.</span><span class="n">ask_about_scene</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">question</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Q: </span><span class="si">{</span><span class="n">question</span><span class="si">}</span><span class="se">\n</span><span class="s2">A: </span><span class="si">{</span><span class="n">answer</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 从图像池中为场景选择插图</span>
+<span class="n">image_pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;image_pool&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;.png&#39;</span><span class="p">))]</span>
+<span class="n">illustrations</span> <span class="o">=</span> <span class="n">storyteller</span><span class="o">.</span><span class="n">illustrate_scene</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">image_pool</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best illustration indices: </span><span class="si">{</span><span class="n">illustrations</span><span class="p">[</span><span class="s1">&#39;illustration_indices&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 生成完整故事</span>
+<span class="n">complete_story</span> <span class="o">=</span> <span class="n">storyteller</span><span class="o">.</span><span class="n">generate_complete_story</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Complete story length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">complete_story</span><span class="p">[</span><span class="s1">&#39;story&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"> characters&quot;</span><span class="p">)</span>
+
+<span class="c1"># 保存故事</span>
+<span class="n">storyteller</span><span class="o">.</span><span class="n">save_story</span><span class="p">(</span><span class="s2">&quot;stories/crystal_guardian.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id15">
+<h3>多模态模型整合的优化策略<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>在实际部署多模态模型整合系统时，以下优化策略可以提高性能和用户体验：</p>
+<section id="id16">
+<h4>1. 内存优化<a class="headerlink" href="#id16" title="Link to this heading">#</a></h4>
+<ol class="arabic">
+<li><p><strong>模型量化</strong>：</p>
+<ul class="simple">
+<li><p>使用INT8或INT4量化减少模型内存占用</p></li>
+<li><p>对不同模型应用不同的量化策略</p></li>
+<li><p>例如：<code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">torch.quantization.quantize_dynamic(model,</span> <span class="pre">{torch.nn.Linear},</span> <span class="pre">dtype=torch.qint8)</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>渐进式加载</strong>：</p>
+<ul>
+<li><p>根据任务需要动态加载和卸载模型</p></li>
+<li><p>实现模型部分加载机制</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">load_model_on_demand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_type</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">task_type</span> <span class="o">==</span> <span class="s2">&quot;image_description&quot;</span> <span class="ow">and</span> <span class="s2">&quot;blip2&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded_models</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s2">&quot;blip2&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loaded_models</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_models</span><span class="p">:</span>
+            <span class="n">least_used</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_least_used_model</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unload_model</span><span class="p">(</span><span class="n">least_used</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>模型分片</strong>：</p>
+<ul>
+<li><p>将大型模型分割到多个设备上</p></li>
+<li><p>使用模型并行技术</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用DeepSpeed ZeRO进行模型分片</span>
+<span class="kn">import</span> <span class="nn">deepspeed</span>
+<span class="n">model_engine</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">deepspeed</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">model_parameters</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">config</span><span class="o">=</span><span class="n">ds_config</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id17">
+<h4>2. 计算优化<a class="headerlink" href="#id17" title="Link to this heading">#</a></h4>
+<ol class="arabic">
+<li><p><strong>批处理</strong>：</p>
+<ul>
+<li><p>合并多个请求进行批处理</p></li>
+<li><p>实现动态批大小调整</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">prompts</span><span class="p">):</span>
+    <span class="c1"># 收集请求直到达到批大小或超时</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request_queue</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="ow">or</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_process</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+        <span class="n">batch_images</span> <span class="o">=</span> <span class="p">[</span><span class="n">req</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">req</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_queue</span><span class="p">]</span>
+        <span class="n">batch_prompts</span> <span class="o">=</span> <span class="p">[</span><span class="n">req</span><span class="p">[</span><span class="s2">&quot;prompt&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">req</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_queue</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">generate_text</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">batch_images</span><span class="p">,</span> <span class="n">prompts</span><span class="o">=</span><span class="n">batch_prompts</span><span class="p">)</span>
+        <span class="c1"># 分发结果</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">req</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request_queue</span><span class="p">):</span>
+            <span class="n">req</span><span class="p">[</span><span class="s2">&quot;result_queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_queue</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>计算图优化</strong>：</p>
+<ul>
+<li><p>使用TorchScript或ONNX进行模型优化</p></li>
+<li><p>融合操作减少内存传输</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 转换为TorchScript</span>
+<span class="n">scripted_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">jit</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">scripted_model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;optimized_model.pt&quot;</span><span class="p">)</span>
+
+<span class="c1"># 或导出为ONNX</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dummy_input</span><span class="p">,</span> <span class="s2">&quot;model.onnx&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>混合精度训练</strong>：</p>
+<ul>
+<li><p>使用FP16或BF16进行计算</p></li>
+<li><p>保持关键层在FP32精度</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用PyTorch的自动混合精度</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span><span class="p">,</span> <span class="n">GradScaler</span>
+
+<span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id18">
+<h4>3. 延迟优化<a class="headerlink" href="#id18" title="Link to this heading">#</a></h4>
+<ol class="arabic">
+<li><p><strong>预热和缓存</strong>：</p>
+<ul>
+<li><p>预先计算和缓存常用输入的结果</p></li>
+<li><p>实现结果缓存机制</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_image_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">image_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">use_cache</span> <span class="ow">and</span> <span class="n">image_hash</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_cache</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_cache</span><span class="p">[</span><span class="n">image_hash</span><span class="p">]</span>
+    
+    <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">encode_image</span><span class="p">([</span><span class="n">image</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">use_cache</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_cache</span><span class="p">[</span><span class="n">image_hash</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span>
+    <span class="k">return</span> <span class="n">features</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>异步处理</strong>：</p>
+<ul>
+<li><p>实现非阻塞的异步API</p></li>
+<li><p>使用任务队列和工作线程</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="k">class</span> <span class="nc">AsyncStorytellerAI</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storyteller</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storyteller</span> <span class="o">=</span> <span class="n">storyteller</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">worker_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker</span><span class="p">())</span>
+        
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">task</span><span class="p">,</span> <span class="n">future</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">to_thread</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+                <span class="n">future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">future</span><span class="o">.</span><span class="n">set_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+                
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">generate_scene_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene_index</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">put</span><span class="p">((</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">storyteller</span><span class="o">.</span><span class="n">generate_scene_content</span><span class="p">(</span><span class="n">scene_index</span><span class="p">,</span> <span class="n">prompt</span><span class="p">),</span>
+            <span class="n">future</span>
+        <span class="p">))</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">future</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>渐进式生成</strong>：</p>
+<ul>
+<li><p>实现流式响应机制</p></li>
+<li><p>尽早返回部分结果</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_story_streaming</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+    <span class="c1"># 初始化生成</span>
+    <span class="n">partial_result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    
+    <span class="c1"># 生成标题</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_title</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+    <span class="n">partial_result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;# </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="n">callback</span><span class="p">(</span><span class="n">partial_result</span><span class="p">)</span>
+    
+    <span class="c1"># 生成角色</span>
+    <span class="n">characters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_characters</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+    <span class="n">partial_result</span> <span class="o">+=</span> <span class="s2">&quot;## Characters</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">characters</span><span class="p">:</span>
+        <span class="n">partial_result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;### </span><span class="si">{</span><span class="n">char</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">char</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="n">callback</span><span class="p">(</span><span class="n">partial_result</span><span class="p">)</span>
+    
+    <span class="c1"># 逐段生成场景</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id19">
+<h4>4. 质量优化<a class="headerlink" href="#id19" title="Link to this heading">#</a></h4>
+<ol class="arabic">
+<li><p><strong>模型集成</strong>：</p>
+<ul>
+<li><p>组合多个模型的输出</p></li>
+<li><p>实现投票或加权平均机制</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ensemble_image_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="c1"># 获取多个模型的描述</span>
+    <span class="n">blip_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s2">&quot;blip2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">generate_text</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="p">[</span><span class="n">image</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">llava_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_manager</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s2">&quot;llava&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">generate_text</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="p">[</span><span class="n">image</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="c1"># 使用LLM合并描述</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Combine these two image descriptions into a single coherent description:</span><span class="se">\n</span><span class="s2">1. </span><span class="si">{</span><span class="n">blip_desc</span><span class="si">}</span><span class="se">\n</span><span class="s2">2. </span><span class="si">{</span><span class="n">llava_desc</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">combined_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">combined_desc</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>人类反馈</strong>：</p>
+<ul>
+<li><p>收集用户反馈改进模型选择</p></li>
+<li><p>实现简单的在线学习机制</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_model_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">score</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;根据用户反馈更新模型权重&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">task</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_weights</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_weights</span><span class="p">[</span><span class="n">task</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="k">if</span> <span class="n">model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_weights</span><span class="p">[</span><span class="n">task</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_weights</span><span class="p">[</span><span class="n">task</span><span class="p">][</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+        
+    <span class="c1"># 更新权重</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_weights</span><span class="p">[</span><span class="n">task</span><span class="p">][</span><span class="n">model_name</span><span class="p">]</span>
+    <span class="n">weights</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">weights</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">score</span><span class="p">)</span> <span class="o">/</span> <span class="n">weights</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span>
+    
+    <span class="c1"># 保存权重</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_save_weights</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>后处理</strong>：</p>
+<ul>
+<li><p>实现结果过滤和增强</p></li>
+<li><p>添加一致性检查</p></li>
+<li><p>例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">post_process_story</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">story</span><span class="p">):</span>
+    <span class="c1"># 检查角色一致性</span>
+    <span class="n">characters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_characters</span><span class="p">(</span><span class="n">story</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">characters</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_character_consistency</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">story</span><span class="p">):</span>
+            <span class="n">story</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_character_inconsistency</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">story</span><span class="p">)</span>
+    
+    <span class="c1"># 检查情节连贯性</span>
+    <span class="c1"># ...</span>
+    
+    <span class="k">return</span> <span class="n">story</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="id20">
+<h3>多模态模型整合的未来趋势<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
+<p>多模态模型整合技术仍在快速发展，未来的趋势可能包括：</p>
+<ol class="arabic simple">
+<li><p><strong>统一的多模态架构</strong>：</p>
+<ul class="simple">
+<li><p>单一模型同时处理多种模态</p></li>
+<li><p>减少模型切换和协调的复杂性</p></li>
+<li><p>例如：GPT-4V、Gemini等模型已经开始这一趋势</p></li>
+</ul>
+</li>
+<li><p><strong>小型化和边缘部署</strong>：</p>
+<ul class="simple">
+<li><p>更高效的模型压缩技术</p></li>
+<li><p>专为边缘设备优化的多模态模型</p></li>
+<li><p>本地化处理减少隐私风险</p></li>
+</ul>
+</li>
+<li><p><strong>多模态代理</strong>：</p>
+<ul class="simple">
+<li><p>自主决策的多模态AI代理</p></li>
+<li><p>能够理解和生成多种模态的内容</p></li>
+<li><p>与环境和用户进行复杂交互</p></li>
+</ul>
+</li>
+<li><p><strong>个性化多模态体验</strong>：</p>
+<ul class="simple">
+<li><p>根据用户偏好和历史调整模型行为</p></li>
+<li><p>学习用户特定的视觉和语言风格</p></li>
+<li><p>提供定制化的故事体验</p></li>
+</ul>
+</li>
+<li><p><strong>多模态创意协作</strong>：</p>
+<ul class="simple">
+<li><p>AI与人类创作者的深度协作</p></li>
+<li><p>提供创意建议和灵感</p></li>
+<li><p>辅助多模态内容创作过程</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id21">
+<h3>总结<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<p>多模态模型整合是构建完整故事讲述AI系统的关键环节。通过整合CLIP、BLIP2、LLaVA和Qwen-VL等模型，我们可以创建一个功能丰富、体验流畅的多模态故事讲述平台。</p>
+<p>本节介绍了多模态模型整合的挑战、架构设计、具体实现方法以及优化策略。我们设计了一个分层、模块化的架构，实现了统一的模型接口、灵活的模型管理和智能的任务协调。通过这种方式，我们可以充分利用各个模型的优势，为用户提供丰富、沉浸式的故事体验。</p>
+<p>随着多模态AI技术的不断发展，故事讲述AI系统将变得更加智能、自然和个性化，为用户提供前所未有的创意体验。通过持续整合最新的多模态模型和技术，我们的故事讲述AI系统将不断进化，开启人机协作讲述故事的新时代。</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter17_4_lora_multimodal_training.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第17章：多模态-基于LoRA的多模态模型训练</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../appendix/00_appendix_intro.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">附录</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">17.5 多模态模型整合</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">多模态模型整合的挑战</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多模态整合架构设计</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1. 分层架构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2. 模块化设计</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">3. 通信协议</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clipblip2llavaqwen-vl">整合CLIP、BLIP2、LLaVA和Qwen-VL</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1. 模型角色定位</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">2. 统一接口设计</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">3. 模型管理器</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">4. 任务协调器</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">5. 故事讲述应用</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">6. 配置文件示例</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">7. 使用示例</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">多模态模型整合的优化策略</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">1. 内存优化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">2. 计算优化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">3. 延迟优化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">4. 质量优化</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">多模态模型整合的未来趋势</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">总结</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

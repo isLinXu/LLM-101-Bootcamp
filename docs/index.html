@@ -46,6 +46,7 @@
     <link rel="icon" href="_static/panda.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="第01章：Bigram语言模型（语言建模）" href="chapters/01_bigram/chapter01_bigram_language_model.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -154,7 +155,47 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
     </div>
 </nav></div>
     </div>
@@ -389,6 +430,772 @@ document.write(`
 <section id="id2">
 <h3>项目简介<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id1">1. 语言模型基础概念</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id2">什么是语言模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id3">语言模型的历史发展</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id4">语言模型的应用场景</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id5">2. 概率论基础</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id6">条件概率</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id7">联合概率</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id8">马尔可夫假设</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id9">3. Bigram模型详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id10">Bigram模型的数学定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id11">从文本数据构建Bigram模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id12">Bigram模型的参数估计</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id13">4. 实现一个简单的Bigram模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id14">数据预处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id15">模型训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id16">文本生成</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id17">完整示例</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id18">5. Bigram模型的局限性</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id19">稀疏性问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id20">上下文有限问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id21">平滑技术简介</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/01_bigram/chapter01_bigram_language_model.html#id22">总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id1">1. 机器学习基础</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id2">监督学习、无监督学习与强化学习</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id3">损失函数与优化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id4">梯度下降法</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id5">2. 计算图与自动微分</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id6">前向传播</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id7">反向传播算法详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id8">链式法则</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id9">3. Micrograd框架介绍</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id10">Micrograd的设计理念</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id11">核心组件与架构</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id12">4. 从零实现Micrograd</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#value">实现Value类</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id13">实现基本运算操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id14">实现反向传播</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id15">5. 使用Micrograd构建简单神经网络</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id16">实现神经网络层</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id17">训练过程实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id18">案例：使用Micrograd解决简单分类问题</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/02_micrograd/chapter02_micrograd.html#id19">总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#bigramn-gram">1. 从Bigram到N-gram</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#n-gram">N-gram模型的数学定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id1">高阶N-gram的优势与挑战</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#mlp">2. 多层感知器(MLP)基础</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id2">感知器模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id3">多层网络结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id4">前向传播算法</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id5">3. 矩阵乘法在深度学习中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id6">矩阵乘法基础</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id7">向量化计算的优势</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id8">批处理技术</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id9">4. 激活函数详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id10">常见激活函数比较</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#gelu">GELU激活函数的特点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id11">为什么现代语言模型选择GELU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#mlpn-gram">5. 实现基于MLP的N-gram模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id12">模型架构设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id13">训练与评估</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id14">与传统N-gram模型的比较</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/03_ngram_model/chapter03_ngram_model.html#id15">总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id1">1. 序列模型的挑战</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id2">长距离依赖问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#rnn">RNN及其变体的局限性</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id3">2. 注意力机制基础</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id4">注意力的直观理解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#query-key-value">查询(Query)、键(Key)、值(Value)三元组</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id5">注意力分数计算</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#softmax">3. Softmax函数详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id6">Softmax的数学定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id7">数值稳定性考虑</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id8">实现技巧</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id9">4. 位置编码器</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id10">为什么需要位置信息</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id11">正弦余弦位置编码</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id12">可学习位置编码</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id13">5. 实现自注意力机制</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id14">自注意力层的前向传播</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id15">自注意力层的反向传播</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id16">案例：使用自注意力处理序列数据</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/04_attention/chapter04_attention_model.html#id17">总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#transformer">1. Transformer架构概览</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id1">编码器-解码器结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id2">多头注意力机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id3">前馈神经网络</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id4">2. 残差连接</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id5">残差连接的动机</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id6">梯度流与信息流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id7">实现细节</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id8">3. 层归一化</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#vs">批归一化vs层归一化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id9">数学原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id10">实现与优化</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#gpt-2">4. GPT-2模型详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id11">GPT-2架构特点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id12">预训练与生成策略</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id13">解码器架构的优势</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id14">5. 实现简化版Transformer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id15">构建Transformer块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id16">实现完整模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id17">训练与文本生成</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/05_transformer/chapter05_transformer.html#id18">总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id1">6.1 分词的基本概念与重要性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#byte-pair-encoding-bpe">6.2 字节对编码(Byte Pair Encoding, BPE)原理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#minbpe">6.3 minBPE算法详解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id2">6.4 实现一个简单的分词器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id3">6.5 分词器训练与优化</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id4">6.5.1 词汇量选择</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id5">6.5.2 训练语料选择</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id6">6.5.3 预处理策略</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#bpe">6.5.4 高级BPE变种</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id7">6.5.5 性能优化</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id8">6.6 在故事生成中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id9">6.6.1 多语言故事生成</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id10">6.6.2 风格和语调控制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id11">6.6.3 角色语音和对话</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id12">6.6.4 情感和氛围控制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id13">6.6.5 故事结构和节奏</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/06_tokenization/chaptet06_tokenization.html#id14">6.7 总结与展望</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id1">7.1 神经网络优化基础</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id2">7.2 参数初始化方法与重要性</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id3">7.2.1 初始化的重要性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id4">7.2.2 常见初始化方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id8">7.2.3 初始化的实践考虑</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id9">7.2.4 初始化的代码实现</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id10">7.3 梯度下降及其变种</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id11">7.3.1 基本梯度下降</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#momentum">7.3.2 动量法（Momentum）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#nesterov-nag">7.3.3 Nesterov加速梯度（NAG）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#adagrad">7.3.4 Adagrad</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#rmsprop">7.3.5 RMSprop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#adam">7.3.6 Adam</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#adamw">7.4 AdamW优化器详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#adaml2">7.4.1 Adam与L2正则化的问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id12">7.4.2 AdamW的解决方案</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#adamwpytorch">7.4.3 AdamW的PyTorch实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id13">7.4.4 AdamW在大语言模型中的应用</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id14">7.5 学习率调度策略</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id15">7.5.1 固定学习率</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id16">7.5.2 学习率衰减</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#linear-warmup">7.5.3 线性预热（Linear Warmup）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id17">7.5.4 线性预热后余弦衰减</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#pytorch">7.5.5 在PyTorch中实现学习率调度</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id18">7.5.6 故事生成模型的学习率调度</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id19">7.6 优化过程中的常见问题与解决方案</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id20">7.6.1 梯度消失与爆炸</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id21">7.6.2 训练不稳定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id22">7.6.3 过拟合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id23">7.6.4 训练效率低下</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id24">7.6.5 优化器状态管理</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id25">7.7 故事生成模型的优化实践</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id26">7.7.1 完整的训练流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id27">7.7.2 优化技巧总结</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id28">7.7.3 大规模训练的考虑</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/07_optimization/chapter07_optimization.html#id29">7.8 总结与展望</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id1">8.1 计算设备概述</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id2">8.1.1 主要计算设备类型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id3">8.1.2 计算设备的关键指标</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id4">8.2 设备间的性能差异与选择</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#cpu">8.2.1 CPU的特点与适用场景</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#gpu">8.2.2 GPU的特点与适用场景</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#tpu">8.2.3 TPU的特点与适用场景</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#fpga">8.2.4 FPGA和专用加速器</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id5">8.2.5 设备选择策略</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#cudagpu">8.3 CUDA基础与GPU编程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#cuda">8.3.1 CUDA架构概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id6">8.3.2 CUDA编程模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#pytorchcuda">8.3.3 PyTorch中的CUDA编程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id7">8.3.4 自定义CUDA扩展</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id8">8.3.5 CUDA性能优化技巧</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id9">8.4 内存管理与数据传输优化</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id10">8.4.1 GPU内存层次结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#pytorchgpu">8.4.2 PyTorch中的GPU内存管理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id11">8.4.3 主机与设备间的数据传输优化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id12">8.4.4 内存碎片化与处理</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id13">8.5 设备特定优化技巧</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id14">8.5.1 CPU优化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#nvidia-gpu">8.5.2 NVIDIA GPU优化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id15">8.5.3 其他设备优化</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id16">8.6 多设备协同工作</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id17">8.6.1 数据并行</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id18">8.6.2 模型并行</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id19">8.6.3 分布式训练框架</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id20">8.7 在故事生成中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id21">8.7.1 训练大型故事生成模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id22">8.7.2 故事生成模型的推理优化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id23">8.7.3 多设备故事生成系统</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html#id24">8.8 总结与展望</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id1">9.1 数值精度基础</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id2">9.1.1 浮点数表示</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id3">9.1.2 精度与计算效率的关系</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id4">9.1.3 精度与模型质量的权衡</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id5">9.2 混合精度训练原理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id6">9.2.1 混合精度训练的基本原则</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id7">9.2.2 混合精度训练的工作流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id8">9.2.3 损失缩放详解</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id9">9.3 实现混合精度训练</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#pytorch">9.3.1 PyTorch中的混合精度训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#tensorflow">9.3.2 TensorFlow中的混合精度训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id10">9.3.3 混合精度训练的最佳实践</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id11">9.3.4 完整的混合精度训练示例</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id12">9.4 精度与性能的权衡</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id13">9.4.1 不同精度格式的比较</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#fp16-vs-bf16">9.4.2 FP16 vs BF16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#fp8">9.4.3 FP8简介</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id14">9.4.4 精度选择策略</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id15">9.5 精度问题排查与解决</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id16">9.5.1 常见精度问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id17">9.5.2 调试工具和技术</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id18">9.5.3 解决方案和最佳实践</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id19">9.6 不同精度在故事生成中的影响</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id20">9.6.1 精度对生成质量的影响</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id21">9.6.2 精度对推理性能的影响</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id22">9.6.3 为故事生成选择最佳精度</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html#id23">9.7 总结与展望</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id1">10.1 分布式训练基础</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id2">10.1.1 为什么需要分布式训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id3">10.1.2 分布式训练的挑战</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id4">10.1.3 分布式系统架构</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id5">10.2 数据并行训练</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id6">10.2.1 数据并行的基本原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id7">10.2.2 同步与异步数据并行</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id8">10.2.3 梯度累积</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#pytorchdistributeddataparallel-ddp">10.2.4 PyTorch中的DistributedDataParallel (DDP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#zero">10.2.5 ZeRO: 零冗余优化器</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id9">10.3 模型并行训练</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id10">10.3.1 张量并行</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id11">10.3.2 流水线并行</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id12">10.3.3 混合并行策略</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id13">10.4 分布式优化算法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id14">10.4.1 大批量优化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id15">10.4.2 分布式优化器</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id16">10.4.3 通信优化</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id17">10.5 分布式训练的实用技巧</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id18">10.5.1 检查点保存与恢复</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id19">10.5.2 分布式训练调试</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id20">10.5.3 性能分析与优化</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id21">10.6 分布式训练在故事生成中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id22">10.6.1 大型故事生成模型的训练策略</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id23">10.6.2 分布式训练配置示例</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id24">10.6.3 分布式训练的实际考虑因素</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html#id25">10.7 总结与展望</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id1">11.1 数据集概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id2">11.2 数据收集</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id3">11.2.1 公开数据集</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id4">11.2.2 自定义数据收集</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id5">11.3 数据清洗与预处理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id6">11.3.1 基础文本清洗</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id7">11.3.2 语言学预处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id8">11.3.3 故事特定的预处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id9">11.3.4 数据质量控制</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id10">11.4 数据加载与处理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id11">11.4.1 数据格式化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id12">11.4.2 数据分割</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id13">11.4.3 数据加载库</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id14">11.4.4 数据批处理与动态加载</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id15">11.5 合成数据生成</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id16">11.5.1 基于规则的数据生成</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id17">11.5.2 基于模型的数据生成</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id18">11.5.3 数据增强技术</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id19">11.5.4 合成数据的质量控制</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id20">11.6 数据集管理与版本控制</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id21">11.6.1 数据集元数据</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id22">11.6.2 数据集版本控制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id23">11.6.3 数据集共享与发布</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id24">引用</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#readme-md">上传README.md</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/11_datasets/chapter11_datasets.html#id25">11.7 数据集评估与分析</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id1">12.1 推理过程概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#transformer">12.2 Transformer架构回顾</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id2">12.2.1 Transformer基本结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id3">12.2.2 自注意力机制详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id4">12.2.3 自回归生成中的计算冗余</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#kv">12.3 KV缓存原理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id5">12.3.1 基本原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id6">12.3.2 数学表示</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id7">12.3.3 多层多头注意力中的KV缓存</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id8">12.4 KV缓存实现</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id9">12.4.1 基本实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id10">12.4.2 高效实现考虑因素</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id11">12.4.3 主流框架中的KV缓存实现</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id12">12.5 KV缓存优化技术</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/12_inference_kv_cache/chapter12_inference_kv_cache.html#id13">12.5.1 内存优化</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id1">13.1 量化基础概念</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id2">13.1.1 为什么需要量化？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id3">13.1.2 量化的数学基础</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id4">13.1.3 量化的类型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id5">13.2 量化技术详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id6">13.2.1 整数量化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id7">13.2.2 按通道量化与按张量量化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id8">13.2.3 非线性量化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id9">13.2.4 权重压缩与稀疏化</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id10">13.3 量化对模型性能的影响</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id11">13.3.1 精度损失与量化误差</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id12">13.3.2 量化对不同任务的影响</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id13">13.3.3 评估量化模型性能</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#id14">13.3.4 量化敏感层的识别与处理</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#llm">13.4 实践：LLM模型量化</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#hugging-face-transformers">13.4.1 使用Hugging Face Transformers进行量化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#gptq">13.4.2 使用GPTQ进行更高效的量化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#ggmlcpu">13.4.3 使用GGML格式进行CPU推理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#qat">13.4.4 量化感知微调(QAT)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/13_inference_quantization/chapter13_inference_quantization.html#ai">13.4.5 在我们的故事讲述AI项目中应用量化</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html#id1">14.1 监督式微调基础</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html#id2">监督式微调的概念与原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html#id3">预训练与微调的区别</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html#llm">微调在LLM中的重要性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html#id4">数据集准备与处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html#id5">微调的挑战与限制</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html#peft">14.2 参数高效微调技术(PEFT)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html#id1">PEFT的概念与必要性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html#id2">常见PEFT方法概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html#id3">计算资源与效果的权衡</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html#id4">PEFT在故事生成中的应用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_3_lora_technique.html#lora">14.3 LoRA技术详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_3_lora_technique.html#id1">LoRA的基本原理与数学基础</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_3_lora_technique.html#id2">低秩适应性的优势</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_3_lora_technique.html#id3">LoRA参数设置与调优</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_3_lora_technique.html#peft">与其他PEFT方法的比较</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_3_lora_technique.html#id4">LoRA实现的技术细节</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_3_lora_technique.html#id5">LoRA在多模态模型中的应用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html#id1">14.4 聊天模型的监督式微调</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html#id2">聊天模型的特殊性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html#id3">对话数据的准备与处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html#instruction-tuning">指令微调(Instruction Tuning)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_5_practical_case_study.html#sft">14.5 实践案例：故事讲述模型的SFT实现</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_5_practical_case_study.html#id1">数据集构建</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_5_practical_case_study.html#id6">模型选择与配置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_5_practical_case_study.html#id7">训练过程与参数设置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/14_finetuning_i_sft/chapter14_5_practical_case_study.html#id8">评估与优化</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html#id1">15.1 强化学习基础</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html#id2">强化学习的核心概念</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html#nlp">强化学习在NLP中的应用挑战</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html#id3">奖励函数设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html#id7">策略与价值函数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html#id9">探索与利用的平衡</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html#rlnlp">RL在NLP中的应用挑战</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html#id10">实际应用示例</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_2_rlhf.html#rlhf">15.2 人类反馈的强化学习(RLHF)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_2_rlhf.html#id1">RLHF的工作原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_2_rlhf.html#id2">人类偏好数据的收集</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_2_rlhf.html#id6">奖励模型的训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_2_rlhf.html#id11">RLHF的实现流程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html#ppo">15.3 近端策略优化(PPO)算法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html#id1">PPO算法的数学基础</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html#ppollm">PPO在LLM中的适应性修改</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html#id8">实现细节与技巧</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html#id13">实现细节与优化</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html#dpo">15.4 直接偏好优化(DPO)算法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html#id1">DPO的基本原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html#dpoppo-rlhf">DPO与PPO-RLHF的比较</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html#id3">DPO的实现细节</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html#id7">DPO在故事生成中的应用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html#id12">DPO的高级技术和扩展</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html#id13">DPO的实际案例：儿童故事优化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html#id18">DPO的局限性和未来发展</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#id1">16.1 API开发基础</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#id2">API设计原则</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#id3">API功能规划</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#id4">API架构设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#id7">API规范设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#id9">实现API服务器</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#id12">API测试与文档</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#id15">部署考虑事项</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#dockerapi">Docker化API服务</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_1_api_development.html#id16">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id1">16.2 Web应用开发</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id2">Web应用设计原则</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id3">用户需求分析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id6">技术栈选择</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id9">应用架构设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id11">前端实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id15">多模态集成</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id19">部署Web应用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id20">性能优化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id21">安全考虑</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id22">多模态应用的未来发展</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/16_deployment/chapter16_2_web_application.html#id23">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html#id2">17.1 多模态基础理论</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html#id3">什么是多模态学习</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html#id4">多模态学习的主要任务</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html#id5">多模态学习的架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html#id6">多模态预训练模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html#id7">多模态数据集</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html#id8">多模态评估指标</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html#id9">多模态学习的挑战</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_1_multimodal_basics.html#id10">多模态学习在故事讲述中的应用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#id1">17.2 VQVAE技术详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#id2">变分自编码器回顾</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#id3">VQVAE的基本原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#id4">VQVAE的架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#id5">VQVAE的训练目标</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#vqvae-2-vqvae">VQVAE-2：层次化VQVAE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#vqvaepython">VQVAE的Python实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#id6">VQVAE在多模态系统中的应用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#vqgan-ganvqvae">VQGAN：结合GAN的VQVAE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#id7">VQVAE与扩散模型的结合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#vqvaeai">VQVAE在故事讲述AI中的实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#id8">VQVAE的局限性和未来发展</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_2_vqvae_technique.html#id9">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#diffusion-transformer">17.3 扩散变换器(Diffusion Transformer)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id2">扩散模型基础</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id6">扩散变换器(Diffusion Transformer)的诞生</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id8">扩散变换器的架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id9">扩散变换器的变种</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id10">扩散变换器的训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#python">扩散变换器的Python实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id11">扩散变换器在文本到图像生成中的应用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#ai">扩散变换器在故事讲述AI中的应用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id12">扩散变换器与其他技术的比较</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id13">扩散变换器的最新进展</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id14">扩散变换器的局限性和未来方向</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_3_diffusion_transformer.html#id15">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#id1">17.4 基于LoRA的多模态模型训练</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#id2">多模态模型微调的挑战</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#id3">LoRA技术回顾</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#id4">多模态模型中的LoRA应用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#loraclip">基于LoRA的CLIP模型微调</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#lorablip2">基于LoRA的BLIP2模型微调</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#lorallava">基于LoRA的LLaVA模型微调</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#loraqwen-vl">基于LoRA的Qwen-VL模型微调</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#id9">LoRA微调的最佳实践</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#id10">多模态LoRA微调的未来发展</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_4_lora_multimodal_training.html#id11">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/17_Multimodal/chapter17_5_multimodal_model_integration.html#id2">17.5 多模态模型整合</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_5_multimodal_model_integration.html#id3">多模态模型整合的挑战</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_5_multimodal_model_integration.html#id4">多模态整合架构设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_5_multimodal_model_integration.html#clipblip2llavaqwen-vl">整合CLIP、BLIP2、LLaVA和Qwen-VL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_5_multimodal_model_integration.html#id15">多模态模型整合的优化策略</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_5_multimodal_model_integration.html#id20">多模态模型整合的未来趋势</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/17_Multimodal/chapter17_5_multimodal_model_integration.html#id21">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/A1_programming_languages.html">附录A：编程语言基础</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/appendix/A1_programming_languages.html#a-1-python">A.1 编程语言：从汇编到Python</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/A1_programming_languages.html#id1">汇编语言：与硬件对话</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/A1_programming_languages.html#c">C语言：系统编程的基石</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/A1_programming_languages.html#python-ai">Python：AI开发的首选语言</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/A1_programming_languages.html#id7">语言交互与混合编程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/A1_programming_languages.html#id8">编程语言选择策略</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/A1_programming_languages.html#id9">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/B1_data_types.html">附录B：数据类型基础</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/appendix/B1_data_types.html#b-1">B.1 数据类型：从整数到字符串</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/B1_data_types.html#id1">整数类型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/B1_data_types.html#id4">浮点数类型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/B1_data_types.html#id10">字符串类型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/B1_data_types.html#id15">特殊数据类型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/B1_data_types.html#id19">数据类型转换</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/B1_data_types.html#id23">数据类型安全和最佳实践</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/B1_data_types.html#id24">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html">附录C：张量操作基础</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#c-1">C.1 张量：形状、视图、步长与连续性</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id1">张量的基本概念</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id4">张量的存储和布局</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id8">张量的视图和重塑</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id10">张量的高级索引和切片</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id14">张量的广播机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id17">张量的内存管理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id21">张量的设备管理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id24">张量操作的性能考虑</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id28">张量操作的实际应用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/C1_tensor_operations.html#id32">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/appendix/D1_deep_learning_frameworks.html#d-1-pytorchjax">D.1 深度学习框架：PyTorch与JAX</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/D1_deep_learning_frameworks.html#pytorch">PyTorch：动态计算图框架</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/D1_deep_learning_frameworks.html#jax-xla">JAX：函数式编程与XLA加速</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/D1_deep_learning_frameworks.html#pytorchjax">PyTorch与JAX的比较</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/D1_deep_learning_frameworks.html#ai">在故事讲述AI系统中的框架选择策略</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/D1_deep_learning_frameworks.html#id10">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html#e-1-gptllamamoe">E.1 神经网络架构：GPT、Llama、MoE及其演进</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html#transformer">Transformer架构基础</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html#gpt-gpt-1gpt-4">GPT系列：从GPT-1到GPT-4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html#llama">Llama系列：开放权重模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html#moe">混合专家模型（MoE）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html#ai">神经网络架构在故事讲述AI中的应用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html#id12">未来架构趋势</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/E1_neural_network_architectures.html#id13">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapters/appendix/F1_multimodal.html">附录F：多模态基础</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapters/appendix/F1_multimodal.html#f-1-vqvaevqgan">F.1 多模态：VQVAE、VQGAN、扩散模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/F1_multimodal.html#ai">多模态AI的基础概念</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/F1_multimodal.html#vqvae">VQVAE：向量量化变分自编码器</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/F1_multimodal.html#vqgan-ganvqvae">VQGAN：结合GAN的VQVAE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/F1_multimodal.html#id8">扩散模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/F1_multimodal.html#id12">多模态模型训练与整合</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/F1_multimodal.html#id15">多模态技术在故事讲述中的应用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/F1_multimodal.html#id19">未来发展趋势</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapters/appendix/F1_multimodal.html#id20">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
 </section>
 </section>
@@ -405,6 +1212,15 @@ document.write(`
                 <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
+    <a class="right-next"
+       href="chapters/01_bigram/chapter01_bigram_language_model.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第01章：Bigram语言模型（语言建模）</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               

@@ -1,0 +1,2253 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第9章：速度提升II：精度(Precision) &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第10章：速度提升III：分布式(Distributed)" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html" />
+    <link rel="prev" title="第8章：速度提升I：设备(Device)" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第9章：速度提升II：精度(Precision)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">9.1 数值精度基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">9.1.1 浮点数表示</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">9.1.2 精度与计算效率的关系</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">9.1.3 精度与模型质量的权衡</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">9.2 混合精度训练原理</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">9.2.1 混合精度训练的基本原则</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">9.2.2 混合精度训练的工作流程</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">9.2.3 损失缩放详解</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">9.3 实现混合精度训练</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch">9.3.1 PyTorch中的混合精度训练</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tensorflow">9.3.2 TensorFlow中的混合精度训练</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">9.3.3 混合精度训练的最佳实践</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">9.3.4 完整的混合精度训练示例</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">9.4 精度与性能的权衡</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">9.4.1 不同精度格式的比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fp16-vs-bf16">9.4.2 FP16 vs BF16</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fp8">9.4.3 FP8简介</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">9.4.4 精度选择策略</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">9.5 精度问题排查与解决</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">9.5.1 常见精度问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">9.5.2 调试工具和技术</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">9.5.3 解决方案和最佳实践</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">9.6 不同精度在故事生成中的影响</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">9.6.1 精度对生成质量的影响</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">9.6.2 精度对推理性能的影响</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">9.6.3 为故事生成选择最佳精度</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">9.7 总结与展望</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="ii-precision">
+<h1>第9章：速度提升II：精度(Precision)<a class="headerlink" href="#ii-precision" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>9.1 数值精度基础<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>在构建故事讲述AI大语言模型的过程中，数值精度是影响训练和推理速度的关键因素之一。合理选择和使用不同的数值精度可以显著提高计算效率，同时保持模型性能。本章我们将深入探讨数值精度的基础知识、混合精度训练的原理与实现，以及不同精度在故事生成中的应用。</p>
+<section id="id2">
+<h3>9.1.1 浮点数表示<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>在计算机中，浮点数是表示实数的一种方式，它由符号位、指数和尾数组成。IEEE 754标准定义了几种常用的浮点数格式：</p>
+<ol class="arabic simple">
+<li><p><strong>单精度浮点数（FP32）</strong>：</p>
+<ul class="simple">
+<li><p>32位表示：1位符号位，8位指数，23位尾数</p></li>
+<li><p>精度范围：约7位十进制数字</p></li>
+<li><p>数值范围：约±1.18 × 10^-38 到 ±3.4 × 10^38</p></li>
+</ul>
+</li>
+<li><p><strong>双精度浮点数（FP64）</strong>：</p>
+<ul class="simple">
+<li><p>64位表示：1位符号位，11位指数，52位尾数</p></li>
+<li><p>精度范围：约16位十进制数字</p></li>
+<li><p>数值范围：约±2.23 × 10^-308 到 ±1.80 × 10^308</p></li>
+</ul>
+</li>
+<li><p><strong>半精度浮点数（FP16）</strong>：</p>
+<ul class="simple">
+<li><p>16位表示：1位符号位，5位指数，10位尾数</p></li>
+<li><p>精度范围：约3-4位十进制数字</p></li>
+<li><p>数值范围：约±6.10 × 10^-5 到 ±65504</p></li>
+</ul>
+</li>
+<li><p><strong>脑浮点数（BF16）</strong>：</p>
+<ul class="simple">
+<li><p>16位表示：1位符号位，8位指数，7位尾数</p></li>
+<li><p>与FP32相同的指数范围，但精度降低</p></li>
+<li><p>特别适合深度学习应用</p></li>
+</ul>
+</li>
+<li><p><strong>8位浮点数（FP8）</strong>：</p>
+<ul class="simple">
+<li><p>8位表示：1位符号位，4位指数，3位尾数（E4M3格式）或其他变种</p></li>
+<li><p>极其有限的精度，但在某些应用中足够</p></li>
+<li><p>新兴的深度学习优化格式</p></li>
+</ul>
+</li>
+</ol>
+<p>下图展示了不同浮点格式的位分配：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FP32</span><span class="p">:</span> <span class="n">Sign</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">Exponent</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">Mantissa</span><span class="p">(</span><span class="mi">23</span><span class="p">)</span>
+<span class="n">FP64</span><span class="p">:</span> <span class="n">Sign</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">Exponent</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="o">|</span> <span class="n">Mantissa</span><span class="p">(</span><span class="mi">52</span><span class="p">)</span>
+<span class="n">FP16</span><span class="p">:</span> <span class="n">Sign</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">Exponent</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">|</span> <span class="n">Mantissa</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">BF16</span><span class="p">:</span> <span class="n">Sign</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">Exponent</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">Mantissa</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">FP8</span><span class="p">:</span>  <span class="n">Sign</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">Exponent</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">Mantissa</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>9.1.2 精度与计算效率的关系<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>数值精度直接影响计算效率和内存使用：</p>
+<ol class="arabic simple">
+<li><p><strong>计算速度</strong>：</p>
+<ul class="simple">
+<li><p>较低精度（如FP16）的计算通常比高精度（如FP32）快2-8倍</p></li>
+<li><p>现代GPU的Tensor Cores专门优化了FP16和BF16计算</p></li>
+<li><p>8位精度可以进一步提高计算速度</p></li>
+</ul>
+</li>
+<li><p><strong>内存使用</strong>：</p>
+<ul class="simple">
+<li><p>FP16使用的内存是FP32的一半</p></li>
+<li><p>这意味着可以加载更大的模型或使用更大的批量大小</p></li>
+<li><p>减少内存传输也提高了整体性能</p></li>
+</ul>
+</li>
+<li><p><strong>能耗效率</strong>：</p>
+<ul class="simple">
+<li><p>低精度计算通常能耗更低</p></li>
+<li><p>对于移动设备和边缘计算尤为重要</p></li>
+</ul>
+</li>
+<li><p><strong>硬件利用率</strong>：</p>
+<ul class="simple">
+<li><p>低精度操作通常能更好地利用硬件资源</p></li>
+<li><p>例如，NVIDIA的Tensor Cores在FP16上性能最佳</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id4">
+<h3>9.1.3 精度与模型质量的权衡<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>然而，降低精度并非没有代价：</p>
+<ol class="arabic simple">
+<li><p><strong>数值范围限制</strong>：</p>
+<ul class="simple">
+<li><p>FP16的数值范围远小于FP32</p></li>
+<li><p>可能导致上溢（overflow）或下溢（underflow）</p></li>
+</ul>
+</li>
+<li><p><strong>舍入误差</strong>：</p>
+<ul class="simple">
+<li><p>低精度表示会引入更多舍入误差</p></li>
+<li><p>误差可能在深层网络中累积</p></li>
+</ul>
+</li>
+<li><p><strong>训练稳定性</strong>：</p>
+<ul class="simple">
+<li><p>纯FP16训练通常不稳定</p></li>
+<li><p>梯度更新和权重累积特别容易受到精度影响</p></li>
+</ul>
+</li>
+<li><p><strong>特殊操作敏感性</strong>：</p>
+<ul class="simple">
+<li><p>某些操作（如归一化、指数、对数）对精度特别敏感</p></li>
+<li><p>可能需要在高精度下执行</p></li>
+</ul>
+</li>
+</ol>
+<p>因此，在实际应用中，我们需要在计算效率和模型质量之间找到平衡点。混合精度训练就是为解决这一问题而设计的。</p>
+</section>
+</section>
+<section id="id5">
+<h2>9.2 混合精度训练原理<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p>混合精度训练是一种在保持模型精度的同时提高训练速度和减少内存使用的技术。它的核心思想是在同一网络中使用不同的数值精度：在对精度不敏感的操作中使用低精度，在对精度敏感的操作中使用高精度。</p>
+<section id="id6">
+<h3>9.2.1 混合精度训练的基本原则<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>混合精度训练基于以下几个关键原则：</p>
+<ol class="arabic simple">
+<li><p><strong>保持主权重副本</strong>：</p>
+<ul class="simple">
+<li><p>在FP32中保存模型权重的主副本</p></li>
+<li><p>这确保了长期训练的数值稳定性</p></li>
+</ul>
+</li>
+<li><p><strong>前向和反向传播使用低精度</strong>：</p>
+<ul class="simple">
+<li><p>将FP32权重转换为FP16进行前向传播</p></li>
+<li><p>在FP16中计算梯度</p></li>
+<li><p>这加速了计算密集型操作</p></li>
+</ul>
+</li>
+<li><p><strong>权重更新使用高精度</strong>：</p>
+<ul class="simple">
+<li><p>将FP16梯度转换回FP32</p></li>
+<li><p>在FP32中进行权重更新</p></li>
+<li><p>这保持了更新的精确性</p></li>
+</ul>
+</li>
+<li><p><strong>损失缩放</strong>：</p>
+<ul class="simple">
+<li><p>将损失值乘以一个缩放因子（通常是2的幂）</p></li>
+<li><p>这防止梯度在FP16表示中下溢</p></li>
+<li><p>在应用梯度前再除以相同的缩放因子</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id7">
+<h3>9.2.2 混合精度训练的工作流程<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>一个典型的混合精度训练循环如下：</p>
+<ol class="arabic simple">
+<li><p><strong>权重转换</strong>：将FP32权重转换为FP16</p></li>
+<li><p><strong>前向传播</strong>：使用FP16权重和激活值进行前向传播</p></li>
+<li><p><strong>损失缩放</strong>：将损失乘以缩放因子</p></li>
+<li><p><strong>反向传播</strong>：计算FP16梯度</p></li>
+<li><p><strong>梯度转换</strong>：将FP16梯度转换回FP32，并除以缩放因子</p></li>
+<li><p><strong>权重更新</strong>：在FP32中更新主权重副本</p></li>
+</ol>
+<p>这个过程可以用以下伪代码表示：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 初始化</span>
+<span class="n">model_fp32</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">()</span>  <span class="c1"># FP32主权重</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">create_optimizer</span><span class="p">(</span><span class="n">model_fp32</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">create_loss_scaler</span><span class="p">()</span>  <span class="c1"># 损失缩放器</span>
+
+<span class="c1"># 训练循环</span>
+<span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+    <span class="c1"># 将输入数据转换为FP16</span>
+    <span class="n">inputs_fp16</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float16</span><span class="p">)</span>
+    
+    <span class="c1"># 前向传播（FP16）</span>
+    <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>  <span class="c1"># 自动将操作转换为FP16</span>
+        <span class="n">outputs_fp16</span> <span class="o">=</span> <span class="n">model_fp32</span><span class="p">(</span><span class="n">inputs_fp16</span><span class="p">)</span>  <span class="c1"># 内部使用FP16权重的副本</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs_fp16</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+    
+    <span class="c1"># 损失缩放</span>
+    <span class="n">scaled_loss</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+    
+    <span class="c1"># 反向传播（FP16梯度）</span>
+    <span class="n">scaled_loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="c1"># 梯度缩放和更新（FP32）</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>  <span class="c1"># 内部将梯度转换为FP32并除以缩放因子</span>
+    
+    <span class="c1"># 更新损失缩放因子</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    
+    <span class="c1"># 清零梯度</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h3>9.2.3 损失缩放详解<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>损失缩放是混合精度训练中的关键技术，它解决了FP16梯度下溢的问题。</p>
+<p><strong>为什么需要损失缩放？</strong></p>
+<p>在深度学习中，梯度值通常很小，特别是在深层网络中。FP16的最小正规化数约为6 × 10^-5，这意味着任何小于此值的梯度都会被下溢为零。这会导致权重无法更新，训练停滞。</p>
+<p><strong>损失缩放的工作原理：</strong></p>
+<ol class="arabic simple">
+<li><p>将损失值乘以一个大的缩放因子（如2^8=256）</p></li>
+<li><p>由于反向传播的线性性质，所有梯度也会被同比例放大</p></li>
+<li><p>这使得小梯度值能够在FP16范围内表示</p></li>
+<li><p>在应用梯度前，将其除以相同的缩放因子，恢复原始尺度</p></li>
+</ol>
+<p><strong>静态与动态损失缩放：</strong></p>
+<ol class="arabic simple">
+<li><p><strong>静态损失缩放</strong>：</p>
+<ul class="simple">
+<li><p>使用固定的缩放因子</p></li>
+<li><p>简单但需要手动调整</p></li>
+<li><p>不同模型可能需要不同的最佳缩放因子</p></li>
+</ul>
+</li>
+<li><p><strong>动态损失缩放</strong>：</p>
+<ul class="simple">
+<li><p>自动调整缩放因子</p></li>
+<li><p>当检测到梯度溢出时减小缩放因子</p></li>
+<li><p>一段时间内没有溢出时增大缩放因子</p></li>
+<li><p>更灵活，适应不同训练阶段</p></li>
+</ul>
+</li>
+</ol>
+<p>以下是动态损失缩放的简化实现：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DynamicLossScaler</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_scale</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">15</span><span class="p">,</span> <span class="n">scale_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">scale_window</span><span class="o">=</span><span class="mi">2000</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">init_scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="n">scale_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_window</span> <span class="o">=</span> <span class="n">scale_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iter_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_overflow_iter</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    
+    <span class="k">def</span> <span class="nf">scale_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">loss</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
+    
+    <span class="k">def</span> <span class="nf">unscale_gradients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">param_group</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">param_group</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">param</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">div_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">update_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overflow</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">overflow</span><span class="p">:</span>
+            <span class="c1"># 梯度溢出，减小缩放因子</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_overflow_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_counter</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iter_counter</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_overflow_iter</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_window</span><span class="p">:</span>
+            <span class="c1"># 一段时间没有溢出，增大缩放因子</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_overflow_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_counter</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">iter_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="k">def</span> <span class="nf">check_overflow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="c1"># 检查梯度是否包含NaN或Inf</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">grad</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">data</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">grad</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id9">
+<h2>9.3 实现混合精度训练<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<p>现在，让我们看看如何在实际中实现混合精度训练，特别是使用现代深度学习框架。</p>
+<section id="pytorch">
+<h3>9.3.1 PyTorch中的混合精度训练<a class="headerlink" href="#pytorch" title="Link to this heading">#</a></h3>
+<p>PyTorch提供了<code class="docutils literal notranslate"><span class="pre">torch.cuda.amp</span></code>（自动混合精度）模块，使混合精度训练变得简单。</p>
+<p><strong>基本用法：</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span><span class="p">,</span> <span class="n">GradScaler</span>
+
+<span class="c1"># 创建模型和优化器</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+
+<span class="c1"># 创建梯度缩放器</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">GradScaler</span><span class="p">()</span>
+
+<span class="c1"># 训练循环</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+        
+        <span class="c1"># 清零梯度</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        
+        <span class="c1"># 自动混合精度前向传播</span>
+        <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+        
+        <span class="c1"># 缩放损失并反向传播</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        
+        <span class="c1"># 缩放优化器步骤</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+        
+        <span class="c1"># 更新缩放因子</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong><code class="docutils literal notranslate"><span class="pre">autocast</span></code>上下文管理器：</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">autocast</span></code>上下文管理器会自动将操作转换为适当的精度：</p>
+<ul class="simple">
+<li><p>大多数操作使用FP16</p></li>
+<li><p>对精度敏感的操作（如归一化）保持FP32</p></li>
+<li><p>输入和输出类型会自动处理</p></li>
+</ul>
+<p><strong><code class="docutils literal notranslate"><span class="pre">GradScaler</span></code>类：</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">GradScaler</span></code>处理损失缩放的所有细节：</p>
+<ul class="simple">
+<li><p>自动缩放损失</p></li>
+<li><p>检测梯度溢出</p></li>
+<li><p>动态调整缩放因子</p></li>
+<li><p>在溢出时跳过优化器步骤</p></li>
+</ul>
+<p><strong>自定义精度策略：</strong></p>
+<p>对于更精细的控制，可以自定义哪些操作使用哪种精度：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 自定义精度策略</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span>
+
+<span class="c1"># 默认使用FP16</span>
+<span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+    <span class="c1"># 这些操作在FP16中执行</span>
+    <span class="n">hidden</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    
+    <span class="c1"># 对于特定操作，可以临时禁用autocast</span>
+    <span class="k">with</span> <span class="n">autocast</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># 这些操作在FP32中执行</span>
+        <span class="n">normalized</span> <span class="o">=</span> <span class="n">layer_norm</span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+    
+    <span class="c1"># 回到FP16</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="tensorflow">
+<h3>9.3.2 TensorFlow中的混合精度训练<a class="headerlink" href="#tensorflow" title="Link to this heading">#</a></h3>
+<p>TensorFlow也提供了混合精度训练的支持，通过<code class="docutils literal notranslate"><span class="pre">mixed_precision</span></code>模块。</p>
+<p><strong>基本用法：</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">mixed_precision</span>
+
+<span class="c1"># 设置全局策略</span>
+<span class="n">policy</span> <span class="o">=</span> <span class="n">mixed_precision</span><span class="o">.</span><span class="n">Policy</span><span class="p">(</span><span class="s1">&#39;mixed_float16&#39;</span><span class="p">)</span>
+<span class="n">mixed_precision</span><span class="o">.</span><span class="n">set_global_policy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+
+<span class="c1"># 创建模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">()</span>
+
+<span class="c1"># 编译模型（优化器会自动处理损失缩放）</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">mixed_precision</span><span class="o">.</span><span class="n">LossScaleOptimizer</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;sparse_categorical_crossentropy&#39;</span><span class="p">)</span>
+
+<span class="c1"># 训练模型</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">num_epochs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>自定义训练循环：</strong></p>
+<p>对于更精细的控制，可以使用自定义训练循环：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">mixed_precision</span>
+
+<span class="c1"># 设置策略</span>
+<span class="n">policy</span> <span class="o">=</span> <span class="n">mixed_precision</span><span class="o">.</span><span class="n">Policy</span><span class="p">(</span><span class="s1">&#39;mixed_float16&#39;</span><span class="p">)</span>
+<span class="n">mixed_precision</span><span class="o">.</span><span class="n">set_global_policy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+
+<span class="c1"># 创建模型和优化器</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">mixed_precision</span><span class="o">.</span><span class="n">LossScaleOptimizer</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+
+<span class="c1"># 训练循环</span>
+<span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+<span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="c1"># 前向传播</span>
+        <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># 计算损失</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">sparse_categorical_crossentropy</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+        <span class="c1"># 应用损失缩放</span>
+        <span class="n">scaled_loss</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">get_scaled_loss</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+    
+    <span class="c1"># 计算缩放后的梯度</span>
+    <span class="n">scaled_gradients</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">scaled_loss</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">)</span>
+    <span class="c1"># 取消梯度缩放</span>
+    <span class="n">gradients</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">get_unscaled_gradients</span><span class="p">(</span><span class="n">scaled_gradients</span><span class="p">)</span>
+    <span class="c1"># 应用梯度</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">loss</span>
+
+<span class="c1"># 执行训练</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">train_dataset</span><span class="p">:</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h3>9.3.3 混合精度训练的最佳实践<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>为了获得最佳的混合精度训练效果，以下是一些实践建议：</p>
+<ol class="arabic simple">
+<li><p><strong>使用支持Tensor Cores的GPU</strong>：</p>
+<ul class="simple">
+<li><p>NVIDIA Volta、Turing、Ampere或更新架构</p></li>
+<li><p>这些GPU在FP16操作上有硬件加速</p></li>
+</ul>
+</li>
+<li><p><strong>调整批量大小</strong>：</p>
+<ul class="simple">
+<li><p>由于内存使用减少，可以增加批量大小</p></li>
+<li><p>更大的批量通常提高吞吐量和GPU利用率</p></li>
+</ul>
+</li>
+<li><p><strong>调整学习率</strong>：</p>
+<ul class="simple">
+<li><p>更大的批量可能需要调整学习率</p></li>
+<li><p>考虑使用学习率缩放规则（如平方根缩放）</p></li>
+</ul>
+</li>
+<li><p><strong>监控损失缩放因子</strong>：</p>
+<ul class="simple">
+<li><p>如果缩放因子频繁减小，可能表明数值不稳定</p></li>
+<li><p>可能需要调整模型架构或优化器参数</p></li>
+</ul>
+</li>
+<li><p><strong>注意精度敏感操作</strong>：</p>
+<ul class="simple">
+<li><p>某些操作在低精度下可能导致问题</p></li>
+<li><p>考虑将这些操作保持在FP32中</p></li>
+</ul>
+</li>
+<li><p><strong>使用适当的归一化技术</strong>：</p>
+<ul class="simple">
+<li><p>层归一化（Layer Normalization）在混合精度训练中通常比批量归一化更稳定</p></li>
+<li><p>考虑使用RMSNorm等变种</p></li>
+</ul>
+</li>
+<li><p><strong>检查溢出频率</strong>：</p>
+<ul class="simple">
+<li><p>过于频繁的梯度溢出表明训练不稳定</p></li>
+<li><p>可能需要降低学习率或使用梯度裁剪</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id11">
+<h3>9.3.4 完整的混合精度训练示例<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>以下是一个完整的PyTorch混合精度训练示例，用于故事生成模型：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span><span class="p">,</span> <span class="n">GradScaler</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">GPT2Config</span><span class="p">,</span> <span class="n">GPT2LMHeadModel</span><span class="p">,</span> <span class="n">GPT2Tokenizer</span>
+
+<span class="c1"># 检查GPU可用性</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using GPU: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 检查是否支持Tensor Cores</span>
+    <span class="n">compute_capability</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_capability</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">supports_tensor_cores</span> <span class="o">=</span> <span class="n">compute_capability</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">7</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tensor Cores supported: </span><span class="si">{</span><span class="n">supports_tensor_cores</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using CPU. Mixed precision will not provide speedup.&quot;</span><span class="p">)</span>
+
+<span class="c1"># 创建模型</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">GPT2Config</span><span class="p">(</span>
+    <span class="n">vocab_size</span><span class="o">=</span><span class="mi">50257</span><span class="p">,</span>
+    <span class="n">n_positions</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+    <span class="n">n_ctx</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+    <span class="n">n_embd</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span>
+    <span class="n">n_layer</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+    <span class="n">n_head</span><span class="o">=</span><span class="mi">12</span>
+<span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">GPT2LMHeadModel</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="c1"># 创建分词器</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">GPT2Tokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2&quot;</span><span class="p">)</span>
+<span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span>
+
+<span class="c1"># 准备数据集</span>
+<span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span><span class="n">stories</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">story</span> <span class="ow">in</span> <span class="n">stories</span><span class="p">:</span>
+        <span class="c1"># 分词</span>
+        <span class="n">encodings</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">story</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;max_length&quot;</span><span class="p">)</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;input_ids&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">encodings</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;attention_mask&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">encodings</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">])</span>
+        <span class="p">})</span>
+    <span class="k">return</span> <span class="n">inputs</span>
+
+<span class="c1"># 假设我们有一个故事数据集</span>
+<span class="n">stories</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Once upon a time...&quot;</span><span class="p">,</span> <span class="s2">&quot;In a galaxy far, far away...&quot;</span><span class="p">]</span>  <span class="c1"># 实际应用中会有更多数据</span>
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">prepare_data</span><span class="p">(</span><span class="n">stories</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span>
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 创建优化器</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-5</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+<span class="c1"># 创建学习率调度器</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">CosineAnnealingLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">T_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1"># 创建梯度缩放器</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">GradScaler</span><span class="p">()</span>
+
+<span class="c1"># 训练函数</span>
+<span class="k">def</span> <span class="nf">train_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">scaler</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+        <span class="c1"># 将数据移至设备</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="c1"># 创建标签（偏移的输入）</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        
+        <span class="c1"># 清零梯度</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        
+        <span class="c1"># 混合精度前向传播</span>
+        <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">loss</span>
+        
+        <span class="c1"># 缩放损失并反向传播</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        
+        <span class="c1"># 梯度裁剪（在取消缩放后）</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">unscale_</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">max_norm</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        
+        <span class="c1"># 更新参数</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        
+        <span class="c1"># 更新学习率</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        
+        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
+
+<span class="c1"># 训练循环</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">train_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">scaler</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">num_epochs</span><span class="si">}</span><span class="s2">, Loss: </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 保存模型</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s2">&quot;storyteller_model.pt&quot;</span><span class="p">)</span>
+
+<span class="c1"># 生成文本示例</span>
+<span class="k">def</span> <span class="nf">generate_text</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda&quot;</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="c1"># 使用自动混合精度</span>
+        <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+                <span class="n">input_ids</span><span class="p">,</span>
+                <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">,</span>
+                <span class="n">temperature</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                <span class="n">top_k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                <span class="n">top_p</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+                <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">pad_token_id</span><span class="o">=</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span>
+            <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 生成示例故事</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;Once upon a time in a magical forest,&quot;</span>
+<span class="n">generated_story</span> <span class="o">=</span> <span class="n">generate_text</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prompt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated story:</span><span class="se">\n</span><span class="si">{</span><span class="n">generated_story</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id12">
+<h2>9.4 精度与性能的权衡<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<p>不同的数值精度在性能和模型质量之间提供了不同的权衡点。了解这些权衡对于选择合适的精度策略至关重要。</p>
+<section id="id13">
+<h3>9.4.1 不同精度格式的比较<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>让我们比较不同精度格式的特点：</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>精度格式</p></th>
+<th class="head"><p>位宽</p></th>
+<th class="head"><p>数值范围</p></th>
+<th class="head"><p>精度</p></th>
+<th class="head"><p>计算速度</p></th>
+<th class="head"><p>内存使用</p></th>
+<th class="head"><p>主要用途</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FP64</p></td>
+<td><p>64位</p></td>
+<td><p>±2.23×10^-308 到 ±1.80×10^308</p></td>
+<td><p>~16位十进制</p></td>
+<td><p>基准</p></td>
+<td><p>基准×2</p></td>
+<td><p>科学计算，高精度需求</p></td>
+</tr>
+<tr class="row-odd"><td><p>FP32</p></td>
+<td><p>32位</p></td>
+<td><p>±1.18×10^-38 到 ±3.4×10^38</p></td>
+<td><p>~7位十进制</p></td>
+<td><p>基准</p></td>
+<td><p>基准</p></td>
+<td><p>训练主权重，精度敏感操作</p></td>
+</tr>
+<tr class="row-even"><td><p>FP16</p></td>
+<td><p>16位</p></td>
+<td><p>±6.10×10^-5 到 ±65504</p></td>
+<td><p>~3-4位十进制</p></td>
+<td><p>2-8×加速</p></td>
+<td><p>1/2基准</p></td>
+<td><p>前向/反向传播，Tensor Cores</p></td>
+</tr>
+<tr class="row-odd"><td><p>BF16</p></td>
+<td><p>16位</p></td>
+<td><p>与FP32相同</p></td>
+<td><p>~2-3位十进制</p></td>
+<td><p>2-8×加速</p></td>
+<td><p>1/2基准</p></td>
+<td><p>训练，更好的数值稳定性</p></td>
+</tr>
+<tr class="row-even"><td><p>FP8</p></td>
+<td><p>8位</p></td>
+<td><p>有限</p></td>
+<td><p>~1-2位十进制</p></td>
+<td><p>4-16×加速</p></td>
+<td><p>1/4基准</p></td>
+<td><p>推理，部分训练操作</p></td>
+</tr>
+<tr class="row-odd"><td><p>INT8</p></td>
+<td><p>8位</p></td>
+<td><p>-128 到 127</p></td>
+<td><p>整数</p></td>
+<td><p>4-16×加速</p></td>
+<td><p>1/4基准</p></td>
+<td><p>量化推理</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="fp16-vs-bf16">
+<h3>9.4.2 FP16 vs BF16<a class="headerlink" href="#fp16-vs-bf16" title="Link to this heading">#</a></h3>
+<p>FP16和BF16都是16位格式，但它们有重要区别：</p>
+<p><strong>FP16（IEEE 半精度）</strong>：</p>
+<ul class="simple">
+<li><p>1位符号，5位指数，10位尾数</p></li>
+<li><p>更高的精度，但数值范围有限</p></li>
+<li><p>容易出现溢出问题</p></li>
+<li><p>在NVIDIA GPU上有更广泛的支持</p></li>
+</ul>
+<p><strong>BF16（脑浮点数）</strong>：</p>
+<ul class="simple">
+<li><p>1位符号，8位指数，7位尾数</p></li>
+<li><p>与FP32相同的指数范围，但精度降低</p></li>
+<li><p>更少的溢出问题，训练更稳定</p></li>
+<li><p>在Google TPU和较新的NVIDIA GPU上支持</p></li>
+</ul>
+<p><strong>选择指南</strong>：</p>
+<ul class="simple">
+<li><p>如果数值稳定性是主要关注点，选择BF16</p></li>
+<li><p>如果精度更重要且数值范围可控，选择FP16</p></li>
+<li><p>如果硬件同时支持两种格式，BF16通常是训练的更好选择</p></li>
+</ul>
+<p>以下是在PyTorch中使用BF16的示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span>
+
+<span class="c1"># 检查BF16支持</span>
+<span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_bf16_supported</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;BF16 is supported!&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 使用BF16自动混合精度</span>
+    <span class="k">with</span> <span class="n">autocast</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;BF16 is not supported, falling back to FP16&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 使用FP16自动混合精度</span>
+    <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="fp8">
+<h3>9.4.3 FP8简介<a class="headerlink" href="#fp8" title="Link to this heading">#</a></h3>
+<p>FP8是一种新兴的8位浮点格式，专为深度学习设计。它有几种变体，最常见的是：</p>
+<p><strong>E4M3（4位指数，3位尾数）</strong>：</p>
+<ul class="simple">
+<li><p>适用于前向传播和权重</p></li>
+<li><p>提供更大的动态范围</p></li>
+</ul>
+<p><strong>E5M2（5位指数，2位尾数）</strong>：</p>
+<ul class="simple">
+<li><p>适用于梯度</p></li>
+<li><p>提供更大的数值范围，但精度更低</p></li>
+</ul>
+<p>FP8的主要优势：</p>
+<ul class="simple">
+<li><p>比FP16/BF16进一步减少内存使用</p></li>
+<li><p>提高计算速度和能效</p></li>
+<li><p>在某些操作中可以达到与更高精度相当的模型质量</p></li>
+</ul>
+<p>FP8的挑战：</p>
+<ul class="simple">
+<li><p>需要特殊的缩放技术来保持精度</p></li>
+<li><p>硬件支持仍在发展中（如NVIDIA Hopper架构）</p></li>
+<li><p>可能需要更复杂的训练策略</p></li>
+</ul>
+</section>
+<section id="id14">
+<h3>9.4.4 精度选择策略<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<p>为不同的操作选择合适的精度是混合精度训练的核心。以下是一些常见的策略：</p>
+<p><strong>权重存储</strong>：</p>
+<ul class="simple">
+<li><p>主副本：FP32</p></li>
+<li><p>计算副本：FP16/BF16</p></li>
+<li><p>量化模型：INT8/FP8</p></li>
+</ul>
+<p><strong>前向传播</strong>：</p>
+<ul class="simple">
+<li><p>大多数操作：FP16/BF16</p></li>
+<li><p>精度敏感操作（如LayerNorm）：FP32</p></li>
+<li><p>推理时可考虑：INT8/FP8</p></li>
+</ul>
+<p><strong>反向传播</strong>：</p>
+<ul class="simple">
+<li><p>梯度计算：FP16/BF16</p></li>
+<li><p>梯度累积：FP32</p></li>
+<li><p>需要损失缩放</p></li>
+</ul>
+<p><strong>优化器状态和更新</strong>：</p>
+<ul class="simple">
+<li><p>动量、方差等状态：FP32</p></li>
+<li><p>权重更新：FP32</p></li>
+</ul>
+<p><strong>激活值</strong>：</p>
+<ul class="simple">
+<li><p>存储：FP16/BF16</p></li>
+<li><p>检查点重计算：可能需要FP32</p></li>
+</ul>
+<p>以下是一个实现这种精度选择策略的PyTorch示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+<span class="k">class</span> <span class="nc">MixedPrecisionModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">768</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_norm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># 主要计算在FP16/BF16中</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># 转换为FP32进行精度敏感操作</span>
+        <span class="n">x_fp32</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">residual_fp32</span> <span class="o">=</span> <span class="n">residual</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        
+        <span class="c1"># 在FP32中执行残差连接和层归一化</span>
+        <span class="n">output_fp32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">x_fp32</span> <span class="o">+</span> <span class="n">residual_fp32</span><span class="p">)</span>
+        
+        <span class="c1"># 返回到原始精度</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output_fp32</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">output</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id15">
+<h2>9.5 精度问题排查与解决<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<p>在使用混合精度训练时，可能会遇到各种数值问题。了解如何识别和解决这些问题对于成功训练至关重要。</p>
+<section id="id16">
+<h3>9.5.1 常见精度问题<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<p>以下是混合精度训练中最常见的问题：</p>
+<ol class="arabic simple">
+<li><p><strong>梯度下溢</strong>：</p>
+<ul class="simple">
+<li><p>症状：权重停止更新，训练停滞</p></li>
+<li><p>原因：梯度值太小，在FP16中表示为零</p></li>
+<li><p>解决方案：增加损失缩放因子</p></li>
+</ul>
+</li>
+<li><p><strong>梯度爆炸</strong>：</p>
+<ul class="simple">
+<li><p>症状：损失突然变为NaN或Inf</p></li>
+<li><p>原因：梯度值太大，超出FP16范围</p></li>
+<li><p>解决方案：梯度裁剪，减小学习率</p></li>
+</ul>
+</li>
+<li><p><strong>权重更新不稳定</strong>：</p>
+<ul class="simple">
+<li><p>症状：训练不稳定，性能波动大</p></li>
+<li><p>原因：累积的舍入误差</p></li>
+<li><p>解决方案：在FP32中进行权重更新</p></li>
+</ul>
+</li>
+<li><p><strong>激活值溢出</strong>：</p>
+<ul class="simple">
+<li><p>症状：前向传播中出现NaN</p></li>
+<li><p>原因：中间激活值超出FP16范围</p></li>
+<li><p>解决方案：检查并修改模型架构，使用更稳定的归一化</p></li>
+</ul>
+</li>
+<li><p><strong>损失缩放因子震荡</strong>：</p>
+<ul class="simple">
+<li><p>症状：缩放因子频繁增加和减少</p></li>
+<li><p>原因：训练不稳定</p></li>
+<li><p>解决方案：调整优化器参数，使用更保守的缩放策略</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id17">
+<h3>9.5.2 调试工具和技术<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<p>以下工具和技术可以帮助识别和解决精度问题：</p>
+<ol class="arabic simple">
+<li><p><strong>梯度和激活值监控</strong>：</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">check_tensor_values</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;检查张量的统计信息&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> contains NaN or Inf&quot;</span><span class="p">)</span>
+    
+    <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="n">tensor</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+        <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="n">tensor</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+        <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">tensor</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+        <span class="s2">&quot;std&quot;</span><span class="p">:</span> <span class="n">tensor</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> stats: </span><span class="si">{</span><span class="n">stats</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 在训练循环中使用</span>
+<span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+    
+    <span class="c1"># 检查前向传播值</span>
+    <span class="n">check_tensor_values</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="s2">&quot;outputs&quot;</span><span class="p">)</span>
+    <span class="n">check_tensor_values</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+    
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="c1"># 检查梯度</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">check_tensor_values</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;grad_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>梯度直方图</strong>：</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
+
+<span class="c1"># 创建TensorBoard写入器</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="s2">&quot;logs/mixed_precision&quot;</span><span class="p">)</span>
+
+<span class="c1"># 在训练循环中记录梯度直方图</span>
+<span class="k">def</span> <span class="nf">log_gradients</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">add_histogram</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gradients/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
+<span class="c1"># 在训练循环中使用</span>
+<span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="p">):</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="c1"># 记录梯度</span>
+    <span class="n">log_gradients</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>损失缩放因子监控</strong>：</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用PyTorch的GradScaler</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">GradScaler</span><span class="p">()</span>
+
+<span class="c1"># 在训练循环中</span>
+<span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+    
+    <span class="c1"># 缩放损失并反向传播</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="c1"># 检查是否有梯度溢出</span>
+    <span class="n">overflow</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">_check_inf_per_device</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">overflow</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step </span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s2">: Gradient overflow detected&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 更新参数</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    
+    <span class="c1"># 记录当前缩放因子</span>
+    <span class="n">current_scale</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">get_scale</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step </span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s2">: Loss scale = </span><span class="si">{</span><span class="n">current_scale</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>精度比较实验</strong>：</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_with_precision</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;mixed&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;使用不同精度训练模型&quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;mixed&quot;</span><span class="p">:</span>
+        <span class="c1"># 混合精度训练</span>
+        <span class="n">scaler</span> <span class="o">=</span> <span class="n">GradScaler</span><span class="p">()</span>
+        <span class="n">use_autocast</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;fp32&quot;</span><span class="p">:</span>
+        <span class="c1"># 全FP32训练</span>
+        <span class="n">use_autocast</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported precision: </span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+        
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">use_autocast</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+                <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+            <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+            <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        
+        <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    
+    <span class="k">return</span> <span class="n">losses</span>
+
+<span class="c1"># 比较不同精度</span>
+<span class="n">fp32_losses</span> <span class="o">=</span> <span class="n">train_with_precision</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;fp32&quot;</span><span class="p">)</span>
+<span class="n">mixed_losses</span> <span class="o">=</span> <span class="n">train_with_precision</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;mixed&quot;</span><span class="p">)</span>
+
+<span class="c1"># 绘制损失比较</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fp32_losses</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;FP32&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mixed_losses</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Mixed Precision&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Iteration&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Loss Comparison: FP32 vs Mixed Precision&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;precision_comparison.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id18">
+<h3>9.5.3 解决方案和最佳实践<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<p>以下是解决混合精度训练中常见问题的策略：</p>
+<ol class="arabic simple">
+<li><p><strong>梯度下溢解决方案</strong>：</p>
+<ul class="simple">
+<li><p>使用动态损失缩放</p></li>
+<li><p>增加初始损失缩放因子</p></li>
+<li><p>使用BF16代替FP16（如果硬件支持）</p></li>
+</ul>
+</li>
+<li><p><strong>梯度爆炸解决方案</strong>：</p>
+<ul class="simple">
+<li><p>实施梯度裁剪（<code class="docutils literal notranslate"><span class="pre">torch.nn.utils.clip_grad_norm_</span></code>）</p></li>
+<li><p>减小学习率</p></li>
+<li><p>使用更稳定的优化器（如AdamW）</p></li>
+</ul>
+</li>
+<li><p><strong>数值稳定性改进</strong>：</p>
+<ul class="simple">
+<li><p>使用层归一化代替批量归一化</p></li>
+<li><p>在精度敏感操作中使用FP32</p></li>
+<li><p>考虑使用残差缩放（Residual Scaling）</p></li>
+</ul>
+</li>
+<li><p><strong>初始化调整</strong>：</p>
+<ul class="simple">
+<li><p>为混合精度训练调整权重初始化</p></li>
+<li><p>避免过大或过小的初始值</p></li>
+</ul>
+</li>
+<li><p><strong>架构修改</strong>：</p>
+<ul class="simple">
+<li><p>使用对数值精度更稳健的激活函数（如GELU、SiLU）</p></li>
+<li><p>添加跳跃连接以改善梯度流</p></li>
+<li><p>考虑使用RMSNorm等更稳定的归一化变种</p></li>
+</ul>
+</li>
+</ol>
+<p>以下是一个综合示例，实现了多种精度问题解决方案：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span><span class="p">,</span> <span class="n">GradScaler</span>
+
+<span class="k">class</span> <span class="nc">NumericallyStableTransformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="mi">50000</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        
+        <span class="c1"># 使用RMSNorm代替LayerNorm以提高数值稳定性</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm_cls</span> <span class="o">=</span> <span class="n">RMSNorm</span>
+        
+        <span class="c1"># 创建Transformer层</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">TransformerLayerWithPrecisionControl</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">)</span>
+        <span class="p">])</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">final_norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_cls</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lm_head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="mi">50000</span><span class="p">)</span>
+        
+        <span class="c1"># 应用特殊初始化</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_weights</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">_init_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;为混合精度训练优化的初始化&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;norm&quot;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">and</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="c1"># 归一化层权重初始化为1</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">ones_</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;norm&quot;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">and</span> <span class="s2">&quot;bias&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="c1"># 归一化层偏置初始化为0</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="c1"># 线性层权重使用较小的初始值</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;bias&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lm_head</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">logits</span>
+
+<span class="k">class</span> <span class="nc">RMSNorm</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;RMSNorm提供比LayerNorm更好的数值稳定性&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">dim</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># 转换为FP32以提高精度</span>
+        <span class="n">x_fp32</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        
+        <span class="c1"># 计算RMS</span>
+        <span class="n">rms</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rsqrt</span><span class="p">(</span><span class="n">x_fp32</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>
+        
+        <span class="c1"># 应用缩放</span>
+        <span class="n">x_normalized</span> <span class="o">=</span> <span class="n">x_fp32</span> <span class="o">*</span> <span class="n">rms</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
+        
+        <span class="c1"># 返回到原始精度</span>
+        <span class="k">return</span> <span class="n">x_normalized</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">TransformerLayerWithPrecisionControl</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attention</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MultiheadAttention</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm1</span> <span class="o">=</span> <span class="n">RMSNorm</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span> <span class="o">=</span> <span class="n">RMSNorm</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">d_model</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">(),</span>  <span class="c1"># 使用GELU而非ReLU以提高稳定性</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># 残差缩放因子（帮助控制梯度尺度）</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_scale</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">num_layers</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># 自注意力块</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">x</span>
+        
+        <span class="c1"># 在FP32中进行归一化</span>
+        <span class="n">x_norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># 自注意力（在原始精度中）</span>
+        <span class="n">attn_out</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="n">x_norm</span><span class="p">,</span> <span class="n">x_norm</span><span class="p">,</span> <span class="n">x_norm</span><span class="p">)</span>
+        
+        <span class="c1"># 应用残差缩放并添加残差</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">residual</span> <span class="o">+</span> <span class="n">attn_out</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_scale</span>
+        
+        <span class="c1"># 前馈块</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">x</span>
+        
+        <span class="c1"># 在FP32中进行归一化</span>
+        <span class="n">x_norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># 前馈网络（在原始精度中）</span>
+        <span class="n">mlp_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="n">x_norm</span><span class="p">)</span>
+        
+        <span class="c1"># 应用残差缩放并添加残差</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">residual</span> <span class="o">+</span> <span class="n">mlp_out</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_scale</span>
+        
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="c1"># 训练函数</span>
+<span class="k">def</span> <span class="nf">train_with_robust_mixed_precision</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">num_epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-5</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+    
+    <span class="c1"># 创建梯度缩放器（使用较大的初始缩放因子）</span>
+    <span class="n">scaler</span> <span class="o">=</span> <span class="n">GradScaler</span><span class="p">(</span><span class="n">init_scale</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">16</span><span class="p">)</span>
+    
+    <span class="c1"># 训练循环</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+            
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            
+            <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+                <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()(</span><span class="n">outputs</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            
+            <span class="c1"># 缩放损失并反向传播</span>
+            <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            
+            <span class="c1"># 梯度裁剪（在取消缩放后）</span>
+            <span class="n">scaler</span><span class="o">.</span><span class="n">unscale_</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">max_norm</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+            
+            <span class="c1"># 检查梯度是否包含NaN</span>
+            <span class="n">valid_gradients</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NaN gradient detected in </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">valid_gradients</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">break</span>
+            
+            <span class="c1"># 只在梯度有效时更新参数</span>
+            <span class="k">if</span> <span class="n">valid_gradients</span><span class="p">:</span>
+                <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+            
+            <span class="c1"># 更新缩放因子</span>
+            <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            
+            <span class="c1"># 打印当前缩放因子</span>
+            <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>  <span class="c1"># 随机采样以减少输出</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">, Loss Scale: </span><span class="si">{</span><span class="n">scaler</span><span class="o">.</span><span class="n">get_scale</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id19">
+<h2>9.6 不同精度在故事生成中的影响<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<p>数值精度不仅影响训练速度和效率，还可能影响生成故事的质量和特性。在本节中，我们将探讨不同精度对故事生成的影响。</p>
+<section id="id20">
+<h3>9.6.1 精度对生成质量的影响<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
+<p>不同的数值精度可能以多种方式影响生成的故事：</p>
+<ol class="arabic simple">
+<li><p><strong>词汇多样性</strong>：</p>
+<ul class="simple">
+<li><p>较低精度可能导致概率分布更加”尖锐”</p></li>
+<li><p>这可能减少生成文本的多样性</p></li>
+<li><p>在极端情况下，可能导致重复或套路化内容</p></li>
+</ul>
+</li>
+<li><p><strong>连贯性和流畅度</strong>：</p>
+<ul class="simple">
+<li><p>精度不足可能影响模型捕捉微妙语言模式的能力</p></li>
+<li><p>这可能导致生成的故事中出现不自然的转折或不连贯的段落</p></li>
+</ul>
+</li>
+<li><p><strong>创意和独特性</strong>：</p>
+<ul class="simple">
+<li><p>精度限制可能影响模型探索不太可能的词序列的能力</p></li>
+<li><p>这可能减少生成内容的创意性和独特性</p></li>
+</ul>
+</li>
+<li><p><strong>长文本一致性</strong>：</p>
+<ul class="simple">
+<li><p>在生成长故事时，精度问题可能累积</p></li>
+<li><p>这可能导致故事后期出现主题漂移或情节不一致</p></li>
+</ul>
+</li>
+</ol>
+<p>以下是一个比较不同精度对故事生成影响的实验设计：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">GPT2LMHeadModel</span><span class="p">,</span> <span class="n">GPT2Tokenizer</span>
+
+<span class="k">def</span> <span class="nf">generate_story_with_precision</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;使用指定精度生成故事&quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+    
+    <span class="c1"># 设置精度</span>
+    <span class="k">if</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;fp32&quot;</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span>
+    <span class="k">elif</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;fp16&quot;</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float16</span>
+    <span class="k">elif</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;bf16&quot;</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported precision: </span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 转换模型权重</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    
+    <span class="c1"># 生成文本</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+            <span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">,</span>
+            <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">top_k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+            <span class="n">top_p</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+            <span class="n">num_return_sequences</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">pad_token_id</span><span class="o">=</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span>
+        <span class="p">)</span>
+    
+    <span class="c1"># 解码生成的文本</span>
+    <span class="n">story</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">story</span>
+
+<span class="c1"># 加载模型和分词器</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">GPT2LMHeadModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2-medium&quot;</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">GPT2Tokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2-medium&quot;</span><span class="p">)</span>
+
+<span class="c1"># 定义提示</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;Once upon a time in a magical forest, a young fairy discovered a mysterious glowing stone. As she picked it up,&quot;</span>
+
+<span class="c1"># 使用不同精度生成故事</span>
+<span class="n">precisions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;fp32&quot;</span><span class="p">,</span> <span class="s2">&quot;fp16&quot;</span><span class="p">,</span> <span class="s2">&quot;bf16&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_bf16_supported</span><span class="p">()</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;fp32&quot;</span><span class="p">,</span> <span class="s2">&quot;fp16&quot;</span><span class="p">]</span>
+<span class="n">stories</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">precision</span> <span class="ow">in</span> <span class="n">precisions</span><span class="p">:</span>
+    <span class="n">stories</span><span class="p">[</span><span class="n">precision</span><span class="p">]</span> <span class="o">=</span> <span class="n">generate_story_with_precision</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Story generated with </span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2"> ---</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">stories</span><span class="p">[</span><span class="n">precision</span><span class="p">])</span>
+
+<span class="c1"># 分析生成的故事</span>
+<span class="k">def</span> <span class="nf">analyze_story</span><span class="p">(</span><span class="n">story</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;简单分析生成的故事&quot;&quot;&quot;</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">story</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">unique_words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+    
+    <span class="n">analysis</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">),</span>
+        <span class="s2">&quot;unique_words&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_words</span><span class="p">),</span>
+        <span class="s2">&quot;lexical_diversity&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_words</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="k">if</span> <span class="n">words</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;avg_word_length&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="k">if</span> <span class="n">words</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="n">analysis</span>
+
+<span class="c1"># 比较不同精度生成的故事</span>
+<span class="k">for</span> <span class="n">precision</span><span class="p">,</span> <span class="n">story</span> <span class="ow">in</span> <span class="n">stories</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">analysis</span> <span class="o">=</span> <span class="n">analyze_story</span><span class="p">(</span><span class="n">story</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Analysis for </span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2"> ---&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">analysis</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id21">
+<h3>9.6.2 精度对推理性能的影响<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<p>在故事生成的推理阶段，精度选择对性能有显著影响：</p>
+<ol class="arabic simple">
+<li><p><strong>延迟（Latency）</strong>：</p>
+<ul class="simple">
+<li><p>较低精度通常可以减少生成每个词元的时间</p></li>
+<li><p>这对于交互式故事生成应用尤为重要</p></li>
+</ul>
+</li>
+<li><p><strong>吞吐量（Throughput）</strong>：</p>
+<ul class="simple">
+<li><p>较低精度允许批处理更多请求</p></li>
+<li><p>这对于服务多用户的应用很有价值</p></li>
+</ul>
+</li>
+<li><p><strong>内存使用</strong>：</p>
+<ul class="simple">
+<li><p>较低精度减少了模型的内存占用</p></li>
+<li><p>这允许在相同硬件上加载更大的模型</p></li>
+</ul>
+</li>
+<li><p><strong>能耗</strong>：</p>
+<ul class="simple">
+<li><p>较低精度操作通常能耗更低</p></li>
+<li><p>这对于移动设备和边缘计算很重要</p></li>
+</ul>
+</li>
+</ol>
+<p>以下是一个比较不同精度对故事生成推理性能影响的基准测试：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">GPT2LMHeadModel</span><span class="p">,</span> <span class="n">GPT2Tokenizer</span>
+
+<span class="k">def</span> <span class="nf">benchmark_generation</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">num_tokens</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_runs</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;测量指定精度下的生成性能&quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+    
+    <span class="c1"># 设置精度</span>
+    <span class="k">if</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;fp32&quot;</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span>
+    <span class="k">elif</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;fp16&quot;</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float16</span>
+    <span class="k">elif</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;bf16&quot;</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported precision: </span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 转换模型权重</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    
+    <span class="c1"># 预热</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num_return_sequences</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># 测量生成时间</span>
+    <span class="n">latencies</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_runs</span><span class="p">):</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+                <span class="n">input_ids</span><span class="p">,</span>
+                <span class="n">max_length</span><span class="o">=</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">num_tokens</span><span class="p">,</span>
+                <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">top_k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                <span class="n">top_p</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+                <span class="n">temperature</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                <span class="n">num_return_sequences</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">pad_token_id</span><span class="o">=</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span>
+            <span class="p">)</span>
+        
+        <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">latencies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span>
+    
+    <span class="c1"># 计算性能指标</span>
+    <span class="n">avg_latency</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">latencies</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">latencies</span><span class="p">)</span>
+    <span class="n">tokens_per_second</span> <span class="o">=</span> <span class="n">num_tokens</span> <span class="o">/</span> <span class="n">avg_latency</span>
+    
+    <span class="c1"># 测量内存使用</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">reset_peak_memory_stats</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+            <span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">max_length</span><span class="o">=</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">num_tokens</span><span class="p">,</span>
+            <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">num_return_sequences</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+    <span class="n">memory_usage</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">max_memory_allocated</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># MB</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;precision&quot;</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span>
+        <span class="s2">&quot;avg_latency&quot;</span><span class="p">:</span> <span class="n">avg_latency</span><span class="p">,</span>
+        <span class="s2">&quot;tokens_per_second&quot;</span><span class="p">:</span> <span class="n">tokens_per_second</span><span class="p">,</span>
+        <span class="s2">&quot;memory_usage_mb&quot;</span><span class="p">:</span> <span class="n">memory_usage</span>
+    <span class="p">}</span>
+
+<span class="c1"># 加载模型和分词器</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">GPT2LMHeadModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2-medium&quot;</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">GPT2Tokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2-medium&quot;</span><span class="p">)</span>
+
+<span class="c1"># 定义提示</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;Once upon a time&quot;</span>
+
+<span class="c1"># 测试不同精度</span>
+<span class="n">precisions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;fp32&quot;</span><span class="p">,</span> <span class="s2">&quot;fp16&quot;</span><span class="p">,</span> <span class="s2">&quot;bf16&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_bf16_supported</span><span class="p">()</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;fp32&quot;</span><span class="p">,</span> <span class="s2">&quot;fp16&quot;</span><span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">precision</span> <span class="ow">in</span> <span class="n">precisions</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">benchmark_generation</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Performance with </span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2"> ---&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 绘制性能比较图</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># 延迟比较</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">latencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;avg_latency&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">precisions</span><span class="p">,</span> <span class="n">latencies</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Average Latency (seconds)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Seconds&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="c1"># 吞吐量比较</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">throughputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;tokens_per_second&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">precisions</span><span class="p">,</span> <span class="n">throughputs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Throughput (tokens/second)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Tokens per Second&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;precision_performance_comparison.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id22">
+<h3>9.6.3 为故事生成选择最佳精度<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
+<p>基于前面的讨论，以下是为故事生成模型选择最佳精度的指南：</p>
+<p><strong>训练阶段</strong>：</p>
+<ul class="simple">
+<li><p><strong>大型模型（&gt;1B参数）</strong>：</p>
+<ul>
+<li><p>使用混合精度训练（FP16或BF16）</p></li>
+<li><p>如果训练不稳定，优先选择BF16（如果硬件支持）</p></li>
+<li><p>使用动态损失缩放和梯度裁剪</p></li>
+</ul>
+</li>
+<li><p><strong>中型模型（100M-1B参数）</strong>：</p>
+<ul>
+<li><p>使用混合精度训练</p></li>
+<li><p>监控训练稳定性，必要时调整损失缩放策略</p></li>
+</ul>
+</li>
+<li><p><strong>小型模型（&lt;100M参数）</strong>：</p>
+<ul>
+<li><p>如果训练速度是主要关注点，使用混合精度</p></li>
+<li><p>如果训练稳定性更重要，可以考虑纯FP32训练</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>推理阶段</strong>：</p>
+<ul class="simple">
+<li><p><strong>在线交互式生成</strong>：</p>
+<ul>
+<li><p>优先考虑低延迟</p></li>
+<li><p>使用FP16或INT8量化（如果质量可接受）</p></li>
+<li><p>考虑KV缓存优化（将在后续章节讨论）</p></li>
+</ul>
+</li>
+<li><p><strong>批量故事生成</strong>：</p>
+<ul>
+<li><p>优先考虑高吞吐量</p></li>
+<li><p>使用FP16或BF16</p></li>
+<li><p>优化批处理大小以最大化设备利用率</p></li>
+</ul>
+</li>
+<li><p><strong>移动设备或边缘部署</strong>：</p>
+<ul>
+<li><p>使用INT8量化或更激进的压缩技术</p></li>
+<li><p>考虑模型蒸馏以减小模型大小</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>质量敏感的应用</strong>：</p>
+<ul class="simple">
+<li><p>对于需要高质量、创意性强的故事生成：</p>
+<ul>
+<li><p>在推理时使用FP32或BF16</p></li>
+<li><p>特别是对于长故事生成，高精度可以减少质量下降</p></li>
+</ul>
+</li>
+<li><p>对于特定风格或主题的故事：</p>
+<ul>
+<li><p>测试不同精度对风格保持的影响</p></li>
+<li><p>可能需要在某些层使用更高精度</p></li>
+</ul>
+</li>
+</ul>
+<p>以下是一个为故事生成实现精度自适应的示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">class</span> <span class="nc">AdaptivePrecisionStoryGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;根据需求自适应选择精度的故事生成器&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_precisions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;fp32&quot;</span><span class="p">,</span> <span class="s2">&quot;fp16&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_bf16_supported</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">available_precisions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;bf16&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_convert_model_precision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;转换模型精度&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;fp32&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;fp16&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float16</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">precision</span> <span class="o">==</span> <span class="s2">&quot;bf16&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported precision: </span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">generate_story</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;balanced&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;生成故事，根据模式选择精度&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;quality&quot;</span><span class="p">:</span>
+            <span class="c1"># 质量优先，使用FP32</span>
+            <span class="n">precision</span> <span class="o">=</span> <span class="s2">&quot;fp32&quot;</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;speed&quot;</span><span class="p">:</span>
+            <span class="c1"># 速度优先，使用最低可用精度</span>
+            <span class="n">precision</span> <span class="o">=</span> <span class="s2">&quot;fp16&quot;</span> <span class="k">if</span> <span class="s2">&quot;fp16&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_precisions</span> <span class="k">else</span> <span class="s2">&quot;fp32&quot;</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;balanced&quot;</span><span class="p">:</span>
+            <span class="c1"># 平衡模式，优先使用BF16</span>
+            <span class="n">precision</span> <span class="o">=</span> <span class="s2">&quot;bf16&quot;</span> <span class="k">if</span> <span class="s2">&quot;bf16&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_precisions</span> <span class="k">else</span> <span class="s2">&quot;fp16&quot;</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;adaptive&quot;</span><span class="p">:</span>
+            <span class="c1"># 自适应模式，根据故事长度选择精度</span>
+            <span class="k">if</span> <span class="n">max_length</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="p">:</span>
+                <span class="c1"># 长故事使用更高精度以保持一致性</span>
+                <span class="n">precision</span> <span class="o">=</span> <span class="s2">&quot;fp32&quot;</span>
+            <span class="k">elif</span> <span class="n">max_length</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="c1"># 中等长度使用平衡精度</span>
+                <span class="n">precision</span> <span class="o">=</span> <span class="s2">&quot;bf16&quot;</span> <span class="k">if</span> <span class="s2">&quot;bf16&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_precisions</span> <span class="k">else</span> <span class="s2">&quot;fp16&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># 短故事使用最低精度以获得速度</span>
+                <span class="n">precision</span> <span class="o">=</span> <span class="s2">&quot;fp16&quot;</span> <span class="k">if</span> <span class="s2">&quot;fp16&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_precisions</span> <span class="k">else</span> <span class="s2">&quot;fp32&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported mode: </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># 转换模型精度</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_convert_model_precision</span><span class="p">(</span><span class="n">precision</span><span class="p">)</span>
+        
+        <span class="c1"># 编码提示</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+        
+        <span class="c1"># 生成文本</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+                <span class="n">input_ids</span><span class="p">,</span>
+                <span class="n">max_length</span><span class="o">=</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">max_length</span><span class="p">,</span>
+                <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">top_k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                <span class="n">top_p</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+                <span class="n">temperature</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                <span class="n">num_return_sequences</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">pad_token_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span>
+            <span class="p">)</span>
+        <span class="n">generation_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        
+        <span class="c1"># 解码生成的文本</span>
+        <span class="n">story</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;story&quot;</span><span class="p">:</span> <span class="n">story</span><span class="p">,</span>
+            <span class="s2">&quot;precision_used&quot;</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span>
+            <span class="s2">&quot;generation_time&quot;</span><span class="p">:</span> <span class="n">generation_time</span><span class="p">,</span>
+            <span class="s2">&quot;tokens_per_second&quot;</span><span class="p">:</span> <span class="n">max_length</span> <span class="o">/</span> <span class="n">generation_time</span>
+        <span class="p">}</span>
+
+<span class="c1"># 使用示例</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">GPT2LMHeadModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2-medium&quot;</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">GPT2Tokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2-medium&quot;</span><span class="p">)</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">AdaptivePrecisionStoryGenerator</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span>
+
+<span class="c1"># 生成不同模式的故事</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;The ancient dragon awoke from its thousand-year slumber. Its eyes glowed with&quot;</span>
+
+<span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;quality&quot;</span><span class="p">,</span> <span class="s2">&quot;speed&quot;</span><span class="p">,</span> <span class="s2">&quot;balanced&quot;</span><span class="p">,</span> <span class="s2">&quot;adaptive&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">generate_story</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Story generated in </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2"> mode (using </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;precision_used&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) ---&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generation time: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;generation_time&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Speed: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;tokens_per_second&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> tokens/second&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Story:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;story&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id23">
+<h2>9.7 总结与展望<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
+<p>在本章中，我们深入探讨了数值精度在大语言模型训练和推理中的重要性。我们介绍了不同的浮点格式（FP32、FP16、BF16、FP8），讨论了混合精度训练的原理和实现，分析了精度问题的排查与解决方法，并探讨了不同精度在故事生成中的影响。</p>
+<p>混合精度训练是现代大语言模型训练的标准做法，它在保持模型质量的同时显著提高了训练速度和内存效率。通过合理选择不同操作的精度，并使用损失缩放等技术，我们可以克服低精度带来的挑战，充分利用现代硬件的计算能力。</p>
+<p>随着大语言模型规模的不断增长，精度优化将变得越来越重要。未来的发展趋势包括：</p>
+<ol class="arabic simple">
+<li><p><strong>更低位宽格式</strong>：FP8等更低位宽的浮点格式将变得更加普及，进一步提高计算效率。</p></li>
+<li><p><strong>精度感知架构</strong>：未来的模型架构可能会从设计上考虑数值精度，使模型在低精度下更加稳定。</p></li>
+<li><p><strong>自适应精度</strong>：训练和推理系统可能会动态调整不同操作的精度，根据实时需求优化性能和质量。</p></li>
+<li><p><strong>硬件协同设计</strong>：软件和硬件将更紧密地协同设计，以支持新的精度格式和混合精度计算模式。</p></li>
+<li><p><strong>量化感知训练</strong>：将量化考虑直接纳入训练过程，使模型在低精度下表现更好。</p></li>
+</ol>
+<p>在下一章中，我们将探讨速度提升的另一个关键方面：分布式优化。我们将讨论如何在多个设备和多台机器上高效训练大型语言模型，包括数据并行、模型并行、流水线并行等技术，以及ZeRO等优化器。这些技术将使我们能够训练更大、更强大的故事生成模型。</p>
+<p><strong>练习与思考</strong></p>
+<ol class="arabic simple">
+<li><p>比较FP32、FP16和BF16在训练小型故事生成模型（如GPT-2 Small）时的性能和质量差异。</p></li>
+<li><p>实现一个自定义的损失缩放器，并比较静态损失缩放和动态损失缩放的效果。</p></li>
+<li><p>设计一个实验，测量不同精度对生成故事多样性和创意性的影响。</p></li>
+<li><p>探索如何使用PyTorch的Profiler工具分析混合精度训练中的性能瓶颈。</p></li>
+<li><p>实现一个精度自适应的推理系统，根据输入长度和计算资源动态选择最佳精度。</p></li>
+</ol>
+<p><strong>参考资料</strong></p>
+<ol class="arabic simple">
+<li><p>Micikevicius, P., Narang, S., Alben, J., Diamos, G., Elsen, E., Garcia, D., … &amp; Wu, H. (2018). Mixed Precision Training. In International Conference on Learning Representations.</p></li>
+<li><p>NVIDIA. (2022). NVIDIA Automatic Mixed Precision for Deep Learning.</p></li>
+<li><p>Kalamkar, D., Mudigere, D., Mellempudi, N., Das, D., Banerjee, K., Avancha, S., … &amp; Dubey, P. (2019). A Study of BFLOAT16 for Deep Learning Training. arXiv preprint arXiv:1905.12322.</p></li>
+<li><p>Dettmers, T., Lewis, M., Belkada, Y., &amp; Zettlemoyer, L. (2022). 8-bit Optimizers via Block-wise Quantization. In International Conference on Learning Representations.</p></li>
+<li><p>Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., … &amp; Amodei, D. (2020). Language Models are Few-Shot Learners. In Advances in Neural Information Processing Systems.</p></li>
+<li><p>Kuchaiev, O., Ginsburg, B., Gitman, I., Lavrukhin, V., Li, J., Nguyen, H., … &amp; Micikevicius, P. (2018). Mixed-Precision Training for NLP and Speech Recognition with OpenSeq2Seq. arXiv preprint arXiv:1805.10387.</p></li>
+<li><p>Narang, S., Diamos, G., Elsen, E., Micikevicius, P., Alben, J., Vainbrand, D., … &amp; Zhou, Y. (2018). Mixed Precision Training of Convolutional Neural Networks using Integer Operations. In International Conference on Learning Representations.</p></li>
+<li><p>Sun, X., Choi, J., Chen, C. Y., Wang, N., Venkataramani, S., Srinivasan, V., … &amp; Gopalakrishnan, K. (2019). Hybrid 8-bit Floating Point (HFP8) Training and Inference for Deep Neural Networks. In Advances in Neural Information Processing Systems.</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第8章：速度提升I：设备(Device)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第10章：速度提升III：分布式(Distributed)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">9.1 数值精度基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">9.1.1 浮点数表示</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">9.1.2 精度与计算效率的关系</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">9.1.3 精度与模型质量的权衡</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">9.2 混合精度训练原理</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">9.2.1 混合精度训练的基本原则</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">9.2.2 混合精度训练的工作流程</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">9.2.3 损失缩放详解</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">9.3 实现混合精度训练</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch">9.3.1 PyTorch中的混合精度训练</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tensorflow">9.3.2 TensorFlow中的混合精度训练</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">9.3.3 混合精度训练的最佳实践</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">9.3.4 完整的混合精度训练示例</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">9.4 精度与性能的权衡</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">9.4.1 不同精度格式的比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fp16-vs-bf16">9.4.2 FP16 vs BF16</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fp8">9.4.3 FP8简介</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">9.4.4 精度选择策略</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">9.5 精度问题排查与解决</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">9.5.1 常见精度问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">9.5.2 调试工具和技术</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">9.5.3 解决方案和最佳实践</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">9.6 不同精度在故事生成中的影响</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">9.6.1 精度对生成质量的影响</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">9.6.2 精度对推理性能的影响</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">9.6.3 为故事生成选择最佳精度</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">9.7 总结与展望</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

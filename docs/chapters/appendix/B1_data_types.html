@@ -1,0 +1,1355 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>附录B：数据类型基础 &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/appendix/B1_data_types';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="附录C：张量操作基础" href="C1_tensor_operations.html" />
+    <link rel="prev" title="附录A：编程语言基础" href="A1_programming_languages.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/appendix/B1_data_types.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/appendix/B1_data_types.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/appendix/B1_data_types.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>附录B：数据类型基础</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#b-1">B.1 数据类型：从整数到字符串</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">整数类型</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">整数的表示</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">整数在不同编程语言中的实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">整数在AI系统中的应用</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">浮点数类型</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">浮点数的表示</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">浮点数在不同编程语言中的实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">浮点数的特殊值</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">浮点数在AI系统中的应用</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">浮点精度与性能权衡</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">字符串类型</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">字符编码标准</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">字符串在不同编程语言中的实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">字符串操作</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">字符串在AI系统中的应用</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">特殊数据类型</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">布尔类型</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">复数类型</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">枚举类型</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">数据类型转换</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">显式类型转换</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">隐式类型转换</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">张量数据类型转换</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">数据类型安全和最佳实践</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">总结</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="b">
+<h1>附录B：数据类型基础<a class="headerlink" href="#b" title="Link to this heading">#</a></h1>
+<section id="b-1">
+<h2>B.1 数据类型：从整数到字符串<a class="headerlink" href="#b-1" title="Link to this heading">#</a></h2>
+<p>在构建故事讲述AI大语言模型的过程中，理解和正确处理各种数据类型是至关重要的。从最基本的整数和浮点数，到复杂的字符串编码（如ASCII、Unicode和UTF-8），不同的数据类型在AI系统的不同层次扮演着重要角色。本节将深入探讨这些数据类型的特点、表示方法以及它们在AI系统中的应用场景。</p>
+<section id="id1">
+<h3>整数类型<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>整数是最基本的数据类型之一，用于表示没有小数部分的数值。在计算机系统中，整数通常有不同的大小和表示方法，以适应不同的需求。</p>
+<section id="id2">
+<h4>整数的表示<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
+<p>计算机中的整数通常以二进制形式存储，根据分配的位数不同，可以表示不同范围的值：</p>
+<ol class="arabic simple">
+<li><p><strong>有符号整数</strong>：</p>
+<ul class="simple">
+<li><p>8位（1字节）：范围 -128 到 127（-2^7 到 2^7-1）</p></li>
+<li><p>16位（2字节）：范围 -32,768 到 32,767（-2^15 到 2^15-1）</p></li>
+<li><p>32位（4字节）：范围 -2,147,483,648 到 2,147,483,647（-2^31 到 2^31-1）</p></li>
+<li><p>64位（8字节）：范围 -9,223,372,036,854,775,808 到 9,223,372,036,854,775,807（-2^63 到 2^63-1）</p></li>
+</ul>
+</li>
+<li><p><strong>无符号整数</strong>：</p>
+<ul class="simple">
+<li><p>8位：范围 0 到 255（0 到 2^8-1）</p></li>
+<li><p>16位：范围 0 到 65,535（0 到 2^16-1）</p></li>
+<li><p>32位：范围 0 到 4,294,967,295（0 到 2^32-1）</p></li>
+<li><p>64位：范围 0 到 18,446,744,073,709,551,615（0 到 2^64-1）</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id3">
+<h4>整数在不同编程语言中的实现<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<p>不同的编程语言对整数类型有不同的实现：</p>
+<ol class="arabic">
+<li><p><strong>C/C++</strong>：
+提供多种整数类型，如<code class="docutils literal notranslate"><span class="pre">char</span></code>、<code class="docutils literal notranslate"><span class="pre">short</span></code>、<code class="docutils literal notranslate"><span class="pre">int</span></code>、<code class="docutils literal notranslate"><span class="pre">long</span></code>、<code class="docutils literal notranslate"><span class="pre">long</span> <span class="pre">long</span></code>等，以及它们的无符号版本。具体大小依赖于编译器和平台。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// C/C++中的整数类型</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">127</span><span class="p">;</span><span class="w">               </span><span class="c1">// 通常为8位</span>
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">255</span><span class="p">;</span><span class="w">      </span><span class="c1">// 通常为8位，无符号</span>
+<span class="kt">short</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32767</span><span class="p">;</span><span class="w">            </span><span class="c1">// 通常为16位</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2147483647</span><span class="p">;</span><span class="w">         </span><span class="c1">// 通常为32位</span>
+<span class="kt">long</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2147483647L</span><span class="p">;</span><span class="w">       </span><span class="c1">// 32位或64位，取决于平台</span>
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">9223372036854775807L</span><span class="n">L</span><span class="p">;</span><span class="w">  </span><span class="c1">// 通常为64位</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Python</strong>：
+Python 3中的整数（<code class="docutils literal notranslate"><span class="pre">int</span></code>）可以表示任意大小的整数，不受固定位数的限制，这是通过自动内存管理实现的。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的整数</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mi">42</span>                      <span class="c1"># 普通整数</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">9223372036854775807</span>     <span class="c1"># 大整数</span>
+<span class="n">c</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">100</span>                  <span class="c1"># 非常大的整数，超过了大多数语言的内置整数类型范围</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>汇编语言</strong>：
+在汇编语言中，整数的大小通常由寄存器的大小决定，如8位、16位、32位或64位。</p>
+<div class="highlight-assembly notranslate"><div class="highlight"><pre><span></span>; x86-64汇编中的整数操作
+mov eax, 42        ; 将32位整数42加载到eax寄存器
+mov rbx, 1000000   ; 将64位整数1000000加载到rbx寄存器
+add eax, ebx       ; 32位整数加法
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="ai">
+<h4>整数在AI系统中的应用<a class="headerlink" href="#ai" title="Link to this heading">#</a></h4>
+<p>在AI系统中，整数类型主要用于以下场景：</p>
+<ol class="arabic simple">
+<li><p><strong>索引和计数</strong>：</p>
+<ul class="simple">
+<li><p>数组和张量的索引</p></li>
+<li><p>批次大小、序列长度等参数</p></li>
+<li><p>迭代次数和计数器</p></li>
+</ul>
+</li>
+<li><p><strong>分类标签</strong>：</p>
+<ul class="simple">
+<li><p>在分类任务中表示类别</p></li>
+<li><p>词汇表中的词元ID</p></li>
+<li><p>字符编码</p></li>
+</ul>
+</li>
+<li><p><strong>位操作</strong>：</p>
+<ul class="simple">
+<li><p>掩码和标志位</p></li>
+<li><p>哈希计算</p></li>
+<li><p>优化的数据结构</p></li>
+</ul>
+</li>
+<li><p><strong>内存管理</strong>：</p>
+<ul class="simple">
+<li><p>内存地址和偏移量</p></li>
+<li><p>缓冲区大小</p></li>
+<li><p>内存对齐</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="id4">
+<h3>浮点数类型<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>浮点数用于表示带小数部分的数值，是科学计算和深度学习中最常用的数据类型之一。浮点数的表示遵循IEEE 754标准，包括单精度（32位）和双精度（64位）两种主要格式。</p>
+<section id="id5">
+<h4>浮点数的表示<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<p>IEEE 754标准定义了浮点数的二进制表示方法，包括符号位、指数和尾数：</p>
+<ol class="arabic simple">
+<li><p><strong>单精度浮点数（32位）</strong>：</p>
+<ul class="simple">
+<li><p>1位符号位</p></li>
+<li><p>8位指数</p></li>
+<li><p>23位尾数</p></li>
+<li><p>范围约为±1.18×10^-38到±3.4×10^38</p></li>
+<li><p>精度约为7位十进制数字</p></li>
+</ul>
+</li>
+<li><p><strong>双精度浮点数（64位）</strong>：</p>
+<ul class="simple">
+<li><p>1位符号位</p></li>
+<li><p>11位指数</p></li>
+<li><p>52位尾数</p></li>
+<li><p>范围约为±2.23×10^-308到±1.80×10^308</p></li>
+<li><p>精度约为15-17位十进制数字</p></li>
+</ul>
+</li>
+<li><p><strong>半精度浮点数（16位）</strong>：</p>
+<ul class="simple">
+<li><p>1位符号位</p></li>
+<li><p>5位指数</p></li>
+<li><p>10位尾数</p></li>
+<li><p>范围约为±6.10×10^-5到±6.55×10^4</p></li>
+<li><p>精度约为3-4位十进制数字</p></li>
+<li><p>在深度学习中越来越受欢迎，因为它可以减少内存使用和提高计算速度</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id6">
+<h4>浮点数在不同编程语言中的实现<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<p>不同的编程语言对浮点数类型有不同的实现：</p>
+<ol class="arabic">
+<li><p><strong>C/C++</strong>：
+提供<code class="docutils literal notranslate"><span class="pre">float</span></code>（单精度）和<code class="docutils literal notranslate"><span class="pre">double</span></code>（双精度）类型，以及较少使用的<code class="docutils literal notranslate"><span class="pre">long</span> <span class="pre">double</span></code>。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// C/C++中的浮点数类型</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.14159f</span><span class="p">;</span><span class="w">         </span><span class="c1">// 单精度，注意f后缀</span>
+<span class="kt">double</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.141592653589793</span><span class="p">;</span><span class="w"> </span><span class="c1">// 双精度</span>
+<span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.141592653589793238L</span><span class="p">;</span><span class="w"> </span><span class="c1">// 扩展精度，注意L后缀</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Python</strong>：
+Python中的浮点数（<code class="docutils literal notranslate"><span class="pre">float</span></code>）通常是双精度的，遵循IEEE 754标准。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的浮点数</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mf">3.14159</span>           <span class="c1"># 双精度浮点数</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mf">1.23e-4</span>           <span class="c1"># 科学记数法</span>
+<span class="n">c</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>      <span class="c1"># 正无穷大</span>
+<span class="n">d</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>      <span class="c1"># 非数字</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>CUDA和深度学习框架</strong>：
+在GPU编程和深度学习框架中，除了标准的单精度和双精度外，还经常使用半精度（16位）浮点数以提高性能。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># PyTorch中的不同精度</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="n">x_float32</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  <span class="c1"># 单精度</span>
+<span class="n">x_float16</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float16</span><span class="p">)</span>  <span class="c1"># 半精度</span>
+<span class="n">x_float64</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># 双精度</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="id7">
+<h4>浮点数的特殊值<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<p>IEEE 754标准定义了几个特殊的浮点数值：</p>
+<ol class="arabic simple">
+<li><p><strong>正无穷大（+∞）和负无穷大（-∞）</strong>：</p>
+<ul class="simple">
+<li><p>表示超出正常范围的大数值</p></li>
+<li><p>在除以零或某些数学运算溢出时产生</p></li>
+</ul>
+</li>
+<li><p><strong>非数字（NaN）</strong>：</p>
+<ul class="simple">
+<li><p>表示未定义或不可表示的结果</p></li>
+<li><p>在无效操作（如0/0）或某些数学函数的特殊输入下产生</p></li>
+</ul>
+</li>
+<li><p><strong>正零（+0）和负零（-0）</strong>：</p>
+<ul class="simple">
+<li><p>在大多数操作中被视为相等</p></li>
+<li><p>但在某些情况下（如取倒数）会产生不同的结果</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id8">
+<h4>浮点数在AI系统中的应用<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<p>在AI系统中，浮点数类型主要用于以下场景：</p>
+<ol class="arabic simple">
+<li><p><strong>模型参数</strong>：</p>
+<ul class="simple">
+<li><p>神经网络的权重和偏置</p></li>
+<li><p>学习率和其他超参数</p></li>
+<li><p>梯度和优化器状态</p></li>
+</ul>
+</li>
+<li><p><strong>特征和激活值</strong>：</p>
+<ul class="simple">
+<li><p>输入特征</p></li>
+<li><p>中间激活</p></li>
+<li><p>输出预测</p></li>
+</ul>
+</li>
+<li><p><strong>损失和指标</strong>：</p>
+<ul class="simple">
+<li><p>损失函数值</p></li>
+<li><p>评估指标</p></li>
+<li><p>精度和召回率等统计量</p></li>
+</ul>
+</li>
+<li><p><strong>概率和分布</strong>：</p>
+<ul class="simple">
+<li><p>概率值</p></li>
+<li><p>分布参数</p></li>
+<li><p>注意力权重</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id9">
+<h4>浮点精度与性能权衡<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
+<p>在深度学习中，浮点精度的选择涉及精度和性能的权衡：</p>
+<ol class="arabic simple">
+<li><p><strong>FP32（单精度）</strong>：</p>
+<ul class="simple">
+<li><p>传统上最常用的精度</p></li>
+<li><p>提供良好的数值稳定性</p></li>
+<li><p>在大多数硬件上有良好的支持</p></li>
+</ul>
+</li>
+<li><p><strong>FP16（半精度）</strong>：</p>
+<ul class="simple">
+<li><p>内存占用减少一半</p></li>
+<li><p>计算速度通常更快</p></li>
+<li><p>但数值范围和精度有限，可能导致训练不稳定</p></li>
+</ul>
+</li>
+<li><p><strong>混合精度训练</strong>：</p>
+<ul class="simple">
+<li><p>结合FP16和FP32的优势</p></li>
+<li><p>使用FP16进行大部分计算</p></li>
+<li><p>使用FP32存储主要权重和累积梯度</p></li>
+<li><p>通常使用损失缩放技术防止梯度下溢</p></li>
+</ul>
+</li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># PyTorch中的混合精度训练示例</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span><span class="p">,</span> <span class="n">GradScaler</span>
+
+<span class="c1"># 创建模型和优化器</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">GradScaler</span><span class="p">()</span>  <span class="c1"># 用于FP16训练的梯度缩放器</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cuda</span><span class="p">(),</span> <span class="n">batch</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+        
+        <span class="c1"># 自动混合精度上下文</span>
+        <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+        
+        <span class="c1"># 缩放损失以防止梯度下溢</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        
+        <span class="c1"># 缩放优化器步骤</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id10">
+<h3>字符串类型<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>字符串是表示文本数据的数据类型，在自然语言处理和故事讲述AI系统中尤为重要。理解字符串的编码方式（如ASCII、Unicode和UTF-8）对于正确处理多语言文本至关重要。</p>
+<section id="id11">
+<h4>字符编码标准<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>ASCII（American Standard Code for Information Interchange）</strong>：</p>
+<ul class="simple">
+<li><p>7位编码，表示128个字符</p></li>
+<li><p>包括英文字母、数字、标点符号和控制字符</p></li>
+<li><p>不支持非英语字符和特殊符号</p></li>
+</ul>
+</li>
+<li><p><strong>Unicode</strong>：</p>
+<ul class="simple">
+<li><p>国际标准，旨在包含所有语言的所有字符</p></li>
+<li><p>使用码点（code point）表示字符，如U+0041表示拉丁字母’A’</p></li>
+<li><p>当前版本包含超过14万个字符</p></li>
+<li><p>不是一种编码方式，而是字符集标准</p></li>
+</ul>
+</li>
+<li><p><strong>UTF-8（Unicode Transformation Format 8-bit）</strong>：</p>
+<ul class="simple">
+<li><p>Unicode的一种变长编码方式</p></li>
+<li><p>使用1到4个字节表示一个字符</p></li>
+<li><p>ASCII字符只需1个字节，与ASCII兼容</p></li>
+<li><p>大多数常用字符需要2-3个字节</p></li>
+<li><p>目前网络和操作系统中最常用的文本编码</p></li>
+</ul>
+</li>
+<li><p><strong>UTF-16</strong>：</p>
+<ul class="simple">
+<li><p>使用2或4个字节表示一个字符</p></li>
+<li><p>基本多语言平面（BMP）中的字符使用2个字节</p></li>
+<li><p>补充平面中的字符使用4个字节（通过代理对实现）</p></li>
+<li><p>在Windows API和Java中广泛使用</p></li>
+</ul>
+</li>
+<li><p><strong>UTF-32</strong>：</p>
+<ul class="simple">
+<li><p>固定使用4个字节表示一个字符</p></li>
+<li><p>直接映射Unicode码点</p></li>
+<li><p>简单但内存占用较大</p></li>
+<li><p>在需要随机访问字符的场景中有优势</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id12">
+<h4>字符串在不同编程语言中的实现<a class="headerlink" href="#id12" title="Link to this heading">#</a></h4>
+<p>不同的编程语言对字符串类型有不同的实现：</p>
+<ol class="arabic">
+<li><p><strong>C/C++</strong>：</p>
+<ul class="simple">
+<li><p>传统C字符串是以null结尾的字符数组</p></li>
+<li><p>C++提供了<code class="docutils literal notranslate"><span class="pre">std::string</span></code>类，支持更丰富的操作</p></li>
+<li><p>现代C++（C++11及以后）提供了<code class="docutils literal notranslate"><span class="pre">std::u8string</span></code>、<code class="docutils literal notranslate"><span class="pre">std::u16string</span></code>和<code class="docutils literal notranslate"><span class="pre">std::u32string</span></code>用于不同的Unicode编码</p></li>
+</ul>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// C中的字符串</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">str1</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Hello&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// 以null结尾的字符数组</span>
+
+<span class="c1">// C++中的字符串</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">str2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Hello&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// std::string对象</span>
+
+<span class="c1">// C++11中的Unicode字符串</span>
+<span class="n">std</span><span class="o">::</span><span class="n">u8string</span><span class="w"> </span><span class="n">str3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">u8</span><span class="s">&quot;你好&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// UTF-8编码</span>
+<span class="n">std</span><span class="o">::</span><span class="n">u16string</span><span class="w"> </span><span class="n">str4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">u</span><span class="s">&quot;你好&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// UTF-16编码</span>
+<span class="n">std</span><span class="o">::</span><span class="n">u32string</span><span class="w"> </span><span class="n">str5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">U</span><span class="s">&quot;你好&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// UTF-32编码</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Python</strong>：</p>
+<ul class="simple">
+<li><p>Python 3中的字符串（<code class="docutils literal notranslate"><span class="pre">str</span></code>）是Unicode字符序列</p></li>
+<li><p>内部表示依赖于Python实现，但对用户透明</p></li>
+<li><p>提供了<code class="docutils literal notranslate"><span class="pre">bytes</span></code>和<code class="docutils literal notranslate"><span class="pre">bytearray</span></code>类型用于处理原始字节序列</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的字符串</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="s2">&quot;Hello&quot;</span>                <span class="c1"># Unicode字符串</span>
+<span class="n">s2</span> <span class="o">=</span> <span class="s2">&quot;你好&quot;</span>                  <span class="c1"># Unicode字符串，包含中文字符</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;Hello&quot;</span>               <span class="c1"># 字节字符串，仅限ASCII</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="s2">&quot;你好&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>  <span class="c1"># 将Unicode字符串编码为UTF-8字节序列</span>
+<span class="n">s3</span> <span class="o">=</span> <span class="n">b2</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>     <span class="c1"># 将UTF-8字节序列解码为Unicode字符串</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>JavaScript</strong>：</p>
+<ul class="simple">
+<li><p>JavaScript字符串是UTF-16编码的</p></li>
+<li><p>提供了一些处理Unicode的方法，但对代理对的支持有限</p></li>
+</ul>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// JavaScript中的字符串</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">str1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Hello&quot;</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">str2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;你好&quot;</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">emoji</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;😊&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// 使用代理对表示的字符</span>
+
+<span class="c1">// 注意：length属性返回UTF-16代码单元的数量，而不是字符数</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">emoji</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span><span class="w">  </span><span class="c1">// 输出2，因为这个emoji由两个UTF-16代码单元组成</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="id13">
+<h4>字符串操作<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
+<p>常见的字符串操作包括：</p>
+<ol class="arabic">
+<li><p><strong>连接</strong>：
+将两个或多个字符串合并为一个。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的字符串连接</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="s2">&quot;Hello&quot;</span>
+<span class="n">s2</span> <span class="o">=</span> <span class="s2">&quot;World&quot;</span>
+<span class="n">s3</span> <span class="o">=</span> <span class="n">s1</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">s2</span>  <span class="c1"># &quot;Hello World&quot;</span>
+<span class="n">s4</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">])</span>  <span class="c1"># &quot;Hello World&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>子字符串提取</strong>：
+从字符串中提取一部分。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的子字符串提取</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;Hello World&quot;</span>
+<span class="n">sub1</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>  <span class="c1"># &quot;Hello&quot;</span>
+<span class="n">sub2</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span>   <span class="c1"># &quot;World&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>搜索和替换</strong>：
+查找子字符串或模式，并可能替换它们。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的搜索和替换</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;Hello World&quot;</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;World&quot;</span><span class="p">)</span>  <span class="c1"># 6</span>
+<span class="n">new_s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;World&quot;</span><span class="p">,</span> <span class="s2">&quot;Python&quot;</span><span class="p">)</span>  <span class="c1"># &quot;Hello Python&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>分割和合并</strong>：
+将字符串分割为多个部分，或将多个字符串合并为一个。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的分割和合并</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;apple,banana,orange&quot;</span>
+<span class="n">parts</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>  <span class="c1"># [&quot;apple&quot;, &quot;banana&quot;, &quot;orange&quot;]</span>
+<span class="n">joined</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>  <span class="c1"># &quot;apple-banana-orange&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>大小写转换</strong>：
+转换字符串的大小写。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的大小写转换</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;Hello World&quot;</span>
+<span class="n">lower</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>  <span class="c1"># &quot;hello world&quot;</span>
+<span class="n">upper</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>  <span class="c1"># &quot;HELLO WORLD&quot;</span>
+<span class="n">title</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>  <span class="c1"># &quot;Hello World&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>去除空白</strong>：
+移除字符串开头、结尾或两端的空白字符。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的去除空白</span>
+<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;  Hello World  &quot;</span>
+<span class="n">stripped</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># &quot;Hello World&quot;</span>
+<span class="n">lstripped</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>  <span class="c1"># &quot;Hello World  &quot;</span>
+<span class="n">rstripped</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>  <span class="c1"># &quot;  Hello World&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="id14">
+<h4>字符串在AI系统中的应用<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<p>在AI系统，特别是自然语言处理和故事讲述系统中，字符串类型主要用于以下场景：</p>
+<ol class="arabic">
+<li><p><strong>文本预处理</strong>：</p>
+<ul class="simple">
+<li><p>分词和标记化</p></li>
+<li><p>清洗和规范化</p></li>
+<li><p>大小写转换和词干提取</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用NLTK进行文本预处理</span>
+<span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="kn">import</span> <span class="n">word_tokenize</span>
+<span class="kn">from</span> <span class="nn">nltk.stem</span> <span class="kn">import</span> <span class="n">PorterStemmer</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;The quick brown foxes are jumping over the lazy dogs.&quot;</span>
+
+<span class="c1"># 分词</span>
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">word_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>  <span class="c1"># [&#39;The&#39;, &#39;quick&#39;, &#39;brown&#39;, &#39;foxes&#39;, &#39;are&#39;, &#39;jumping&#39;, &#39;over&#39;, &#39;the&#39;, &#39;lazy&#39;, &#39;dogs&#39;, &#39;.&#39;]</span>
+
+<span class="c1"># 词干提取</span>
+<span class="n">stemmer</span> <span class="o">=</span> <span class="n">PorterStemmer</span><span class="p">()</span>
+<span class="n">stemmed</span> <span class="o">=</span> <span class="p">[</span><span class="n">stemmer</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stemmed</span><span class="p">)</span>  <span class="c1"># [&#39;the&#39;, &#39;quick&#39;, &#39;brown&#39;, &#39;fox&#39;, &#39;are&#39;, &#39;jump&#39;, &#39;over&#39;, &#39;the&#39;, &#39;lazi&#39;, &#39;dog&#39;, &#39;.&#39;]</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>词元化和编码</strong>：</p>
+<ul class="simple">
+<li><p>将文本转换为模型可处理的数值表示</p></li>
+<li><p>构建词汇表和映射</p></li>
+<li><p>处理特殊标记（如[CLS]、[SEP]、[MASK]等）</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用Transformers库进行词元化</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2&quot;</span><span class="p">)</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Once upon a time, there was a brave knight.&quot;</span>
+
+<span class="c1"># 词元化</span>
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>  <span class="c1"># [&#39;Once&#39;, &#39;Ġupon&#39;, &#39;Ġa&#39;, &#39;Ġtime&#39;, &#39;,&#39;, &#39;Ġthere&#39;, &#39;Ġwas&#39;, &#39;Ġa&#39;, &#39;Ġbrave&#39;, &#39;Ġknight&#39;, &#39;.&#39;]</span>
+
+<span class="c1"># 编码为输入ID</span>
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>  <span class="c1"># [1212, 588, 257, 1332, 11, 1115, 345, 257, 3139, 17662, 13]</span>
+
+<span class="c1"># 解码回文本</span>
+<span class="n">decoded</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>  <span class="c1"># &quot;Once upon a time, there was a brave knight.&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>文本生成</strong>：</p>
+<ul class="simple">
+<li><p>从模型输出的标记ID生成文本</p></li>
+<li><p>处理生成文本的后处理</p></li>
+<li><p>实现各种解码策略（如贪婪解码、束搜索等）</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用Transformers库进行文本生成</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="c1"># 加载模型和分词器</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2&quot;</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;gpt2&quot;</span><span class="p">)</span>
+
+<span class="c1"># 准备输入</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;Once upon a time&quot;</span>
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span>
+
+<span class="c1"># 生成文本</span>
+<span class="n">output_ids</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">input_ids</span><span class="p">,</span>
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">num_return_sequences</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">no_repeat_ngram_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">top_p</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span>
+<span class="p">)</span>
+
+<span class="c1"># 解码生成的文本</span>
+<span class="n">generated_text</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">generated_text</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>多语言支持</strong>：</p>
+<ul class="simple">
+<li><p>处理不同语言和脚本的文本</p></li>
+<li><p>支持特殊字符和表情符号</p></li>
+<li><p>处理双向文本（如阿拉伯语和希伯来语）</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 处理多语言文本</span>
+<span class="n">text_en</span> <span class="o">=</span> <span class="s2">&quot;Hello, world!&quot;</span>
+<span class="n">text_zh</span> <span class="o">=</span> <span class="s2">&quot;你好，世界！&quot;</span>
+<span class="n">text_ar</span> <span class="o">=</span> <span class="s2">&quot;مرحبا بالعالم!&quot;</span>
+<span class="n">text_mixed</span> <span class="o">=</span> <span class="s2">&quot;Hello 你好 مرحبا!&quot;</span>
+
+<span class="c1"># 所有这些都可以作为Unicode字符串处理</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text_en</span><span class="p">))</span>  <span class="c1"># 13</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text_zh</span><span class="p">))</span>  <span class="c1"># 6</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text_ar</span><span class="p">))</span>  <span class="c1"># 14</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text_mixed</span><span class="p">))</span>  <span class="c1"># 16</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>正则表达式</strong>：</p>
+<ul class="simple">
+<li><p>复杂的文本模式匹配和提取</p></li>
+<li><p>文本清洗和验证</p></li>
+<li><p>高级搜索和替换</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用正则表达式处理文本</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;The contact email is support@example.com and the phone is 123-456-7890.&quot;</span>
+
+<span class="c1"># 提取电子邮件地址</span>
+<span class="n">email_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b&#39;</span>
+<span class="n">emails</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">email_pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">emails</span><span class="p">)</span>  <span class="c1"># [&#39;support@example.com&#39;]</span>
+
+<span class="c1"># 提取电话号码</span>
+<span class="n">phone_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\b\d</span><span class="si">{3}</span><span class="s1">-\d</span><span class="si">{3}</span><span class="s1">-\d</span><span class="si">{4}</span><span class="s1">\b&#39;</span>
+<span class="n">phones</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">phone_pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">phones</span><span class="p">)</span>  <span class="c1"># [&#39;123-456-7890&#39;]</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="id15">
+<h3>特殊数据类型<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>除了基本的整数、浮点数和字符串类型外，AI系统中还使用一些特殊的数据类型：</p>
+<section id="id16">
+<h4>布尔类型<a class="headerlink" href="#id16" title="Link to this heading">#</a></h4>
+<p>布尔类型表示逻辑值，只有两个可能的值：真（True）和假（False）。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的布尔类型</span>
+<span class="n">a</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">b</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="ow">and</span> <span class="n">b</span>  <span class="c1"># False</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">a</span> <span class="ow">or</span> <span class="n">b</span>   <span class="c1"># True</span>
+<span class="n">e</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">a</span>    <span class="c1"># False</span>
+</pre></div>
+</div>
+<p>在AI系统中，布尔类型主要用于：</p>
+<ul class="simple">
+<li><p>条件判断和控制流</p></li>
+<li><p>掩码操作（如注意力掩码）</p></li>
+<li><p>表示二元特征</p></li>
+<li><p>逻辑操作和过滤</p></li>
+</ul>
+</section>
+<section id="id17">
+<h4>复数类型<a class="headerlink" href="#id17" title="Link to this heading">#</a></h4>
+<p>复数由实部和虚部组成，在某些科学计算和信号处理任务中很有用。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的复数类型</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">4</span><span class="n">j</span>
+<span class="n">b</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>  <span class="c1"># 5.0（复数的模）</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>  <span class="c1"># 3.0（实部）</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>  <span class="c1"># 4.0（虚部）</span>
+</pre></div>
+</div>
+<p>在AI系统中，复数类型主要用于：</p>
+<ul class="simple">
+<li><p>傅里叶变换</p></li>
+<li><p>信号处理</p></li>
+<li><p>某些特殊的神经网络架构</p></li>
+</ul>
+</section>
+<section id="id18">
+<h4>枚举类型<a class="headerlink" href="#id18" title="Link to this heading">#</a></h4>
+<p>枚举类型用于表示一组命名的常量值，提高代码的可读性和类型安全性。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的枚举类型</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+
+<span class="k">class</span> <span class="nc">TokenType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">WORD</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">NUMBER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">PUNCTUATION</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">SPECIAL</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+
+<span class="n">token_type</span> <span class="o">=</span> <span class="n">TokenType</span><span class="o">.</span><span class="n">WORD</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">token_type</span><span class="p">)</span>  <span class="c1"># TokenType.WORD</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">token_type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># &quot;WORD&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">token_type</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># 1</span>
+</pre></div>
+</div>
+<p>在AI系统中，枚举类型主要用于：</p>
+<ul class="simple">
+<li><p>表示模型状态和模式</p></li>
+<li><p>定义标记类型</p></li>
+<li><p>表示操作类型和选项</p></li>
+<li><p>错误和状态码</p></li>
+</ul>
+</section>
+</section>
+<section id="id19">
+<h3>数据类型转换<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<p>在AI系统中，经常需要在不同的数据类型之间进行转换，以满足不同组件的需求。</p>
+<section id="id20">
+<h4>显式类型转换<a class="headerlink" href="#id20" title="Link to this heading">#</a></h4>
+<p>显式类型转换（也称为类型转换）是通过特定函数或操作符明确指定的类型转换。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的显式类型转换</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>  <span class="c1"># 整数转浮点数：42.0</span>
+<span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>    <span class="c1"># 整数转字符串：&quot;42&quot;</span>
+<span class="n">b</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>   <span class="c1"># 整数转布尔值：True（非零值为True）</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="mf">3.14</span>
+<span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>    <span class="c1"># 浮点数转整数：3（截断小数部分）</span>
+<span class="n">r</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>  <span class="c1"># 浮点数四舍五入：3</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;123&quot;</span>
+<span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>    <span class="c1"># 字符串转整数：123</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>  <span class="c1"># 字符串转浮点数：123.0</span>
+</pre></div>
+</div>
+</section>
+<section id="id21">
+<h4>隐式类型转换<a class="headerlink" href="#id21" title="Link to this heading">#</a></h4>
+<p>隐式类型转换是由编程语言自动执行的类型转换，通常发生在混合类型的操作中。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python中的隐式类型转换</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">+</span> <span class="mf">3.14</span>  <span class="c1"># 整数5被隐式转换为浮点数，结果为浮点数8.14</span>
+<span class="n">b</span> <span class="o">=</span> <span class="s2">&quot;Hello &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>  <span class="c1"># 整数42被隐式转换为字符串，结果为字符串&quot;Hello 42&quot;</span>
+<span class="n">c</span> <span class="o">=</span> <span class="kc">True</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 布尔值True被隐式转换为整数1，结果为整数2</span>
+</pre></div>
+</div>
+</section>
+<section id="id22">
+<h4>张量数据类型转换<a class="headerlink" href="#id22" title="Link to this heading">#</a></h4>
+<p>在深度学习框架中，经常需要在不同的张量数据类型之间进行转换。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># PyTorch中的张量数据类型转换</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="n">x_float</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="n">x_int</span> <span class="o">=</span> <span class="n">x_float</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># 浮点张量转整数张量</span>
+<span class="n">x_bool</span> <span class="o">=</span> <span class="n">x_float</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span>  <span class="c1"># 浮点张量转布尔张量（非零值为True）</span>
+<span class="n">x_double</span> <span class="o">=</span> <span class="n">x_float</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>  <span class="c1"># 单精度浮点张量转双精度浮点张量</span>
+<span class="n">x_half</span> <span class="o">=</span> <span class="n">x_float</span><span class="o">.</span><span class="n">half</span><span class="p">()</span>  <span class="c1"># 单精度浮点张量转半精度浮点张量</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id23">
+<h3>数据类型安全和最佳实践<a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
+<p>在AI系统开发中，正确处理数据类型对于系统的稳定性和性能至关重要。以下是一些数据类型安全的最佳实践：</p>
+<ol class="arabic simple">
+<li><p><strong>类型检查和验证</strong>：</p>
+<ul class="simple">
+<li><p>在处理用户输入或外部数据时进行类型检查</p></li>
+<li><p>使用类型提示和静态类型检查工具（如Python的mypy）</p></li>
+<li><p>在关键接口处验证数据类型和范围</p></li>
+</ul>
+</li>
+<li><p><strong>处理类型转换错误</strong>：</p>
+<ul class="simple">
+<li><p>捕获和处理类型转换异常</p></li>
+<li><p>提供有意义的错误消息</p></li>
+<li><p>实现优雅的降级策略</p></li>
+</ul>
+</li>
+<li><p><strong>避免精度损失</strong>：</p>
+<ul class="simple">
+<li><p>了解不同数值类型的精度限制</p></li>
+<li><p>在需要高精度的计算中使用适当的数据类型</p></li>
+<li><p>注意整数除法和浮点数舍入的行为</p></li>
+</ul>
+</li>
+<li><p><strong>内存和性能考虑</strong>：</p>
+<ul class="simple">
+<li><p>为大型数据结构选择合适的数据类型以优化内存使用</p></li>
+<li><p>在性能关键路径上使用高效的数据类型</p></li>
+<li><p>考虑缓存友好性和内存对齐</p></li>
+</ul>
+</li>
+<li><p><strong>国际化和本地化</strong>：</p>
+<ul class="simple">
+<li><p>始终使用Unicode（最好是UTF-8）处理文本</p></li>
+<li><p>考虑不同语言和区域的特殊字符</p></li>
+<li><p>正确处理文本方向和排序</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id24">
+<h3>总结<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
+<p>在构建故事讲述AI系统的过程中，不同的数据类型在不同层次发挥着重要作用：</p>
+<ul class="simple">
+<li><p><strong>整数类型</strong>提供了精确的计数和索引能力，适用于离散数据和内存管理。</p></li>
+<li><p><strong>浮点数类型</strong>支持科学计算和模型参数表示，是深度学习中最常用的数据类型。</p></li>
+<li><p><strong>字符串类型</strong>是处理文本数据的基础，在自然语言处理和故事生成中尤为重要。</p></li>
+<li><p><strong>特殊数据类型</strong>如布尔值、复数和枚举，在特定场景中提供了额外的表达能力。</p></li>
+</ul>
+<p>理解这些数据类型的特性、表示方法和操作，对于开发高效、稳定的AI系统至关重要。通过选择合适的数据类型，并正确处理类型转换和边界情况，我们可以构建出既高效又可靠的故事讲述AI系统。</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="A1_programming_languages.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">附录A：编程语言基础</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="C1_tensor_operations.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">附录C：张量操作基础</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#b-1">B.1 数据类型：从整数到字符串</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">整数类型</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">整数的表示</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">整数在不同编程语言中的实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">整数在AI系统中的应用</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">浮点数类型</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">浮点数的表示</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">浮点数在不同编程语言中的实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">浮点数的特殊值</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">浮点数在AI系统中的应用</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">浮点精度与性能权衡</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">字符串类型</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">字符编码标准</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">字符串在不同编程语言中的实现</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">字符串操作</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">字符串在AI系统中的应用</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">特殊数据类型</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">布尔类型</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">复数类型</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">枚举类型</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">数据类型转换</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">显式类型转换</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">隐式类型转换</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">张量数据类型转换</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">数据类型安全和最佳实践</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">总结</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,806 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第17章：多模态-17.1 多模态基础理论 &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/17_Multimodal/chapter17_1_multimodal_basics';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第17章：多模态-17.2 VQVAE技术详解" href="chapter17_2_vqvae_technique.html" />
+    <link rel="prev" title="第16章：部署-16.2 Web应用开发" href="../16_deployment/chapter16_2_web_application.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/17_Multimodal/chapter17_1_multimodal_basics.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/17_Multimodal/chapter17_1_multimodal_basics.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/17_Multimodal/chapter17_1_multimodal_basics.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第17章：多模态-17.1 多模态基础理论</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">17.1 多模态基础理论</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">什么是多模态学习</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多模态学习的主要任务</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">多模态学习的架构</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">多模态预训练模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">多模态数据集</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">多模态评估指标</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">多模态学习的挑战</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">多模态学习在故事讲述中的应用</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="id1">
+<h1>第17章：多模态-17.1 多模态基础理论<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<section id="id2">
+<h2>17.1 多模态基础理论<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>在前面的章节中，我们已经深入探讨了如何训练和部署一个专注于文本生成的故事讲述AI模型。然而，真正引人入胜的故事体验往往不仅仅依赖于文字，还需要图像、声音等多种感官元素的配合。本章将探讨如何将我们的故事讲述AI扩展为多模态系统，能够同时理解和生成文本与图像，为用户提供更加丰富和沉浸式的故事体验。</p>
+<section id="id3">
+<h3>什么是多模态学习<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>多模态学习（Multimodal Learning）是指AI系统能够处理、理解和生成多种不同类型的数据（如文本、图像、音频、视频等）的能力。在自然界中，人类通过视觉、听觉、触觉等多种感官获取信息并做出决策，多模态学习正是试图模拟这种能力，使AI系统能够像人类一样综合处理多种信息源。</p>
+<p>多模态学习的核心挑战在于如何有效地表示和融合来自不同模态的信息。不同模态的数据具有不同的统计特性和结构，例如：</p>
+<ul class="simple">
+<li><p><strong>文本</strong>：离散的符号序列，具有语法和语义结构</p></li>
+<li><p><strong>图像</strong>：连续的像素矩阵，具有空间结构和视觉特征</p></li>
+<li><p><strong>音频</strong>：时间序列信号，具有频率和时间特性</p></li>
+</ul>
+<p>这些差异使得直接将不同模态的数据进行比较或融合变得困难。因此，多模态学习的一个关键目标是找到一种方法，将不同模态的数据映射到一个共享的表示空间，使得语义相似的内容（无论来自哪种模态）在这个空间中的距离较近。</p>
+</section>
+<section id="id4">
+<h3>多模态学习的主要任务<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>多模态学习涉及多种任务，主要包括：</p>
+<ol class="arabic simple">
+<li><p><strong>跨模态检索（Cross-modal Retrieval）</strong>：</p>
+<ul class="simple">
+<li><p>给定一种模态的查询（如文本描述），检索另一种模态的相关内容（如匹配的图像）</p></li>
+<li><p>例如：根据”一只橙色的猫坐在窗台上”检索相应的图像</p></li>
+</ul>
+</li>
+<li><p><strong>多模态融合（Multimodal Fusion）</strong>：</p>
+<ul class="simple">
+<li><p>结合多种模态的信息进行决策或预测</p></li>
+<li><p>例如：同时分析图像和文本描述来判断情感</p></li>
+</ul>
+</li>
+<li><p><strong>跨模态生成（Cross-modal Generation）</strong>：</p>
+<ul class="simple">
+<li><p>基于一种模态的输入生成另一种模态的输出</p></li>
+<li><p>例如：根据文本描述生成图像（文本到图像生成）</p></li>
+<li><p>或根据图像生成描述性文本（图像到文本生成）</p></li>
+</ul>
+</li>
+<li><p><strong>多模态对话（Multimodal Dialogue）</strong>：</p>
+<ul class="simple">
+<li><p>能够理解和生成包含多种模态的对话</p></li>
+<li><p>例如：根据用户提供的图像和文本问题生成回答</p></li>
+</ul>
+</li>
+<li><p><strong>多模态翻译（Multimodal Translation）</strong>：</p>
+<ul class="simple">
+<li><p>在保留语义的同时，将内容从一种模态和语言转换为另一种</p></li>
+<li><p>例如：将英语语音转换为中文文本</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id5">
+<h3>多模态学习的架构<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>多模态学习系统的架构通常包含以下几个关键组件：</p>
+<ol class="arabic simple">
+<li><p><strong>单模态编码器（Unimodal Encoders）</strong>：</p>
+<ul class="simple">
+<li><p>专门处理单一模态数据的神经网络</p></li>
+<li><p>例如：用于文本的Transformer编码器，用于图像的CNN或Vision Transformer</p></li>
+</ul>
+</li>
+<li><p><strong>跨模态融合模块（Cross-modal Fusion Modules）</strong>：</p>
+<ul class="simple">
+<li><p>将不同模态的特征融合在一起</p></li>
+<li><p>常见方法包括：注意力机制、门控机制、双线性池化等</p></li>
+</ul>
+</li>
+<li><p><strong>多模态表示学习（Multimodal Representation Learning）</strong>：</p>
+<ul class="simple">
+<li><p>学习不同模态数据的联合表示</p></li>
+<li><p>例如：对比学习方法，如CLIP（Contrastive Language-Image Pretraining）</p></li>
+</ul>
+</li>
+<li><p><strong>任务特定解码器（Task-specific Decoders）</strong>：</p>
+<ul class="simple">
+<li><p>根据具体任务将多模态表示转换为所需输出</p></li>
+<li><p>例如：用于图像生成的扩散模型，用于文本生成的语言模型</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id6">
+<h3>多模态预训练模型<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>近年来，多模态预训练模型取得了显著进展，这些模型通常在大规模的多模态数据集上进行预训练，学习不同模态之间的关系，然后可以针对特定任务进行微调。以下是几个具有代表性的多模态预训练模型：</p>
+<ol class="arabic simple">
+<li><p><strong>CLIP（Contrastive Language-Image Pretraining）</strong>：</p>
+<ul class="simple">
+<li><p>由OpenAI开发，使用对比学习方法联合训练文本和图像编码器</p></li>
+<li><p>通过最大化匹配的图像-文本对的相似度，最小化不匹配对的相似度</p></li>
+<li><p>能够执行零样本图像分类和跨模态检索</p></li>
+</ul>
+</li>
+<li><p><strong>DALL-E/DALL-E 2</strong>：</p>
+<ul class="simple">
+<li><p>同样由OpenAI开发，能够根据文本描述生成图像</p></li>
+<li><p>DALL-E 2结合了CLIP的表示能力和扩散模型的生成能力</p></li>
+</ul>
+</li>
+<li><p><strong>BLIP/BLIP-2（Bootstrapping Language-Image Pre-training）</strong>：</p>
+<ul class="simple">
+<li><p>由Salesforce Research开发，统一了多种视觉-语言任务</p></li>
+<li><p>使用自举技术改进噪声网络数据的质量</p></li>
+<li><p>BLIP-2引入了Q-Former架构，大幅减少了计算需求</p></li>
+</ul>
+</li>
+<li><p><strong>LLaVA（Large Language and Vision Assistant）</strong>：</p>
+<ul class="simple">
+<li><p>将大型语言模型（如LLaMA）与视觉编码器结合</p></li>
+<li><p>通过指令微调实现多模态对话能力</p></li>
+</ul>
+</li>
+<li><p><strong>Qwen-VL</strong>：</p>
+<ul class="simple">
+<li><p>阿里巴巴开发的多模态模型，基于Qwen大语言模型</p></li>
+<li><p>支持中英双语的多模态理解和生成能力</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id7">
+<h3>多模态数据集<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>训练多模态模型需要大量的多模态数据。以下是一些常用的多模态数据集：</p>
+<ol class="arabic simple">
+<li><p><strong>MS COCO（Microsoft Common Objects in Context）</strong>：</p>
+<ul class="simple">
+<li><p>包含33万张图像，每张图像有5个人工标注的描述</p></li>
+<li><p>广泛用于图像描述、视觉问答等任务</p></li>
+</ul>
+</li>
+<li><p><strong>Flickr30k</strong>：</p>
+<ul class="simple">
+<li><p>约3万张来自Flickr的图像，每张图像有5个描述</p></li>
+<li><p>用于图像描述和跨模态检索</p></li>
+</ul>
+</li>
+<li><p><strong>Visual Genome</strong>：</p>
+<ul class="simple">
+<li><p>包含108K图像，每张图像有密集的区域描述、对象、属性和关系标注</p></li>
+<li><p>用于场景图生成、视觉关系检测等</p></li>
+</ul>
+</li>
+<li><p><strong>LAION-5B</strong>：</p>
+<ul class="simple">
+<li><p>包含50亿图像-文本对的大规模数据集</p></li>
+<li><p>用于训练CLIP等大型多模态模型</p></li>
+</ul>
+</li>
+<li><p><strong>CC12M（Conceptual 12M）</strong>：</p>
+<ul class="simple">
+<li><p>包含1200万图像-文本对</p></li>
+<li><p>由Google Research发布，用于多模态预训练</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id8">
+<h3>多模态评估指标<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>评估多模态模型的性能需要特定的指标，这些指标通常针对不同的任务而设计：</p>
+<ol class="arabic simple">
+<li><p><strong>跨模态检索指标</strong>：</p>
+<ul class="simple">
+<li><p>召回率&#64;K（Recall&#64;K）：在前K个检索结果中找到相关项的比例</p></li>
+<li><p>中位数排名（Median Rank）：相关项在排序列表中的中位数位置</p></li>
+</ul>
+</li>
+<li><p><strong>图像描述生成指标</strong>：</p>
+<ul class="simple">
+<li><p>BLEU（Bilingual Evaluation Understudy）：评估生成文本与参考文本的n-gram重叠</p></li>
+<li><p>METEOR（Metric for Evaluation of Translation with Explicit ORdering）：考虑同义词和词序</p></li>
+<li><p>CIDEr（Consensus-based Image Description Evaluation）：使用TF-IDF加权的n-gram相似度</p></li>
+<li><p>SPICE：基于场景图的语义评估指标</p></li>
+</ul>
+</li>
+<li><p><strong>文本到图像生成指标</strong>：</p>
+<ul class="simple">
+<li><p>FID（Fréchet Inception Distance）：评估生成图像与真实图像分布的相似度</p></li>
+<li><p>IS（Inception Score）：评估生成图像的多样性和质量</p></li>
+<li><p>CLIP Score：使用CLIP模型评估生成图像与文本提示的语义一致性</p></li>
+</ul>
+</li>
+<li><p><strong>视觉问答指标</strong>：</p>
+<ul class="simple">
+<li><p>准确率：正确回答的问题比例</p></li>
+<li><p>VQA分数：考虑多个人类标注答案的一致性</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id9">
+<h3>多模态学习的挑战<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>尽管多模态学习取得了显著进展，但仍面临许多挑战：</p>
+<ol class="arabic simple">
+<li><p><strong>模态对齐（Modality Alignment）</strong>：</p>
+<ul class="simple">
+<li><p>不同模态的数据具有不同的统计特性和结构</p></li>
+<li><p>需要找到有效的方法将它们映射到共享的语义空间</p></li>
+</ul>
+</li>
+<li><p><strong>模态缺失（Missing Modality）</strong>：</p>
+<ul class="simple">
+<li><p>在实际应用中，某些模态的数据可能缺失</p></li>
+<li><p>模型需要具备在部分模态缺失情况下的鲁棒性</p></li>
+</ul>
+</li>
+<li><p><strong>模态融合（Modality Fusion）</strong>：</p>
+<ul class="simple">
+<li><p>如何有效地融合不同模态的信息仍是一个开放问题</p></li>
+<li><p>简单的拼接或平均可能无法捕捉模态间的复杂关系</p></li>
+</ul>
+</li>
+<li><p><strong>计算资源需求</strong>：</p>
+<ul class="simple">
+<li><p>多模态模型通常比单模态模型更大、更复杂</p></li>
+<li><p>训练和推理需要更多的计算资源</p></li>
+</ul>
+</li>
+<li><p><strong>数据质量和偏见</strong>：</p>
+<ul class="simple">
+<li><p>大规模多模态数据集可能包含噪声和偏见</p></li>
+<li><p>这些偏见可能被模型放大，导致不公平或有害的输出</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id10">
+<h3>多模态学习在故事讲述中的应用<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>在故事讲述AI的背景下，多模态学习可以带来许多令人兴奋的应用：</p>
+<ol class="arabic simple">
+<li><p><strong>故事插图生成</strong>：</p>
+<ul class="simple">
+<li><p>根据故事文本自动生成匹配的插图</p></li>
+<li><p>可以根据不同的艺术风格生成不同风格的插图</p></li>
+</ul>
+</li>
+<li><p><strong>交互式故事创作</strong>：</p>
+<ul class="simple">
+<li><p>用户可以提供文本和图像作为输入</p></li>
+<li><p>AI系统可以基于这些输入生成连贯的故事和配图</p></li>
+</ul>
+</li>
+<li><p><strong>角色设计</strong>：</p>
+<ul class="simple">
+<li><p>根据文本描述生成角色形象</p></li>
+<li><p>或根据用户提供的角色图像生成相应的背景故事</p></li>
+</ul>
+</li>
+<li><p><strong>场景扩展</strong>：</p>
+<ul class="simple">
+<li><p>根据简单的场景描述或草图生成详细的场景图像</p></li>
+<li><p>或根据场景图像生成丰富的环境描述</p></li>
+</ul>
+</li>
+<li><p><strong>多模态故事理解</strong>：</p>
+<ul class="simple">
+<li><p>理解包含文本和图像的故事内容</p></li>
+<li><p>能够回答关于故事情节、角色和场景的问题</p></li>
+</ul>
+</li>
+</ol>
+<p>在接下来的章节中，我们将深入探讨实现这些应用的关键技术，包括VQVAE、扩散变换器以及如何使用LoRA等参数高效微调方法训练多模态模型。我们将特别关注CLIP、BLIP2、LLaVA和Qwen-VL等模型，这些模型代表了当前多模态学习的最先进水平。</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../16_deployment/chapter16_2_web_application.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第16章：部署-16.2 Web应用开发</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter17_2_vqvae_technique.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第17章：多模态-17.2 VQVAE技术详解</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">17.1 多模态基础理论</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">什么是多模态学习</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">多模态学习的主要任务</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">多模态学习的架构</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">多模态预训练模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">多模态数据集</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">多模态评估指标</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">多模态学习的挑战</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">多模态学习在故事讲述中的应用</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1828 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第7章：优化技术(Optimization) &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/07_optimization/chapter07_optimization';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第8章：速度提升I：设备(Device)" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html" />
+    <link rel="prev" title="第6章：分词技术(Tokenization)" href="../06_tokenization/chaptet06_tokenization.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/07_optimization/chapter07_optimization.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/07_optimization/chapter07_optimization.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/07_optimization/chapter07_optimization.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第7章：优化技术(Optimization)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">7.1 神经网络优化基础</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">7.2 参数初始化方法与重要性</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">7.2.1 初始化的重要性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">7.2.2 常见初始化方法</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1. 零初始化与常数初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2. 随机初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#xavier-glorot">3. Xavier/Glorot初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#he-kaiming">4. He初始化（Kaiming初始化）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">5. 正交初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#transformer">6. 特定于Transformer的初始化</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">7.2.3 初始化的实践考虑</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">7.2.4 初始化的代码实现</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">7.3 梯度下降及其变种</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">7.3.1 基本梯度下降</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum">7.3.2 动量法（Momentum）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nesterov-nag">7.3.3 Nesterov加速梯度（NAG）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adagrad">7.3.4 Adagrad</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rmsprop">7.3.5 RMSprop</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adam">7.3.6 Adam</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adamw">7.4 AdamW优化器详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adaml2">7.4.1 Adam与L2正则化的问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">7.4.2 AdamW的解决方案</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adamwpytorch">7.4.3 AdamW的PyTorch实现</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">7.4.4 AdamW在大语言模型中的应用</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">7.5 学习率调度策略</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">7.5.1 固定学习率</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">7.5.2 学习率衰减</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-decay">1. 阶梯衰减（Step Decay）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exponential-decay">2. 指数衰减（Exponential Decay）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cosine-annealing">3. 余弦退火（Cosine Annealing）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sgdr-stochastic-gradient-descent-with-warm-restarts">4. 带热重启的余弦退火（SGDR: Stochastic Gradient Descent with Warm Restarts）</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-warmup">7.5.3 线性预热（Linear Warmup）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">7.5.4 线性预热后余弦衰减</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch">7.5.5 在PyTorch中实现学习率调度</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">7.5.6 故事生成模型的学习率调度</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">7.6 优化过程中的常见问题与解决方案</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">7.6.1 梯度消失与爆炸</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">7.6.2 训练不稳定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">7.6.3 过拟合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">7.6.4 训练效率低下</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">7.6.5 优化器状态管理</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">7.7 故事生成模型的优化实践</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">7.7.1 完整的训练流程</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">7.7.2 优化技巧总结</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">7.7.3 大规模训练的考虑</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">7.8 总结与展望</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="optimization">
+<h1>第7章：优化技术(Optimization)<a class="headerlink" href="#optimization" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>7.1 神经网络优化基础<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>在构建故事讲述AI大语言模型的过程中，优化是一个至关重要的环节。优化不仅关系到模型能否成功训练，还直接影响模型的性能、收敛速度和最终效果。本章我们将深入探讨神经网络优化的核心概念、常用算法以及在大语言模型训练中的实践技巧。</p>
+<p>神经网络优化的本质是一个寻找最优参数的过程。在数学上，这可以表述为寻找一组参数 θ，使得损失函数 L(θ) 最小化：</p>
+<p>$$\theta^* = \arg\min_{\theta} L(\theta)$$</p>
+<p>对于大语言模型，损失函数通常是预测下一个词元的交叉熵损失：</p>
+<p>$$L(\theta) = -\frac{1}{N}\sum_{i=1}^{N}\log P(x_i|x_{&lt;i}; \theta)$$</p>
+<p>其中，$x_i$ 是序列中的第 i 个词元，$x_{&lt;i}$ 表示 $x_i$ 之前的所有词元，$P(x_i|x_{&lt;i}; \theta)$ 是模型预测下一个词元为 $x_i$ 的概率。</p>
+<p>优化这样的损失函数面临几个主要挑战：</p>
+<ol class="arabic simple">
+<li><p><strong>高维参数空间</strong>：现代大语言模型通常有数十亿甚至数千亿参数，使得参数空间极其庞大。</p></li>
+<li><p><strong>非凸优化问题</strong>：神经网络的损失函数通常是非凸的，存在多个局部最小值。</p></li>
+<li><p><strong>梯度消失/爆炸</strong>：深层网络中的梯度在反向传播过程中可能会变得极小或极大。</p></li>
+<li><p><strong>计算资源限制</strong>：大模型训练需要大量计算资源，优化算法必须高效利用这些资源。</p></li>
+<li><p><strong>泛化性能</strong>：优化不仅要使训练损失最小化，还要确保模型在未见数据上表现良好。</p></li>
+</ol>
+<p>为了应对这些挑战，研究人员开发了一系列优化技术，从参数初始化、优化算法到正则化方法等多个方面入手。在本章中，我们将系统地介绍这些技术，并讨论它们在故事生成模型训练中的应用。</p>
+</section>
+<section id="id2">
+<h2>7.2 参数初始化方法与重要性<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>神经网络训练的第一步是参数初始化。合适的初始化对训练的成功至关重要，它可以加速收敛、避免梯度问题，并帮助模型找到更好的解。</p>
+<section id="id3">
+<h3>7.2.1 初始化的重要性<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>为什么参数初始化如此重要？主要有以下几个原因：</p>
+<ol class="arabic simple">
+<li><p><strong>打破对称性</strong>：如果所有参数初始化为相同的值，那么每一层中的所有神经元将学习相同的特征，导致网络表达能力大幅降低。随机初始化打破了这种对称性。</p></li>
+<li><p><strong>控制激活值分布</strong>：合适的初始化可以使每一层的激活值保持在合理的范围内，避免饱和（对于sigmoid、tanh等激活函数）或爆炸。</p></li>
+<li><p><strong>稳定梯度流</strong>：良好的初始化可以帮助梯度在网络中平稳流动，减轻梯度消失或爆炸问题。</p></li>
+<li><p><strong>加速收敛</strong>：接近最优解的初始点可以显著减少训练所需的迭代次数。</p></li>
+</ol>
+<p>在大语言模型中，由于网络深度通常很大（如GPT-3有96层Transformer块），初始化的影响被进一步放大，成为训练成功的关键因素之一。</p>
+</section>
+<section id="id4">
+<h3>7.2.2 常见初始化方法<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h4>1. 零初始化与常数初始化<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<p>最简单的初始化方法是将所有参数设为零或某个常数：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">zero_init</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">constant_init</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>然而，这种方法会导致对称性问题，使得所有神经元学习相同的特征，严重限制模型的表达能力。因此，零初始化通常只用于偏置项（bias），而不用于权重。</p>
+</section>
+<section id="id6">
+<h4>2. 随机初始化<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<p>随机初始化是最常用的方法之一，它从某个分布（通常是均匀分布或正态分布）中随机采样参数值：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">uniform_init</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">low</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">normal_init</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>简单的随机初始化虽然打破了对称性，但没有考虑网络结构，可能导致激活值和梯度的方差在传播过程中发生剧烈变化。</p>
+</section>
+<section id="xavier-glorot">
+<h4>3. Xavier/Glorot初始化<a class="headerlink" href="#xavier-glorot" title="Link to this heading">#</a></h4>
+<p>Xavier初始化（也称为Glorot初始化）考虑了输入和输出单元的数量，旨在保持每一层输入和输出的方差一致：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">xavier_uniform_init</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="n">fan_in</span><span class="p">,</span> <span class="n">fan_out</span> <span class="o">=</span> <span class="n">get_fans</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">xavier_normal_init</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="n">fan_in</span><span class="p">,</span> <span class="n">fan_out</span> <span class="o">=</span> <span class="n">get_fans</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_fans</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># 全连接层</span>
+        <span class="n">fan_in</span><span class="p">,</span> <span class="n">fan_out</span> <span class="o">=</span> <span class="n">shape</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># 卷积层</span>
+        <span class="n">receptive_field_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="n">fan_in</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">receptive_field_size</span>
+        <span class="n">fan_out</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">receptive_field_size</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fan_in</span> <span class="o">=</span> <span class="n">fan_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">fan_in</span><span class="p">,</span> <span class="n">fan_out</span>
+</pre></div>
+</div>
+<p>Xavier初始化适用于使用线性激活函数或tanh、sigmoid等对称激活函数的网络。</p>
+</section>
+<section id="he-kaiming">
+<h4>4. He初始化（Kaiming初始化）<a class="headerlink" href="#he-kaiming" title="Link to this heading">#</a></h4>
+<p>He初始化专为使用ReLU及其变种激活函数的网络设计，考虑了ReLU将约一半的激活值置为零的特性：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">he_uniform_init</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="n">fan_in</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_fans</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="n">fan_in</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">he_normal_init</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="n">fan_in</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_fans</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="n">fan_in</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h4>5. 正交初始化<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<p>正交初始化生成正交矩阵作为权重，有助于保持梯度范数在反向传播过程中的稳定性：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">orthogonal_init</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Shape must have at least 2 dimensions&quot;</span><span class="p">)</span>
+    
+    <span class="n">flat_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">flat_shape</span><span class="p">)</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    
+    <span class="c1"># 选择u或v，确保形状匹配</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">u</span> <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">flat_shape</span> <span class="k">else</span> <span class="n">v</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">q</span>
+</pre></div>
+</div>
+</section>
+<section id="transformer">
+<h4>6. 特定于Transformer的初始化<a class="headerlink" href="#transformer" title="Link to this heading">#</a></h4>
+<p>对于Transformer架构，通常使用特定的初始化策略。例如，GPT系列模型中常用的初始化方法：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gpt_init</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">):</span>
+        <span class="c1"># 线性层使用正态分布初始化</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">bias</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">):</span>
+        <span class="c1"># 嵌入层使用正态分布初始化</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">):</span>
+        <span class="c1"># 层归一化参数初始化</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">ones_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">bias</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>在GPT-2和GPT-3中，权重通常使用标准差为0.02的正态分布初始化，而层归一化的缩放参数初始化为1，偏置初始化为0。</p>
+</section>
+</section>
+<section id="id8">
+<h3>7.2.3 初始化的实践考虑<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>在实际应用中，选择合适的初始化方法需要考虑以下因素：</p>
+<ol class="arabic simple">
+<li><p><strong>网络架构</strong>：不同的网络架构可能需要不同的初始化策略。例如，Transformer通常使用正态分布初始化，而CNN可能更适合He初始化。</p></li>
+<li><p><strong>激活函数</strong>：如前所述，激活函数的选择会影响最佳的初始化方法。ReLU系列激活函数通常搭配He初始化，而tanh或sigmoid则搭配Xavier初始化。</p></li>
+<li><p><strong>网络深度</strong>：对于非常深的网络，可能需要特殊的初始化技巧来确保梯度的稳定传播。</p></li>
+<li><p><strong>残差连接</strong>：带有残差连接的网络（如Transformer）可能需要特殊的初始化策略，例如将残差分支的权重初始化得更小。</p></li>
+<li><p><strong>预训练模型</strong>：当使用预训练模型时，新添加的层的初始化需要与预训练部分兼容。</p></li>
+</ol>
+<p>在故事生成模型中，由于我们主要使用Transformer架构，通常采用GPT系列模型的初始化策略，即使用标准差为0.02的正态分布初始化大多数参数。</p>
+</section>
+<section id="id9">
+<h3>7.2.4 初始化的代码实现<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>下面是一个在PyTorch中实现各种初始化方法的完整示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">init_type</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span> <span class="n">init_gain</span><span class="o">=</span><span class="mf">0.02</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;初始化网络权重&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">init_func</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">classname</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">classname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Conv&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">classname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Linear&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">init_type</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">init_gain</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">init_type</span> <span class="o">==</span> <span class="s1">&#39;xavier&#39;</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="n">init_gain</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">init_type</span> <span class="o">==</span> <span class="s1">&#39;kaiming&#39;</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">kaiming_normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;fan_in&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">init_type</span> <span class="o">==</span> <span class="s1">&#39;orthogonal&#39;</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">orthogonal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="n">init_gain</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">init_type</span> <span class="o">==</span> <span class="s1">&#39;transformer&#39;</span><span class="p">:</span>
+                <span class="c1"># Transformer特定初始化</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;初始化方法 </span><span class="si">{</span><span class="n">init_type</span><span class="si">}</span><span class="s1"> 未实现&#39;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;bias&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="n">classname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;BatchNorm2d&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">init_gain</span><span class="p">)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="n">classname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;LayerNorm&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    
+    <span class="n">module</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">init_func</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">module</span>
+
+<span class="c1"># 使用示例</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">768</span><span class="p">,</span> <span class="mi">3072</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">(),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3072</span><span class="p">,</span> <span class="mi">768</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_weights</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">init_type</span><span class="o">=</span><span class="s1">&#39;transformer&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>对于故事生成模型，我们可以定义一个专门的初始化函数：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">init_storyteller_model</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;初始化故事讲述模型的权重&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s1">&#39;layernorm&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s1">&#39;layer_norm&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="c1"># 层归一化参数</span>
+            <span class="k">if</span> <span class="s1">&#39;weight&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">ones_</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;bias&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;embeddings&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s1">&#39;wte&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s1">&#39;wpe&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="c1"># 嵌入层参数</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;attention&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">and</span> <span class="s1">&#39;weight&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="c1"># 注意力权重</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;mlp&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s1">&#39;feed_forward&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="c1"># MLP层权重</span>
+            <span class="k">if</span> <span class="s1">&#39;weight&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;bias&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;bias&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="c1"># 所有其他偏置项</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 所有其他权重</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+    
+    <span class="c1"># 可选：特殊处理最后一层</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;lm_head&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">lm_head</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">):</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">lm_head</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+<p>这个初始化函数遵循了GPT系列模型的初始化策略，同时对不同类型的层使用了适当的初始化方法。对于最后的语言模型头部（lm_head），我们使用了稍小的标准差，这有助于稳定初始训练阶段。</p>
+</section>
+</section>
+<section id="id10">
+<h2>7.3 梯度下降及其变种<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<p>优化算法的核心是梯度下降（Gradient Descent）及其变种。这些算法利用损失函数相对于参数的梯度来更新参数，使损失函数逐步减小。</p>
+<section id="id11">
+<h3>7.3.1 基本梯度下降<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>最基本的梯度下降算法可以表示为：</p>
+<p>$$\theta_{t+1} = \theta_t - \eta \nabla_\theta L(\theta_t)$$</p>
+<p>其中，$\theta_t$ 是第 t 步的参数，$\eta$ 是学习率，$\nabla_\theta L(\theta_t)$ 是损失函数相对于参数的梯度。</p>
+<p>根据计算梯度所使用的数据量，梯度下降可以分为三种类型：</p>
+<ol class="arabic simple">
+<li><p><strong>批量梯度下降（Batch Gradient Descent）</strong>：使用整个训练集计算梯度。</p></li>
+<li><p><strong>随机梯度下降（Stochastic Gradient Descent, SGD）</strong>：每次只使用一个样本计算梯度。</p></li>
+<li><p><strong>小批量梯度下降（Mini-batch Gradient Descent）</strong>：使用一小批样本计算梯度，是最常用的方法。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">batch_gradient_descent</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;批量梯度下降&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">grad</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">):</span>
+        <span class="n">param</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad</span>
+    <span class="k">return</span> <span class="n">params</span>
+
+<span class="k">def</span> <span class="nf">sgd</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">sample_gradient</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;随机梯度下降&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">grad</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">sample_gradient</span><span class="p">):</span>
+        <span class="n">param</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad</span>
+    <span class="k">return</span> <span class="n">params</span>
+
+<span class="k">def</span> <span class="nf">mini_batch_gradient_descent</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">mini_batch_gradients</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;小批量梯度下降&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">grad</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">mini_batch_gradients</span><span class="p">):</span>
+        <span class="n">param</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad</span>
+    <span class="k">return</span> <span class="n">params</span>
+</pre></div>
+</div>
+<p>在实际应用中，小批量梯度下降是最常用的方法，因为它在计算效率和收敛稳定性之间取得了良好的平衡。</p>
+</section>
+<section id="momentum">
+<h3>7.3.2 动量法（Momentum）<a class="headerlink" href="#momentum" title="Link to this heading">#</a></h3>
+<p>基本的梯度下降容易陷入局部最小值或在平坦区域收敛缓慢。动量法通过累积过去的梯度来加速收敛并帮助跳出局部最小值：</p>
+<p>$$v_{t+1} = \gamma v_t + \eta \nabla_\theta L(\theta_t)$$
+$$\theta_{t+1} = \theta_t - v_{t+1}$$</p>
+<p>其中，$v_t$ 是累积的动量向量，$\gamma$ 是动量系数（通常设为0.9）。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sgd_with_momentum</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">velocities</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;带动量的SGD&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">grad</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">)):</span>
+        <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">momentum</span> <span class="o">*</span> <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad</span>
+        <span class="n">param</span> <span class="o">-=</span> <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">velocities</span>
+</pre></div>
+</div>
+<p>动量法的优点是可以加速收敛，特别是在梯度方向一致的区域；同时，它也能够在一定程度上克服局部最小值和鞍点的问题。</p>
+</section>
+<section id="nesterov-nag">
+<h3>7.3.3 Nesterov加速梯度（NAG）<a class="headerlink" href="#nesterov-nag" title="Link to this heading">#</a></h3>
+<p>Nesterov加速梯度是动量法的一个变种，它在计算梯度时考虑了动量的未来位置：</p>
+<p>$$v_{t+1} = \gamma v_t + \eta \nabla_\theta L(\theta_t - \gamma v_t)$$
+$$\theta_{t+1} = \theta_t - v_{t+1}$$</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nesterov_accelerated_gradient</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">compute_gradients</span><span class="p">,</span> <span class="n">velocities</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Nesterov加速梯度&quot;&quot;&quot;</span>
+    <span class="c1"># 临时更新参数</span>
+    <span class="n">temp_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span> <span class="o">-</span> <span class="n">momentum</span> <span class="o">*</span> <span class="n">vel</span> <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">vel</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">velocities</span><span class="p">)]</span>
+    
+    <span class="c1"># 在临时位置计算梯度</span>
+    <span class="n">gradients</span> <span class="o">=</span> <span class="n">compute_gradients</span><span class="p">(</span><span class="n">temp_params</span><span class="p">)</span>
+    
+    <span class="c1"># 更新速度和参数</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">grad</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">)):</span>
+        <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">momentum</span> <span class="o">*</span> <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad</span>
+        <span class="n">param</span> <span class="o">-=</span> <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">velocities</span>
+</pre></div>
+</div>
+<p>NAG通常比标准动量法收敛更快，因为它能够提前”预见”参数的下一个位置。</p>
+</section>
+<section id="adagrad">
+<h3>7.3.4 Adagrad<a class="headerlink" href="#adagrad" title="Link to this heading">#</a></h3>
+<p>Adagrad算法自适应地调整每个参数的学习率，对频繁更新的参数使用较小的学习率，对不频繁更新的参数使用较大的学习率：</p>
+<p>$$g_{t,i} = \nabla_{\theta_i} L(\theta_t)$$
+$$G_{t,ii} = G_{t-1,ii} + g_{t,i}^2$$
+$$\theta_{t+1,i} = \theta_{t,i} - \frac{\eta}{\sqrt{G_{t,ii} + \epsilon}} g_{t,i}$$</p>
+<p>其中，$G_t$ 是一个对角矩阵，其对角元素 $G_{t,ii}$ 是参数 $\theta_i$ 的梯度平方和，$\epsilon$ 是一个小常数，防止除以零。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">adagrad</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">grad_squared</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adagrad优化算法&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">grad</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">)):</span>
+        <span class="n">grad_squared</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">grad</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">param</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">grad_squared</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">grad_squared</span>
+</pre></div>
+</div>
+<p>Adagrad的主要优点是自动调整学习率，但它的主要缺点是梯度平方的累积会导致学习率单调递减，最终变得非常小，使训练提前停止。</p>
+</section>
+<section id="rmsprop">
+<h3>7.3.5 RMSprop<a class="headerlink" href="#rmsprop" title="Link to this heading">#</a></h3>
+<p>RMSprop解决了Adagrad学习率单调递减的问题，它使用梯度平方的移动平均而不是简单累加：</p>
+<p>$$E[g^2]<em>t = \beta E[g^2]</em>{t-1} + (1-\beta) g_t^2$$
+$$\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{E[g^2]_t + \epsilon}} g_t$$</p>
+<p>其中，$\beta$ 通常设为0.9，表示历史梯度平方的衰减率。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rmsprop</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">grad_squared</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;RMSprop优化算法&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">grad</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">)):</span>
+        <span class="n">grad_squared</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">grad_squared</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">grad</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">param</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">grad_squared</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">grad_squared</span>
+</pre></div>
+</div>
+<p>RMSprop在非凸优化问题上表现良好，是训练深度神经网络的常用选择。</p>
+</section>
+<section id="adam">
+<h3>7.3.6 Adam<a class="headerlink" href="#adam" title="Link to this heading">#</a></h3>
+<p>Adam（Adaptive Moment Estimation）结合了动量法和RMSprop的优点，同时维护梯度的一阶矩（均值）和二阶矩（未中心化的方差）的指数移动平均：</p>
+<p>$$m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t$$
+$$v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2$$</p>
+<p>为了纠正初始化偏差，Adam使用偏差修正：</p>
+<p>$$\hat{m}_t = \frac{m_t}{1-\beta_1^t}$$
+$$\hat{v}_t = \frac{v_t}{1-\beta_2^t}$$</p>
+<p>然后更新参数：</p>
+<p>$$\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t$$</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">adam</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adam优化算法&quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">grad</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">)):</span>
+        <span class="c1"># 更新偏置修正的一阶矩估计</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span>
+        <span class="n">m_hat</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span> <span class="o">**</span> <span class="n">t</span><span class="p">)</span>
+        
+        <span class="c1"># 更新偏置修正的二阶矩估计</span>
+        <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta2</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">grad</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">v_hat</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span> <span class="o">**</span> <span class="n">t</span><span class="p">)</span>
+        
+        <span class="c1"># 更新参数</span>
+        <span class="n">param</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">m_hat</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span>
+</pre></div>
+</div>
+<p>Adam是目前最流行的优化算法之一，因为它结合了动量和自适应学习率的优点，通常能够快速收敛并产生良好的结果。</p>
+</section>
+</section>
+<section id="adamw">
+<h2>7.4 AdamW优化器详解<a class="headerlink" href="#adamw" title="Link to this heading">#</a></h2>
+<p>AdamW是Adam优化器的一个变种，专门设计用于解决Adam在使用L2正则化（权重衰减）时的问题。在标准Adam中，权重衰减被应用于梯度，这与真正的L2正则化不同，并可能导致次优的正则化效果。AdamW将权重衰减从梯度计算中分离出来，直接应用于参数更新步骤。</p>
+<section id="adaml2">
+<h3>7.4.1 Adam与L2正则化的问题<a class="headerlink" href="#adaml2" title="Link to this heading">#</a></h3>
+<p>在标准的随机梯度下降中，L2正则化等价于权重衰减：</p>
+<p>$$\theta_{t+1} = \theta_t - \eta (\nabla_\theta L(\theta_t) + \lambda \theta_t) = (1 - \eta \lambda) \theta_t - \eta \nabla_\theta L(\theta_t)$$</p>
+<p>其中，$\lambda$ 是正则化系数。</p>
+<p>然而，在Adam中，由于自适应学习率的存在，这种等价性不再成立。当L2正则化项 $\lambda \theta_t$ 被添加到梯度中时，它也会受到自适应学习率的影响，导致正则化效果被扭曲。</p>
+</section>
+<section id="id12">
+<h3>7.4.2 AdamW的解决方案<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>AdamW通过将权重衰减与梯度更新分离，解决了这个问题：</p>
+<p>$$m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t$$
+$$v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2$$
+$$\hat{m}_t = \frac{m_t}{1-\beta_1^t}$$
+$$\hat{v}<em>t = \frac{v_t}{1-\beta_2^t}$$
+$$\theta</em>{t+1} = \theta_t - \eta \left( \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon} + \lambda \theta_t \right)$$</p>
+<p>注意最后一步中，权重衰减项 $\lambda \theta_t$ 是直接添加到更新规则中，而不是添加到梯度中。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">adamw</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;AdamW优化算法&quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">grad</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">gradients</span><span class="p">)):</span>
+        <span class="c1"># 更新偏置修正的一阶矩估计</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span>
+        <span class="n">m_hat</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span> <span class="o">**</span> <span class="n">t</span><span class="p">)</span>
+        
+        <span class="c1"># 更新偏置修正的二阶矩估计</span>
+        <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta2</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">grad</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">v_hat</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span> <span class="o">**</span> <span class="n">t</span><span class="p">)</span>
+        
+        <span class="c1"># 更新参数（注意权重衰减项的位置）</span>
+        <span class="n">param</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="p">(</span><span class="n">m_hat</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span> <span class="o">+</span> <span class="n">weight_decay</span> <span class="o">*</span> <span class="n">param</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span>
+</pre></div>
+</div>
+</section>
+<section id="adamwpytorch">
+<h3>7.4.3 AdamW的PyTorch实现<a class="headerlink" href="#adamwpytorch" title="Link to this heading">#</a></h3>
+<p>在PyTorch中，AdamW已经作为标准优化器提供：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+
+<span class="c1"># 创建模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">TransformerModel</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+
+<span class="c1"># 创建AdamW优化器</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
+    <span class="n">lr</span><span class="o">=</span><span class="mf">5e-5</span><span class="p">,</span>  <span class="c1"># 学习率</span>
+    <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">),</span>  <span class="c1"># 一阶和二阶矩的指数衰减率</span>
+    <span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>  <span class="c1"># 分母中添加的小常数，防止除零</span>
+    <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.01</span>  <span class="c1"># 权重衰减系数</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h3>7.4.4 AdamW在大语言模型中的应用<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>AdamW已成为训练大语言模型的标准优化器，包括GPT系列、BERT系列和T5等。在这些模型中，典型的超参数设置为：</p>
+<ul class="simple">
+<li><p>学习率：1e-4到5e-5（根据模型大小和任务调整）</p></li>
+<li><p>β₁：0.9</p></li>
+<li><p>β₂：0.999</p></li>
+<li><p>ε：1e-8</p></li>
+<li><p>权重衰减：0.01到0.1</p></li>
+</ul>
+<p>对于故事生成模型，我们可以使用以下设置：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_storyteller_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-5</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;为故事讲述模型创建优化器&quot;&quot;&quot;</span>
+    <span class="c1"># 将参数分为两组：不需要权重衰减的参数（如偏置和LayerNorm参数）和其他参数</span>
+    <span class="n">no_decay</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bias&#39;</span><span class="p">,</span> <span class="s1">&#39;layernorm&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_norm&#39;</span><span class="p">]</span>
+    <span class="n">optimizer_grouped_parameters</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">nd</span> <span class="ow">in</span> <span class="n">n</span> <span class="k">for</span> <span class="n">nd</span> <span class="ow">in</span> <span class="n">no_decay</span><span class="p">)],</span>
+            <span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="n">weight_decay</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">nd</span> <span class="ow">in</span> <span class="n">n</span> <span class="k">for</span> <span class="n">nd</span> <span class="ow">in</span> <span class="n">no_decay</span><span class="p">)],</span>
+            <span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+    
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span>
+        <span class="n">optimizer_grouped_parameters</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span>
+        <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">),</span>
+        <span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span>
+    <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">optimizer</span>
+</pre></div>
+</div>
+<p>这个函数将模型参数分为两组：一组应用权重衰减，另一组不应用。通常，偏置项和层归一化参数不应该应用权重衰减，因为它们已经受到其他约束。</p>
+</section>
+</section>
+<section id="id14">
+<h2>7.5 学习率调度策略<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<p>学习率是优化过程中最重要的超参数之一。合适的学习率调度策略可以加速收敛、提高模型性能，并帮助跳出局部最小值。</p>
+<section id="id15">
+<h3>7.5.1 固定学习率<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>最简单的策略是使用固定的学习率，但这通常不是最佳选择，因为：</p>
+<ul class="simple">
+<li><p>学习率过大可能导致发散</p></li>
+<li><p>学习率过小可能导致收敛缓慢</p></li>
+<li><p>训练的不同阶段可能需要不同的学习率</p></li>
+</ul>
+</section>
+<section id="id16">
+<h3>7.5.2 学习率衰减<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<p>随着训练的进行，逐渐减小学习率通常是有益的。常见的衰减策略包括：</p>
+<section id="step-decay">
+<h4>1. 阶梯衰减（Step Decay）<a class="headerlink" href="#step-decay" title="Link to this heading">#</a></h4>
+<p>每经过固定的训练轮数，将学习率乘以一个衰减因子：</p>
+<p>$$\eta_t = \eta_0 \times \gamma^{\lfloor t / s \rfloor}$$</p>
+<p>其中，$\eta_0$ 是初始学习率，$\gamma$ 是衰减因子（通常为0.1或0.5），$s$ 是衰减步长，$t$ 是当前训练步数。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">step_decay</span><span class="p">(</span><span class="n">initial_lr</span><span class="p">,</span> <span class="n">decay_factor</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">decay_epochs</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;阶梯衰减学习率调度器&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">initial_lr</span> <span class="o">*</span> <span class="p">(</span><span class="n">decay_factor</span> <span class="o">**</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">//</span> <span class="n">decay_epochs</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">scheduler</span>
+</pre></div>
+</div>
+</section>
+<section id="exponential-decay">
+<h4>2. 指数衰减（Exponential Decay）<a class="headerlink" href="#exponential-decay" title="Link to this heading">#</a></h4>
+<p>学习率按指数衰减：</p>
+<p>$$\eta_t = \eta_0 \times \gamma^t$$</p>
+<p>其中，$\gamma$ 是衰减率（通常接近但小于1，如0.95或0.99）。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">exponential_decay</span><span class="p">(</span><span class="n">initial_lr</span><span class="p">,</span> <span class="n">decay_rate</span><span class="o">=</span><span class="mf">0.95</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;指数衰减学习率调度器&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">initial_lr</span> <span class="o">*</span> <span class="p">(</span><span class="n">decay_rate</span> <span class="o">**</span> <span class="n">epoch</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">scheduler</span>
+</pre></div>
+</div>
+</section>
+<section id="cosine-annealing">
+<h4>3. 余弦退火（Cosine Annealing）<a class="headerlink" href="#cosine-annealing" title="Link to this heading">#</a></h4>
+<p>学习率按余弦函数从初始值衰减到最小值：</p>
+<p>$$\eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})(1 + \cos(\frac{t\pi}{T}))$$</p>
+<p>其中，$\eta_{max}$ 是初始学习率，$\eta_{min}$ 是最小学习率，$T$ 是总训练步数，$t$ 是当前步数。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cosine_annealing</span><span class="p">(</span><span class="n">initial_lr</span><span class="p">,</span> <span class="n">min_lr</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;余弦退火学习率调度器&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">min_lr</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">initial_lr</span> <span class="o">-</span> <span class="n">min_lr</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">epoch</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">total_epochs</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">scheduler</span>
+</pre></div>
+</div>
+</section>
+<section id="sgdr-stochastic-gradient-descent-with-warm-restarts">
+<h4>4. 带热重启的余弦退火（SGDR: Stochastic Gradient Descent with Warm Restarts）<a class="headerlink" href="#sgdr-stochastic-gradient-descent-with-warm-restarts" title="Link to this heading">#</a></h4>
+<p>在余弦退火的基础上，周期性地将学习率重置为初始值，然后再次衰减：</p>
+<p>$$\eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})(1 + \cos(\frac{t_{mod}\pi}{T_i}))$$</p>
+<p>其中，$t_{mod} = t \mod T_i$，$T_i$ 是第 $i$ 个周期的长度。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cosine_annealing_warm_restarts</span><span class="p">(</span><span class="n">initial_lr</span><span class="p">,</span> <span class="n">min_lr</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">first_cycle_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">cycle_mult</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;带热重启的余弦退火学习率调度器&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+        <span class="c1"># 计算当前所处的周期和周期内的位置</span>
+        <span class="n">cycle</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">cycle_length</span> <span class="o">=</span> <span class="n">first_cycle_epochs</span>
+        <span class="n">epoch_in_cycle</span> <span class="o">=</span> <span class="n">epoch</span>
+        
+        <span class="k">while</span> <span class="n">epoch_in_cycle</span> <span class="o">&gt;=</span> <span class="n">cycle_length</span><span class="p">:</span>
+            <span class="n">epoch_in_cycle</span> <span class="o">-=</span> <span class="n">cycle_length</span>
+            <span class="n">cycle</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">cycle_length</span> <span class="o">=</span> <span class="n">first_cycle_epochs</span> <span class="o">*</span> <span class="p">(</span><span class="n">cycle_mult</span> <span class="o">**</span> <span class="n">cycle</span><span class="p">)</span>
+        
+        <span class="c1"># 计算当前学习率</span>
+        <span class="k">return</span> <span class="n">min_lr</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">initial_lr</span> <span class="o">-</span> <span class="n">min_lr</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">epoch_in_cycle</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">cycle_length</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">scheduler</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="linear-warmup">
+<h3>7.5.3 线性预热（Linear Warmup）<a class="headerlink" href="#linear-warmup" title="Link to this heading">#</a></h3>
+<p>对于大型模型，特别是Transformer模型，在训练初期使用较小的学习率，然后线性增加到目标值，有助于稳定训练：</p>
+<p>$$\eta_t =
+\begin{cases}
+\eta_{target} \times \frac{t}{T_{warmup}} &amp; \text{if } t &lt; T_{warmup} \
+\eta_{target} &amp; \text{otherwise}
+\end{cases}$$</p>
+<p>其中，$T_{warmup}$ 是预热步数。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">linear_warmup</span><span class="p">(</span><span class="n">target_lr</span><span class="p">,</span> <span class="n">warmup_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;线性预热学习率调度器&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">epoch</span> <span class="o">&lt;</span> <span class="n">warmup_epochs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">target_lr</span> <span class="o">*</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">warmup_epochs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">target_lr</span>
+    <span class="k">return</span> <span class="n">scheduler</span>
+</pre></div>
+</div>
+</section>
+<section id="id17">
+<h3>7.5.4 线性预热后余弦衰减<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<p>这是训练大语言模型最常用的学习率调度策略，结合了线性预热和余弦衰减：</p>
+<p>$$\eta_t =
+\begin{cases}
+\eta_{max} \times \frac{t}{T_{warmup}} &amp; \text{if } t &lt; T_{warmup} \
+\eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})(1 + \cos(\frac{(t-T_{warmup})\pi}{T-T_{warmup}})) &amp; \text{otherwise}
+\end{cases}$$</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">linear_warmup_cosine_decay</span><span class="p">(</span><span class="n">max_lr</span><span class="p">,</span> <span class="n">min_lr</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">warmup_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">total_epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;线性预热后余弦衰减学习率调度器&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">epoch</span> <span class="o">&lt;</span> <span class="n">warmup_epochs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">max_lr</span> <span class="o">*</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">warmup_epochs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">min_lr</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_lr</span> <span class="o">-</span> <span class="n">min_lr</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">((</span><span class="n">epoch</span> <span class="o">-</span> <span class="n">warmup_epochs</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="n">total_epochs</span> <span class="o">-</span> <span class="n">warmup_epochs</span><span class="p">))</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">scheduler</span>
+</pre></div>
+</div>
+</section>
+<section id="pytorch">
+<h3>7.5.5 在PyTorch中实现学习率调度<a class="headerlink" href="#pytorch" title="Link to this heading">#</a></h3>
+<p>PyTorch提供了多种学习率调度器，可以轻松实现上述策略：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="k">as</span> <span class="nn">lr_scheduler</span>
+
+<span class="c1"># 创建模型和优化器</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">TransformerModel</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-5</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+<span class="c1"># 1. 阶梯衰减</span>
+<span class="n">step_scheduler</span> <span class="o">=</span> <span class="n">lr_scheduler</span><span class="o">.</span><span class="n">StepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># 2. 指数衰减</span>
+<span class="n">exp_scheduler</span> <span class="o">=</span> <span class="n">lr_scheduler</span><span class="o">.</span><span class="n">ExponentialLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+
+<span class="c1"># 3. 余弦退火</span>
+<span class="n">cosine_scheduler</span> <span class="o">=</span> <span class="n">lr_scheduler</span><span class="o">.</span><span class="n">CosineAnnealingLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">T_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">eta_min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># 4. 带热重启的余弦退火</span>
+<span class="n">cosine_warm_scheduler</span> <span class="o">=</span> <span class="n">lr_scheduler</span><span class="o">.</span><span class="n">CosineAnnealingWarmRestarts</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">T_0</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">T_mult</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># 5. 自定义学习率调度（如线性预热后余弦衰减）</span>
+<span class="k">def</span> <span class="nf">lr_lambda</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="n">warmup_epochs</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">total_epochs</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="o">&lt;</span> <span class="n">warmup_epochs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">epoch</span> <span class="o">/</span> <span class="n">warmup_epochs</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">((</span><span class="n">epoch</span> <span class="o">-</span> <span class="n">warmup_epochs</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="n">total_epochs</span> <span class="o">-</span> <span class="n">warmup_epochs</span><span class="p">)))</span>
+
+<span class="n">lambda_scheduler</span> <span class="o">=</span> <span class="n">lr_scheduler</span><span class="o">.</span><span class="n">LambdaLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr_lambda</span><span class="o">=</span><span class="n">lr_lambda</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id18">
+<h3>7.5.6 故事生成模型的学习率调度<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<p>对于故事生成模型，我们推荐使用线性预热后余弦衰减的学习率调度策略，这是训练大语言模型的标准做法：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_storyteller_scheduler</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">warmup_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">total_steps</span><span class="o">=</span><span class="mi">100000</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;为故事讲述模型创建学习率调度器&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">lr_lambda</span><span class="p">(</span><span class="n">current_step</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">current_step</span> <span class="o">&lt;</span> <span class="n">warmup_steps</span><span class="p">:</span>
+            <span class="c1"># 线性预热</span>
+            <span class="k">return</span> <span class="n">current_step</span> <span class="o">/</span> <span class="n">warmup_steps</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 余弦衰减</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_step</span> <span class="o">-</span> <span class="n">warmup_steps</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">warmup_steps</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">progress</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">lr_scheduler</span><span class="o">.</span><span class="n">LambdaLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr_lambda</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>在实际应用中，预热步数通常设置为总训练步数的1%到10%。对于大型模型，较长的预热期有助于稳定初始训练阶段。</p>
+</section>
+</section>
+<section id="id19">
+<h2>7.6 优化过程中的常见问题与解决方案<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<p>在训练大语言模型的过程中，我们可能会遇到各种优化问题。本节将讨论这些常见问题及其解决方案。</p>
+<section id="id20">
+<h3>7.6.1 梯度消失与爆炸<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
+<p><strong>问题描述</strong>：</p>
+<ul class="simple">
+<li><p><strong>梯度消失</strong>：梯度在反向传播过程中变得极小，导致参数几乎不更新。</p></li>
+<li><p><strong>梯度爆炸</strong>：梯度在反向传播过程中变得极大，导致参数更新过度，训练不稳定。</p></li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<ol class="arabic simple">
+<li><p><strong>梯度裁剪（Gradient Clipping）</strong>：限制梯度的范数，防止梯度爆炸。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">clip_gradients</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">max_norm</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;裁剪梯度&quot;&quot;&quot;</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">max_norm</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>梯度缩放（Gradient Scaling）</strong>：在混合精度训练中，先将梯度放大，然后在更新参数前再缩小，有助于防止梯度下溢。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用PyTorch的自动混合精度</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span><span class="p">,</span> <span class="n">GradScaler</span>
+
+<span class="c1"># 创建梯度缩放器</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">GradScaler</span><span class="p">()</span>
+
+<span class="c1"># 训练循环</span>
+<span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    
+    <span class="c1"># 使用自动混合精度</span>
+    <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+    
+    <span class="c1"># 缩放梯度并反向传播</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="c1"># 缩放梯度并更新参数</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+    
+    <span class="c1"># 更新缩放因子</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>残差连接（Residual Connections）</strong>：在深层网络中使用残差连接，帮助梯度流动。Transformer架构中的残差连接是解决梯度消失的关键组件。</p></li>
+<li><p><strong>合适的激活函数</strong>：使用不容易饱和的激活函数，如ReLU、GELU等，而不是sigmoid或tanh。</p></li>
+<li><p><strong>合适的初始化</strong>：如前所述，使用合适的初始化方法可以帮助控制梯度的尺度。</p></li>
+</ol>
+</section>
+<section id="id21">
+<h3>7.6.2 训练不稳定<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<p><strong>问题描述</strong>：训练过程中损失波动大，难以收敛，或者突然发散。</p>
+<p><strong>解决方案</strong>：</p>
+<ol class="arabic simple">
+<li><p><strong>降低学习率</strong>：过高的学习率是训练不稳定的常见原因。尝试将学习率降低5-10倍。</p></li>
+<li><p><strong>使用学习率预热</strong>：如前所述，在训练初期使用较小的学习率，然后逐渐增加。</p></li>
+<li><p><strong>梯度累积（Gradient Accumulation）</strong>：当批量大小受限于内存时，可以使用梯度累积来模拟更大的批量。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_with_gradient_accumulation</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">accumulation_steps</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;使用梯度累积训练模型&quot;&quot;&quot;</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="p">):</span>
+        <span class="c1"># 前向传播</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+        
+        <span class="c1"># 缩放损失并反向传播</span>
+        <span class="n">scaled_loss</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">/</span> <span class="n">accumulation_steps</span>
+        <span class="n">scaled_loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        
+        <span class="c1"># 每accumulation_steps步更新一次参数</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">accumulation_steps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>批量归一化（Batch Normalization）</strong>：虽然在Transformer中不常用，但在某些情况下，批量归一化可以帮助稳定训练。</p></li>
+<li><p><strong>层归一化（Layer Normalization）</strong>：Transformer架构中使用的层归一化有助于稳定训练。</p></li>
+<li><p><strong>权重衰减（Weight Decay）</strong>：适当的权重衰减可以防止参数过大，有助于稳定训练。</p></li>
+</ol>
+</section>
+<section id="id22">
+<h3>7.6.3 过拟合<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
+<p><strong>问题描述</strong>：模型在训练集上表现良好，但在验证集或测试集上表现不佳。</p>
+<p><strong>解决方案</strong>：</p>
+<ol class="arabic simple">
+<li><p><strong>权重衰减（Weight Decay）</strong>：如前所述，使用AdamW优化器并设置适当的权重衰减系数。</p></li>
+<li><p><strong>Dropout</strong>：在网络的不同层之间添加Dropout层，随机丢弃一部分神经元，防止过拟合。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TransformerWithDropout</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="n">encoder_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">,</span> <span class="n">dim_feedforward</span><span class="o">=</span><span class="mi">4</span><span class="o">*</span><span class="n">d_model</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoder</span><span class="p">(</span><span class="n">encoder_layer</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># 额外的dropout</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>提前停止（Early Stopping）</strong>：监控验证集性能，当性能不再提升时停止训练。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_with_early_stopping</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;使用提前停止训练模型&quot;&quot;&quot;</span>
+    <span class="n">best_val_loss</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+    <span class="n">patience_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>  <span class="c1"># 最多训练100轮</span>
+        <span class="c1"># 训练一轮</span>
+        <span class="n">train_loss</span> <span class="o">=</span> <span class="n">train_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+        
+        <span class="c1"># 在验证集上评估</span>
+        <span class="n">val_loss</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">: Train Loss = </span><span class="si">{</span><span class="n">train_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, Val Loss = </span><span class="si">{</span><span class="n">val_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># 检查是否需要提前停止</span>
+        <span class="k">if</span> <span class="n">val_loss</span> <span class="o">&lt;</span> <span class="n">best_val_loss</span><span class="p">:</span>
+            <span class="n">best_val_loss</span> <span class="o">=</span> <span class="n">val_loss</span>
+            <span class="n">patience_counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># 保存最佳模型</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s1">&#39;best_model.pt&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">patience_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">patience_counter</span> <span class="o">&gt;=</span> <span class="n">patience</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Early stopping after </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> epochs&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>数据增强（Data Augmentation）</strong>：对训练数据进行增强，增加数据多样性。对于文本数据，可以使用同义词替换、回译等方法。</p></li>
+<li><p><strong>正则化技术</strong>：除了权重衰减，还可以使用其他正则化技术，如标签平滑（Label Smoothing）。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">label_smoothing_loss</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;带标签平滑的交叉熵损失&quot;&quot;&quot;</span>
+    <span class="n">log_probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">nll_loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">log_probs</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">targets</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">smooth_loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">log_probs</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">smoothing</span><span class="p">)</span> <span class="o">*</span> <span class="n">nll_loss</span> <span class="o">+</span> <span class="n">smoothing</span> <span class="o">*</span> <span class="n">smooth_loss</span>
+    <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="id23">
+<h3>7.6.4 训练效率低下<a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
+<p><strong>问题描述</strong>：训练速度慢，资源利用率低。</p>
+<p><strong>解决方案</strong>：</p>
+<ol class="arabic simple">
+<li><p><strong>混合精度训练</strong>：使用较低精度（如float16）进行前向和反向传播，但使用float32进行参数更新。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用PyTorch的自动混合精度</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span><span class="p">,</span> <span class="n">GradScaler</span>
+
+<span class="c1"># 创建梯度缩放器</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">GradScaler</span><span class="p">()</span>
+
+<span class="c1"># 训练循环</span>
+<span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    
+    <span class="c1"># 使用自动混合精度</span>
+    <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+    
+    <span class="c1"># 缩放梯度并反向传播</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+    <span class="c1"># 缩放梯度并更新参数</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+    
+    <span class="c1"># 更新缩放因子</span>
+    <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>梯度检查点（Gradient Checkpointing）</strong>：通过在前向传播中重新计算中间激活值而不是存储它们，减少内存使用，允许使用更大的批量或更深的模型。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torch.utils.checkpoint</span> <span class="kn">import</span> <span class="n">checkpoint</span>
+
+<span class="k">class</span> <span class="nc">TransformerWithCheckpointing</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">,</span> <span class="n">dim_feedforward</span><span class="o">=</span><span class="mi">4</span><span class="o">*</span><span class="n">d_model</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="c1"># 使用梯度检查点</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>优化数据加载</strong>：使用多进程数据加载，预取数据，减少CPU和GPU之间的等待时间。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_dataloader</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;创建优化的数据加载器&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">dataset</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>  <span class="c1"># 多进程加载</span>
+        <span class="n">pin_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># 将数据固定在内存中，加速CPU到GPU的传输</span>
+        <span class="n">prefetch_factor</span><span class="o">=</span><span class="mi">2</span>  <span class="c1"># 预取因子</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>模型并行和数据并行</strong>：对于大型模型，可以使用模型并行（将模型分布在多个设备上）和数据并行（在多个设备上复制模型，每个设备处理数据的不同部分）。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 数据并行</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+<span class="c1"># 或者使用分布式数据并行</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">parallel</span><span class="o">.</span><span class="n">DistributedDataParallel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p><strong>使用更高效的实现</strong>：某些操作有多种实现方式，选择最高效的实现可以显著提高训练速度。例如，使用Flash Attention代替标准注意力机制。</p></li>
+</ol>
+</section>
+<section id="id24">
+<h3>7.6.5 优化器状态管理<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
+<p><strong>问题描述</strong>：在训练大型模型时，优化器状态（如Adam的动量和方差）可能占用大量内存，甚至超过模型参数本身。</p>
+<p><strong>解决方案</strong>：</p>
+<ol class="arabic simple">
+<li><p><strong>优化器状态分片（Optimizer State Sharding）</strong>：将优化器状态分布在多个设备上，减少每个设备的内存负担。这是ZeRO优化器的核心思想之一。</p></li>
+<li><p><strong>使用内存高效的优化器</strong>：某些优化器变种设计为更内存高效，如Adafactor，它使用因子化的二阶矩估计，显著减少内存使用。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers.optimization</span> <span class="kn">import</span> <span class="n">Adafactor</span>
+
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adafactor</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
+    <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">relative_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">scale_parameter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">warmup_init</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>优化器状态压缩</strong>：对优化器状态进行量化或压缩，减少内存使用。</p></li>
+<li><p><strong>梯度累积</strong>：如前所述，使用梯度累积可以减少内存使用，因为它允许使用更小的批量。</p></li>
+<li><p><strong>检查点保存与恢复</strong>：定期保存训练检查点，包括模型参数和优化器状态，以便在训练中断时恢复。</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">save_checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;保存训练检查点&quot;&quot;&quot;</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">({</span>
+        <span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">,</span>
+        <span class="s1">&#39;model_state_dict&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+        <span class="s1">&#39;optimizer_state_dict&#39;</span><span class="p">:</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+        <span class="s1">&#39;scheduler_state_dict&#39;</span><span class="p">:</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">scheduler</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="n">loss</span>
+    <span class="p">},</span> <span class="n">filename</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">load_checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;加载训练检查点&quot;&quot;&quot;</span>
+    <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;model_state_dict&#39;</span><span class="p">])</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;optimizer_state_dict&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">scheduler</span> <span class="ow">and</span> <span class="s1">&#39;scheduler_state_dict&#39;</span> <span class="ow">in</span> <span class="n">checkpoint</span><span class="p">:</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;scheduler_state_dict&#39;</span><span class="p">])</span>
+    <span class="n">epoch</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">]</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">loss</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id25">
+<h2>7.7 故事生成模型的优化实践<a class="headerlink" href="#id25" title="Link to this heading">#</a></h2>
+<p>在本节中，我们将整合前面讨论的所有优化技术，提供一个完整的故事生成模型训练流程。</p>
+<section id="id26">
+<h3>7.7.1 完整的训练流程<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">torch.cuda.amp</span> <span class="kn">import</span> <span class="n">autocast</span><span class="p">,</span> <span class="n">GradScaler</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="c1"># 假设我们已经定义了模型和数据集</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">StorytellerModel</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">StoryDataset</span><span class="p">(</span><span class="n">train_files</span><span class="p">)</span>
+<span class="n">val_dataset</span> <span class="o">=</span> <span class="n">StoryDataset</span><span class="p">(</span><span class="n">val_files</span><span class="p">)</span>
+
+<span class="c1"># 创建数据加载器</span>
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">train_dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">pin_memory</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">val_dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">pin_memory</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># 将模型移动到GPU</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="c1"># 初始化模型参数</span>
+<span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">)):</span>
+        <span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">)</span> <span class="ow">and</span> <span class="n">module</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">module</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">):</span>
+        <span class="n">module</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+        <span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">init_weights</span><span class="p">)</span>
+
+<span class="c1"># 创建优化器</span>
+<span class="n">no_decay</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bias&#39;</span><span class="p">,</span> <span class="s1">&#39;layernorm&#39;</span><span class="p">,</span> <span class="s1">&#39;layer_norm&#39;</span><span class="p">]</span>
+<span class="n">optimizer_grouped_parameters</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">nd</span> <span class="ow">in</span> <span class="n">n</span> <span class="k">for</span> <span class="n">nd</span> <span class="ow">in</span> <span class="n">no_decay</span><span class="p">)],</span>
+        <span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="mf">0.01</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">nd</span> <span class="ow">in</span> <span class="n">n</span> <span class="k">for</span> <span class="n">nd</span> <span class="ow">in</span> <span class="n">no_decay</span><span class="p">)],</span>
+        <span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span>
+    <span class="n">optimizer_grouped_parameters</span><span class="p">,</span>
+    <span class="n">lr</span><span class="o">=</span><span class="mf">5e-5</span><span class="p">,</span>
+    <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">),</span>
+    <span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span>
+<span class="p">)</span>
+
+<span class="c1"># 创建学习率调度器</span>
+<span class="n">total_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>  <span class="c1"># 假设训练10轮</span>
+<span class="n">warmup_steps</span> <span class="o">=</span> <span class="n">total_steps</span> <span class="o">//</span> <span class="mi">10</span>  <span class="c1"># 预热10%的步数</span>
+
+<span class="k">def</span> <span class="nf">lr_lambda</span><span class="p">(</span><span class="n">current_step</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">current_step</span> <span class="o">&lt;</span> <span class="n">warmup_steps</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">current_step</span> <span class="o">/</span> <span class="n">warmup_steps</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">((</span><span class="n">current_step</span> <span class="o">-</span> <span class="n">warmup_steps</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">warmup_steps</span><span class="p">)))</span>
+
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">LambdaLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr_lambda</span><span class="p">)</span>
+
+<span class="c1"># 创建梯度缩放器（用于混合精度训练）</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">GradScaler</span><span class="p">()</span>
+
+<span class="c1"># 训练函数</span>
+<span class="k">def</span> <span class="nf">train_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">scaler</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataloader</span><span class="p">):</span>
+        <span class="c1"># 将数据移动到设备</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;attention_mask&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="c1"># 清零梯度</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        
+        <span class="c1"># 使用混合精度</span>
+        <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">loss</span>
+        
+        <span class="c1"># 缩放梯度并反向传播</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        
+        <span class="c1"># 梯度裁剪</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">unscale_</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">max_norm</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        
+        <span class="c1"># 更新参数</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+        <span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        
+        <span class="c1"># 更新学习率</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        
+        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    
+    <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
+    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Train Loss: </span><span class="si">{</span><span class="n">avg_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, Time: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">avg_loss</span>
+
+<span class="c1"># 评估函数</span>
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataloader</span><span class="p">):</span>
+            <span class="n">input_ids</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;attention_mask&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">loss</span>
+            
+            <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    
+    <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation Loss: </span><span class="si">{</span><span class="n">avg_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">avg_loss</span>
+
+<span class="c1"># 训练循环</span>
+<span class="n">best_val_loss</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+<span class="n">patience</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">patience_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>  <span class="c1"># 训练10轮</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="mi">10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># 训练一轮</span>
+    <span class="n">train_loss</span> <span class="o">=</span> <span class="n">train_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">scaler</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+    
+    <span class="c1"># 评估</span>
+    <span class="n">val_loss</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+    
+    <span class="c1"># 检查是否需要保存模型</span>
+    <span class="k">if</span> <span class="n">val_loss</span> <span class="o">&lt;</span> <span class="n">best_val_loss</span><span class="p">:</span>
+        <span class="n">best_val_loss</span> <span class="o">=</span> <span class="n">val_loss</span>
+        <span class="n">patience_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="c1"># 保存模型</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">({</span>
+            <span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">,</span>
+            <span class="s1">&#39;model_state_dict&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+            <span class="s1">&#39;optimizer_state_dict&#39;</span><span class="p">:</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+            <span class="s1">&#39;scheduler_state_dict&#39;</span><span class="p">:</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+            <span class="s1">&#39;val_loss&#39;</span><span class="p">:</span> <span class="n">val_loss</span>
+        <span class="p">},</span> <span class="s1">&#39;best_storyteller_model.pt&#39;</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model saved at epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">patience_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">patience_counter</span> <span class="o">&gt;=</span> <span class="n">patience</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Early stopping at epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+<span class="c1"># 加载最佳模型</span>
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;best_storyteller_model.pt&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;model_state_dict&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded best model from epoch </span><span class="si">{</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> with validation loss </span><span class="si">{</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id27">
+<h3>7.7.2 优化技巧总结<a class="headerlink" href="#id27" title="Link to this heading">#</a></h3>
+<p>以下是训练故事生成模型的关键优化技巧：</p>
+<ol class="arabic simple">
+<li><p><strong>初始化</strong>：使用标准差为0.02的正态分布初始化大多数参数，层归一化的权重初始化为1，偏置初始化为0。</p></li>
+<li><p><strong>优化器</strong>：使用AdamW优化器，学习率设为5e-5，权重衰减设为0.01（对于非偏置和非层归一化参数）。</p></li>
+<li><p><strong>学习率调度</strong>：使用线性预热后余弦衰减的学习率调度策略，预热步数为总步数的10%。</p></li>
+<li><p><strong>混合精度训练</strong>：使用PyTorch的自动混合精度功能，减少内存使用并加速训练。</p></li>
+<li><p><strong>梯度裁剪</strong>：将梯度范数限制在1.0以内，防止梯度爆炸。</p></li>
+<li><p><strong>提前停止</strong>：监控验证损失，当连续3轮不再改善时停止训练。</p></li>
+<li><p><strong>检查点保存</strong>：保存验证损失最低的模型检查点。</p></li>
+<li><p><strong>数据加载优化</strong>：使用多进程数据加载、内存固定和预取，减少等待时间。</p></li>
+</ol>
+</section>
+<section id="id28">
+<h3>7.7.3 大规模训练的考虑<a class="headerlink" href="#id28" title="Link to this heading">#</a></h3>
+<p>对于更大规模的故事生成模型（如具有数十亿参数的模型），还需要考虑以下优化技术：</p>
+<ol class="arabic simple">
+<li><p><strong>分布式训练</strong>：使用多个GPU或多台机器进行训练，可以采用数据并行、模型并行或流水线并行等策略。</p></li>
+<li><p><strong>ZeRO优化器</strong>：使用ZeRO（Zero Redundancy Optimizer）减少内存使用，允许在有限资源上训练更大的模型。</p></li>
+<li><p><strong>梯度累积</strong>：当批量大小受限于内存时，使用梯度累积来模拟更大的批量。</p></li>
+<li><p><strong>梯度检查点</strong>：通过在前向传播中重新计算中间激活值而不是存储它们，减少内存使用。</p></li>
+<li><p><strong>模型量化</strong>：在训练过程中使用量化技术减少内存使用和计算需求。</p></li>
+<li><p><strong>优化器状态分片</strong>：将优化器状态分布在多个设备上，减少每个设备的内存负担。</p></li>
+<li><p><strong>高效注意力实现</strong>：使用Flash Attention等高效注意力实现，减少内存使用并加速训练。</p></li>
+</ol>
+</section>
+</section>
+<section id="id29">
+<h2>7.8 总结与展望<a class="headerlink" href="#id29" title="Link to this heading">#</a></h2>
+<p>在本章中，我们深入探讨了神经网络优化的核心概念和技术，包括参数初始化、优化算法、学习率调度以及各种优化问题的解决方案。我们特别关注了AdamW优化器，这是训练大语言模型的标准选择，并讨论了如何在故事生成模型中应用这些优化技术。</p>
+<p>优化是训练成功的关键因素，合适的优化策略可以加速收敛、提高模型性能，并帮助模型在有限的计算资源下达到最佳效果。随着模型规模的不断增长，优化技术也在不断发展，以应对新的挑战。</p>
+<p>在接下来的章节中，我们将探讨如何进一步提高训练和推理的速度，包括利用不同的计算设备、使用混合精度训练以及分布式优化等技术。这些技术将使我们能够训练更大、更强大的故事生成模型，创造更丰富、更有创意的故事内容。</p>
+<p><strong>练习与思考</strong></p>
+<ol class="arabic simple">
+<li><p>尝试实现不同的参数初始化方法，并比较它们对模型训练的影响。</p></li>
+<li><p>比较Adam和AdamW优化器在带有L2正则化的任务上的性能差异。</p></li>
+<li><p>实现并比较不同的学习率调度策略，观察它们对训练过程和最终模型性能的影响。</p></li>
+<li><p>设计一个实验，比较混合精度训练与全精度训练在速度和精度上的差异。</p></li>
+<li><p>思考如何针对故事生成任务设计特定的优化策略，考虑故事的结构、连贯性和创意性等特点。</p></li>
+</ol>
+<p><strong>参考资料</strong></p>
+<ol class="arabic simple">
+<li><p>Kingma, D. P., &amp; Ba, J. (2014). Adam: A Method for Stochastic Optimization. arXiv preprint arXiv:1412.6980.</p></li>
+<li><p>Loshchilov, I., &amp; Hutter, F. (2017). Decoupled Weight Decay Regularization. arXiv preprint arXiv:1711.05101.</p></li>
+<li><p>He, K., Zhang, X., Ren, S., &amp; Sun, J. (2015). Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification. In Proceedings of the IEEE International Conference on Computer Vision.</p></li>
+<li><p>Glorot, X., &amp; Bengio, Y. (2010). Understanding the Difficulty of Training Deep Feedforward Neural Networks. In Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics.</p></li>
+<li><p>Smith, L. N. (2017). Cyclical Learning Rates for Training Neural Networks. In 2017 IEEE Winter Conference on Applications of Computer Vision (WACV).</p></li>
+<li><p>Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., … &amp; Amodei, D. (2020). Language Models are Few-Shot Learners. In Advances in Neural Information Processing Systems.</p></li>
+<li><p>Radford, A., Wu, J., Child, R., Luan, D., Amodei, D., &amp; Sutskever, I. (2019). Language Models are Unsupervised Multitask Learners. OpenAI Blog.</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../06_tokenization/chaptet06_tokenization.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第6章：分词技术(Tokenization)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第8章：速度提升I：设备(Device)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">7.1 神经网络优化基础</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">7.2 参数初始化方法与重要性</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">7.2.1 初始化的重要性</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">7.2.2 常见初始化方法</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1. 零初始化与常数初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2. 随机初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#xavier-glorot">3. Xavier/Glorot初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#he-kaiming">4. He初始化（Kaiming初始化）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">5. 正交初始化</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#transformer">6. 特定于Transformer的初始化</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">7.2.3 初始化的实践考虑</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">7.2.4 初始化的代码实现</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">7.3 梯度下降及其变种</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">7.3.1 基本梯度下降</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum">7.3.2 动量法（Momentum）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nesterov-nag">7.3.3 Nesterov加速梯度（NAG）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adagrad">7.3.4 Adagrad</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rmsprop">7.3.5 RMSprop</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adam">7.3.6 Adam</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adamw">7.4 AdamW优化器详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adaml2">7.4.1 Adam与L2正则化的问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">7.4.2 AdamW的解决方案</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adamwpytorch">7.4.3 AdamW的PyTorch实现</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">7.4.4 AdamW在大语言模型中的应用</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">7.5 学习率调度策略</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">7.5.1 固定学习率</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">7.5.2 学习率衰减</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-decay">1. 阶梯衰减（Step Decay）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exponential-decay">2. 指数衰减（Exponential Decay）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cosine-annealing">3. 余弦退火（Cosine Annealing）</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sgdr-stochastic-gradient-descent-with-warm-restarts">4. 带热重启的余弦退火（SGDR: Stochastic Gradient Descent with Warm Restarts）</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-warmup">7.5.3 线性预热（Linear Warmup）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">7.5.4 线性预热后余弦衰减</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch">7.5.5 在PyTorch中实现学习率调度</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">7.5.6 故事生成模型的学习率调度</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">7.6 优化过程中的常见问题与解决方案</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">7.6.1 梯度消失与爆炸</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">7.6.2 训练不稳定</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">7.6.3 过拟合</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">7.6.4 训练效率低下</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">7.6.5 优化器状态管理</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">7.7 故事生成模型的优化实践</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">7.7.1 完整的训练流程</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">7.7.2 优化技巧总结</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">7.7.3 大规模训练的考虑</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">7.8 总结与展望</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,833 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第14章：监督式微调 I: SFT-14.3 LoRA技术详解 &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/14_finetuning_i_sft/chapter14_3_lora_technique';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调" href="chapter14_4_chat_model_finetuning.html" />
+    <link rel="prev" title="第14章：监督式微调 I: SFT-14.1 监督式微调基础" href="chapter14_2_parmeter_efficient_finetuning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04_attention/chapter04_attention_model.html">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/14_finetuning_i_sft/chapter14_3_lora_technique.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/14_finetuning_i_sft/chapter14_3_lora_technique.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/14_finetuning_i_sft/chapter14_3_lora_technique.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第14章：监督式微调 I: SFT-14.3 LoRA技术详解</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lora">14.3 LoRA技术详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">LoRA的基本原理与数学基础</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">低秩适应性的优势</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">LoRA参数设置与调优</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#peft">与其他PEFT方法的比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">LoRA实现的技术细节</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">LoRA在多模态模型中的应用</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="i-sft-14-3-lora">
+<h1>第14章：监督式微调 I: SFT-14.3 LoRA技术详解<a class="headerlink" href="#i-sft-14-3-lora" title="Link to this heading">#</a></h1>
+<section id="lora">
+<h2>14.3 LoRA技术详解<a class="headerlink" href="#lora" title="Link to this heading">#</a></h2>
+<p>低秩适应（Low-Rank Adaptation，LoRA）是由微软研究院在2021年提出的一种参数高效微调技术，它通过使用低秩分解来表示权重更新，已经成为最受欢迎的PEFT方法之一。LoRA的简单性、有效性和灵活性使其在各种应用场景中表现出色，尤其是在故事讲述AI等生成任务中。</p>
+<section id="id1">
+<h3>LoRA的基本原理与数学基础<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>LoRA的核心思想基于一个关键假设：虽然预训练语言模型的权重矩阵通常是高维的，但适应特定任务所需的权重更新通常具有较低的”内在秩”（intrinsic rank）。换句话说，任务特定的变化可以通过低维空间中的调整来有效捕获。</p>
+<p>从数学角度看，LoRA的工作原理如下：</p>
+<p>假设在预训练模型中有一个权重矩阵 $W_0 \in \mathbb{R}^{d \times k}$，传统的微调会直接更新这个矩阵，得到 $W = W_0 + \Delta W$。而LoRA则将更新参数化为两个低秩矩阵的乘积：</p>
+<p>$$\Delta W = BA$$</p>
+<p>其中 $B \in \mathbb{R}^{d \times r}$，$A \in \mathbb{R}^{r \times k}$，且秩 $r \ll \min(d, k)$。</p>
+<p>在前向传播过程中，对于输入 $x$，输出计算如下：</p>
+<p>$$h = W_0x + \Delta Wx = W_0x + BAx$$</p>
+<p>这种分解方式有几个重要特性：</p>
+<ol class="arabic simple">
+<li><p><strong>参数效率</strong>：原始权重矩阵 $W_0$ 包含 $d \times k$ 个参数，而LoRA只需要 $(d + k) \times r$ 个参数。当 $r$ 远小于 $d$ 和 $k$ 时，参数数量大幅减少。</p></li>
+<li><p><strong>计算效率</strong>：计算 $BAx$ 可以先计算 $Ax$（得到 $r$ 维向量），再计算 $B(Ax)$，计算复杂度为 $O(r(d+k))$，而直接计算 $\Delta Wx$ 的复杂度为 $O(dk)$。</p></li>
+<li><p><strong>可合并性</strong>：在推理阶段，可以将 $W_0$ 和 $\Delta W$ 合并为 $W = W_0 + BA$，完全消除推理时的额外计算开销。</p></li>
+</ol>
+<p>LoRA通常应用于Transformer架构中的关键权重矩阵，如查询（Query）、键（Key）、值（Value）和输出投影矩阵。在实践中，不同的矩阵可以使用不同的秩 $r$，根据其在适应任务中的重要性进行调整。</p>
+</section>
+<section id="id2">
+<h3>低秩适应性的优势<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>LoRA相比其他PEFT方法具有多方面的优势，这些优势使其特别适合故事讲述AI的开发：</p>
+<ol class="arabic simple">
+<li><p><strong>内存效率</strong>：</p>
+<ul class="simple">
+<li><p>显著减少了微调所需的GPU内存，使得在消费级硬件上微调大型模型成为可能</p></li>
+<li><p>例如，微调一个13B参数的模型，完整微调需要约52GB内存，而使用LoRA（r=16）仅需约14GB</p></li>
+</ul>
+</li>
+<li><p><strong>无推理延迟</strong>：</p>
+<ul class="simple">
+<li><p>在推理阶段，LoRA参数可以与原始权重合并，不引入额外计算开销</p></li>
+<li><p>这对于故事生成等实时应用尤为重要，用户不会感受到性能下降</p></li>
+</ul>
+</li>
+<li><p><strong>模块化与可组合性</strong>：</p>
+<ul class="simple">
+<li><p>不同任务或领域的LoRA模块可以独立训练，然后根据需要组合</p></li>
+<li><p>例如，可以训练一个专注于童话风格的LoRA和一个专注于科幻元素的LoRA，然后根据需要组合使用</p></li>
+</ul>
+</li>
+<li><p><strong>实现简单</strong>：</p>
+<ul class="simple">
+<li><p>LoRA的概念直观，实现相对简单，不需要复杂的架构修改</p></li>
+<li><p>主流深度学习框架（如PyTorch、TensorFlow）都有LoRA的实现或第三方库支持</p></li>
+</ul>
+</li>
+<li><p><strong>与其他技术兼容</strong>：</p>
+<ul class="simple">
+<li><p>LoRA可以与量化、蒸馏等其他优化技术结合使用</p></li>
+<li><p>也可以与其他PEFT方法（如Prefix Tuning）组合，获得互补优势</p></li>
+</ul>
+</li>
+<li><p><strong>灵活的适应程度控制</strong>：</p>
+<ul class="simple">
+<li><p>通过调整秩 $r$ 和学习率，可以灵活控制模型适应的程度</p></li>
+<li><p>较小的 $r$ 提供更强的正则化效果，适合数据有限的情况</p></li>
+<li><p>较大的 $r$ 提供更强的表达能力，适合复杂任务或大型数据集</p></li>
+</ul>
+</li>
+<li><p><strong>减轻灾难性遗忘</strong>：</p>
+<ul class="simple">
+<li><p>由于原始预训练权重保持不变，模型更好地保留了预训练知识</p></li>
+<li><p>这对故事生成尤为重要，因为它需要平衡特定风格的学习与广泛世界知识的保留</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id3">
+<h3>LoRA参数设置与调优<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>有效使用LoRA需要理解和调整几个关键参数：</p>
+<ol class="arabic simple">
+<li><p><strong>秩 $r$</strong>：</p>
+<ul class="simple">
+<li><p>控制LoRA矩阵的秩，直接影响可训练参数的数量和模型的表达能力</p></li>
+<li><p>典型值范围：4-128，常用值为8、16、32</p></li>
+<li><p>较小的模型或简单任务可使用较小的 $r$（如4-8）</p></li>
+<li><p>较大的模型或复杂任务可能需要较大的 $r$（如32-64）</p></li>
+<li><p>故事生成任务通常需要中等到较大的 $r$（如16-32），以捕捉丰富的叙事模式</p></li>
+</ul>
+</li>
+<li><p><strong>缩放因子 $\alpha$</strong>：</p>
+<ul class="simple">
+<li><p>控制LoRA更新的影响大小：$h = W_0x + \frac{\alpha}{r}BAx$</p></li>
+<li><p>通常设置为与 $r$ 相同的值，但也可以独立调整</p></li>
+<li><p>较大的 $\alpha$ 使LoRA更新具有更强的影响力</p></li>
+<li><p>在训练初期可以使用较小的 $\alpha$，随着训练进行逐渐增加</p></li>
+</ul>
+</li>
+<li><p><strong>目标模块</strong>：</p>
+<ul class="simple">
+<li><p>选择应用LoRA的权重矩阵，常见选择包括：</p>
+<ul>
+<li><p>仅Query和Value矩阵（计算效率更高）</p></li>
+<li><p>Query、Key、Value和输出投影矩阵（效果更好）</p></li>
+<li><p>所有线性层（最大表达能力，但参数更多）</p></li>
+</ul>
+</li>
+<li><p>故事生成任务通常至少需要对注意力相关矩阵（Q、K、V）应用LoRA</p></li>
+</ul>
+</li>
+<li><p><strong>学习率</strong>：</p>
+<ul class="simple">
+<li><p>LoRA通常使用比完整微调更高的学习率</p></li>
+<li><p>典型值范围：1e-4到5e-4，是完整微调学习率的5-10倍</p></li>
+<li><p>可以使用学习率预热和衰减策略进一步优化</p></li>
+</ul>
+</li>
+<li><p><strong>丢弃率（Dropout）</strong>：</p>
+<ul class="simple">
+<li><p>在LoRA模块中添加dropout可以提高泛化能力</p></li>
+<li><p>典型值范围：0.05-0.2</p></li>
+<li><p>数据集较小时，适当增加dropout可以减少过拟合</p></li>
+</ul>
+</li>
+<li><p><strong>权重衰减</strong>：</p>
+<ul class="simple">
+<li><p>对LoRA参数应用较小的权重衰减可以提高稳定性</p></li>
+<li><p>典型值范围：0.01-0.1</p></li>
+</ul>
+</li>
+</ol>
+<p>调优策略：</p>
+<ol class="arabic simple">
+<li><p><strong>渐进式调优</strong>：</p>
+<ul class="simple">
+<li><p>从小的 $r$ 值开始，如果性能不足，逐步增加</p></li>
+<li><p>监控验证损失，避免过拟合</p></li>
+</ul>
+</li>
+<li><p><strong>分层调优</strong>：</p>
+<ul class="simple">
+<li><p>对不同层使用不同的 $r$ 值</p></li>
+<li><p>通常浅层和深层更重要，可以使用较大的 $r$</p></li>
+<li><p>中间层可以使用较小的 $r$ 或完全跳过</p></li>
+</ul>
+</li>
+<li><p><strong>多阶段训练</strong>：</p>
+<ul class="simple">
+<li><p>第一阶段：使用较小的 $r$ 和学习率，适应基本任务</p></li>
+<li><p>第二阶段：增加 $r$ 和学习率，精细调整性能</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="peft">
+<h3>与其他PEFT方法的比较<a class="headerlink" href="#peft" title="Link to this heading">#</a></h3>
+<p>为了更全面地理解LoRA的优势和局限性，下面将其与其他主要PEFT方法进行比较：</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>特性</p></th>
+<th class="head"><p>LoRA</p></th>
+<th class="head"><p>Adapter</p></th>
+<th class="head"><p>Prefix Tuning</p></th>
+<th class="head"><p>Prompt Tuning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>参数效率</p></td>
+<td><p>高</p></td>
+<td><p>中</p></td>
+<td><p>高</p></td>
+<td><p>极高</p></td>
+</tr>
+<tr class="row-odd"><td><p>内存效率</p></td>
+<td><p>高</p></td>
+<td><p>中</p></td>
+<td><p>高</p></td>
+<td><p>极高</p></td>
+</tr>
+<tr class="row-even"><td><p>推理开销</p></td>
+<td><p>无（可合并）</p></td>
+<td><p>有</p></td>
+<td><p>轻微</p></td>
+<td><p>轻微</p></td>
+</tr>
+<tr class="row-odd"><td><p>实现复杂度</p></td>
+<td><p>低</p></td>
+<td><p>中</p></td>
+<td><p>中</p></td>
+<td><p>低</p></td>
+</tr>
+<tr class="row-even"><td><p>训练稳定性</p></td>
+<td><p>高</p></td>
+<td><p>高</p></td>
+<td><p>中</p></td>
+<td><p>低</p></td>
+</tr>
+<tr class="row-odd"><td><p>表达能力</p></td>
+<td><p>高</p></td>
+<td><p>高</p></td>
+<td><p>中</p></td>
+<td><p>低</p></td>
+</tr>
+<tr class="row-even"><td><p>模块化程度</p></td>
+<td><p>高</p></td>
+<td><p>极高</p></td>
+<td><p>中</p></td>
+<td><p>低</p></td>
+</tr>
+<tr class="row-odd"><td><p>适用任务范围</p></td>
+<td><p>广泛</p></td>
+<td><p>广泛</p></td>
+<td><p>主要是生成</p></td>
+<td><p>有限</p></td>
+</tr>
+</tbody>
+</table>
+<p>LoRA在大多数指标上表现均衡，尤其是在参数效率、推理性能和实现简单性方面具有优势。这使其成为故事讲述AI开发的理想选择，特别是当需要平衡资源约束和模型性能时。</p>
+</section>
+<section id="id4">
+<h3>LoRA实现的技术细节<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>在实际实现LoRA时，需要注意以下技术细节：</p>
+<ol class="arabic simple">
+<li><p><strong>初始化策略</strong>：</p>
+<ul class="simple">
+<li><p>A矩阵通常使用高斯分布初始化（均值为0，标准差为1/√r）</p></li>
+<li><p>B矩阵通常初始化为零，这样训练开始时LoRA不会影响模型输出</p></li>
+<li><p>这种”零初始化”策略确保了训练初期的稳定性</p></li>
+</ul>
+</li>
+<li><p><strong>量化兼容性</strong>：</p>
+<ul class="simple">
+<li><p>LoRA可以与量化模型结合使用，如4位或8位量化</p></li>
+<li><p>典型做法是保持基础模型量化，而LoRA模块使用更高精度（如FP16）</p></li>
+<li><p>这种”QLoRA”方法进一步降低了内存需求</p></li>
+</ul>
+</li>
+<li><p><strong>梯度检查点（Gradient Checkpointing）</strong>：</p>
+<ul class="simple">
+<li><p>可以与LoRA结合使用，进一步降低内存需求</p></li>
+<li><p>以计算时间为代价换取内存效率</p></li>
+</ul>
+</li>
+<li><p><strong>合并与分离</strong>：</p>
+<ul class="simple">
+<li><p>实现应支持LoRA权重的动态合并与分离</p></li>
+<li><p>合并：$W = W_0 + BA$，用于推理</p></li>
+<li><p>分离：恢复 $W_0$ 和 $BA$，用于切换不同的LoRA模块</p></li>
+</ul>
+</li>
+<li><p><strong>多LoRA组合</strong>：</p>
+<ul class="simple">
+<li><p>支持多个LoRA模块的线性组合：$W = W_0 + \sum_i \lambda_i B_i A_i$</p></li>
+<li><p>权重 $\lambda_i$ 控制每个LoRA模块的影响程度</p></li>
+<li><p>可以实现风格混合、能力组合等高级功能</p></li>
+</ul>
+</li>
+<li><p><strong>分布式训练适配</strong>：</p>
+<ul class="simple">
+<li><p>在分布式训练中，需要正确处理LoRA参数的同步</p></li>
+<li><p>确保LoRA参数在不同设备间正确更新</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="id5">
+<h3>LoRA在多模态模型中的应用<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>虽然LoRA最初是为语言模型设计的，但它已被成功扩展到多模态模型中，这对于后续第17章中的多模态内容至关重要：</p>
+<ol class="arabic simple">
+<li><p><strong>视觉-语言模型</strong>：</p>
+<ul class="simple">
+<li><p>在CLIP、BLIP2等视觉-语言模型中，LoRA可以同时应用于视觉编码器和语言编码器</p></li>
+<li><p>可以选择性地只微调其中一个模态的编码器，或两者同时微调</p></li>
+<li><p>这使得模型能够更好地理解和生成与故事相关的视觉内容</p></li>
+</ul>
+</li>
+<li><p><strong>多模态生成</strong>：</p>
+<ul class="simple">
+<li><p>在扩散模型中应用LoRA，可以高效地适应特定的图像生成风格</p></li>
+<li><p>在LLaVA、Qwen-vl等多模态大模型中，LoRA可以增强模型理解图像并生成相关文本的能力</p></li>
+<li><p>这对于创建能够根据故事生成配图，或根据图像创作故事的AI系统非常有价值</p></li>
+</ul>
+</li>
+<li><p><strong>跨模态迁移</strong>：</p>
+<ul class="simple">
+<li><p>在一个模态上训练的LoRA知识可以部分迁移到另一个模态</p></li>
+<li><p>例如，文本风格的LoRA可以影响图像生成的风格，反之亦然</p></li>
+</ul>
+</li>
+<li><p><strong>模态特定适应</strong>：</p>
+<ul class="simple">
+<li><p>可以为不同模态设计特定的LoRA模块，以适应各自的特点</p></li>
+<li><p>视觉模态可能需要更关注空间特征的LoRA</p></li>
+<li><p>语言模态可能需要更关注语义和叙事结构的LoRA</p></li>
+</ul>
+</li>
+</ol>
+<p>在第17章中，我们将更详细地探讨LoRA在VQVAE、扩散变换器和其他多模态模型中的具体应用，以及如何利用这些技术创建能够生成故事插图的完整系统。</p>
+<p>LoRA技术的灵活性和效率使其成为连接语言和视觉模态的理想工具，为创建真正沉浸式的故事讲述体验奠定了基础。在下一节中，我们将探讨如何将LoRA和其他PEFT技术应用于聊天模型的微调，以创建能够与用户进行自然对话的故事讲述AI。</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter14_2_parmeter_efficient_finetuning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第14章：监督式微调 I: SFT-14.1 监督式微调基础</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter14_4_chat_model_finetuning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lora">14.3 LoRA技术详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">LoRA的基本原理与数学基础</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">低秩适应性的优势</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">LoRA参数设置与调优</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#peft">与其他PEFT方法的比较</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">LoRA实现的技术细节</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">LoRA在多模态模型中的应用</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

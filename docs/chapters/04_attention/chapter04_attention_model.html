@@ -1,0 +1,1190 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>第04章：注意力机制（Attention，Softmax，位置编码器） &#8212; LLM-101创造营</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/documentation_options.js?v=40d2fe7a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/04_attention/chapter04_attention_model';</script>
+    <link rel="icon" href="../../_static/panda.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）" href="../05_transformer/chapter05_transformer.html" />
+    <link rel="prev" title="第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）" href="../03_ngram_model/chapter03_ngram_model.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="LLM-101创造营 - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="LLM-101创造营 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../01_bigram/chapter01_bigram_language_model.html">第01章：Bigram语言模型（语言建模）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_micrograd/chapter02_micrograd.html">第02章：Micrograd（机器学习，反向传播）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03_ngram_model/chapter03_ngram_model.html">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">第04章：注意力机制（Attention，Softmax，位置编码器）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05_transformer/chapter05_transformer.html">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06_tokenization/chaptet06_tokenization.html">第6章：分词技术(Tokenization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07_optimization/chapter07_optimization.html">第7章：优化技术(Optimization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08_need_for_speed_i_device/chapter08_need_for_speed_i_device.html">第8章：速度提升I：设备(Device)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09_need_for_speed_ii_precision/chapter09_need_for_speed_ii_precision.html">第9章：速度提升II：精度(Precision)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10_need_for_speed_iii_distributed/chapter10_need_for_speed_iii_distributed.html">第10章：速度提升III：分布式(Distributed)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../11_datasets/chapter11_datasets.html">第11章：数据集（Datasets）</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../12_inference_kv_cache/chapter12_inference_kv_cache.html">第12章：推理 I：KV缓存（KV-Cache）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../13_inference_quantization/chapter13_inference_quantization.html">第13章：推理 II：量化 (Quantization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_1_supervised_finetuning_basics.html">第14章：监督式微调 I-SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_2_parmeter_efficient_finetuning.html">第14章：监督式微调 I: SFT-14.1 监督式微调基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_3_lora_technique.html">第14章：监督式微调 I: SFT-14.3 LoRA技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_4_chat_model_finetuning.html">第14章：监督式微调 I: SFT-14.4 聊天模型的监督式微调</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../14_finetuning_i_sft/chapter14_5_practical_case_study.html">第14章：监督式微调 I: SFT-实践案例：故事讲述模型的SFT实现</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_1_reinforcement_learning_basic.html">第15章：强化学习微调 II: RL-15.1 强化学习基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_2_rlhf.html">第15章：强化学习微调 II: RL-15.2 人类反馈的强化学习(RLHF)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_3_ppo_algorithm.html">第15章：强化学习微调 II: RL-15.3 近端策略优化(PPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_Finetuning_ii_rl/chapter15_4_dpo_algorithm.html">第15章：强化学习微调 II: RL-## 15.4 直接偏好优化(DPO)算法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_1_api_development.html">第16章：部署-16.1 API开发基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../16_deployment/chapter16_2_web_application.html">第16章：部署-16.2 Web应用开发</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_1_multimodal_basics.html">第17章：多模态-17.1 多模态基础理论</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_2_vqvae_technique.html">第17章：多模态-17.2 VQVAE技术详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_3_diffusion_transformer.html">第17章：多模态-17.3 扩散变换器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_4_lora_multimodal_training.html">第17章：多模态-基于LoRA的多模态模型训练</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../17_Multimodal/chapter17_5_multimodal_model_integration.html">第17章：多模态-17.5 多模态模型整合</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/00_appendix_intro.html">附录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/A1_programming_languages.html">附录A：编程语言基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/B1_data_types.html">附录B：数据类型基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/C1_tensor_operations.html">附录C：张量操作基础</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/D1_deep_learning_frameworks.html">附录D：深度学习框架</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/E1_neural_network_architectures.html">附录E：神经网络架构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix/F1_multimodal.html">附录F：多模态基础</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/edit/main/chapters/04_attention/chapter04_attention_model.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/isLinXu/LLM-101-Bootcamp/issues/new?title=Issue%20on%20page%20%2Fchapters/04_attention/chapter04_attention_model.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/04_attention/chapter04_attention_model.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>第04章：注意力机制（Attention，Softmax，位置编码器）</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. 序列模型的挑战</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">长距离依赖问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rnn">RNN及其变体的局限性</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2. 注意力机制基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">注意力的直观理解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-key-value">查询(Query)、键(Key)、值(Value)三元组</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">注意力分数计算</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#softmax">3. Softmax函数详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Softmax的数学定义</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">数值稳定性考虑</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">实现技巧</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">4. 位置编码器</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">为什么需要位置信息</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">正弦余弦位置编码</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">可学习位置编码</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">5. 实现自注意力机制</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">自注意力层的前向传播</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">自注意力层的反向传播</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">案例：使用自注意力处理序列数据</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">总结</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="attention-softmax">
+<h1>第04章：注意力机制（Attention，Softmax，位置编码器）<a class="headerlink" href="#attention-softmax" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>1. 序列模型的挑战<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>长距离依赖问题<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>在自然语言处理中，序列模型面临的一个核心挑战是捕捉长距离依赖关系。长距离依赖是指序列中相距较远的元素之间存在的语义或语法关联。例如，在句子”我昨天在书店买的那本讲述人工智能历史的书非常有趣”中，”书”和”有趣”之间存在主谓关系，但它们在句子中相距较远。</p>
+<p>传统的N-gram模型由于固定的上下文窗口大小，无法有效捕捉长距离依赖。即使是高阶的N-gram模型（如5-gram、6-gram），也只能考虑有限的上下文，而且随着N的增加，数据稀疏性问题会变得更加严重。</p>
+<p>长距离依赖问题在多种自然语言现象中表现得尤为明显：</p>
+<ol class="arabic simple">
+<li><p><strong>指代消解</strong>：代词与其指代对象之间可能相距很远。例如，”尽管张三认为自己已经尽力了，但李四仍然对他感到失望”中，”他”指代的是”张三”而非”李四”。</p></li>
+<li><p><strong>长期记忆</strong>：在长文本或对话中，早期提到的信息可能在很久之后才变得相关。例如，一篇小说的开头描述的场景可能在结尾处再次被提及。</p></li>
+<li><p><strong>语法一致性</strong>：在某些语言中，句子的不同部分需要保持语法一致，即使它们相距很远。例如，在英语中的主谓一致：”The cat, which was hiding under the table with all the other animals that had been frightened by the sudden noise, is now sleeping peacefully.”（这只猫，它曾躲在桌子下与所有其他被突然的噪音吓到的动物在一起，现在正安静地睡觉。）这里”cat”和”is”之间存在主谓一致关系，尽管它们被一个长的从句分隔。</p></li>
+<li><p><strong>逻辑推理</strong>：理解文本中的逻辑关系可能需要整合相距很远的信息。例如，在论证文章中，结论可能基于文章开头提出的前提。</p></li>
+</ol>
+<p>捕捉这些长距离依赖关系对于构建高性能的语言模型至关重要，因为它们是语言理解和生成的核心要素。</p>
+</section>
+<section id="rnn">
+<h3>RNN及其变体的局限性<a class="headerlink" href="#rnn" title="Link to this heading">#</a></h3>
+<p>循环神经网络（Recurrent Neural Networks, RNN）是为处理序列数据而设计的神经网络架构。基本RNN的核心思想是在处理序列的每个位置时，不仅考虑当前的输入，还考虑之前的隐藏状态，从而理论上能够捕捉序列中的长距离依赖关系。</p>
+<p>RNN的基本公式如下：
+$$h_t = f(W_{hh} h_{t-1} + W_{xh} x_t + b_h)$$
+$$y_t = g(W_{hy} h_t + b_y)$$</p>
+<p>其中，$h_t$是时间步t的隐藏状态，$x_t$是时间步t的输入，$y_t$是时间步t的输出，$W_{hh}$、$W_{xh}$和$W_{hy}$是权重矩阵，$b_h$和$b_y$是偏置向量，$f$和$g$是激活函数。</p>
+<p>尽管RNN在理论上可以处理任意长度的序列和捕捉长距离依赖，但在实践中，它们面临几个严重的局限性：</p>
+<ol class="arabic simple">
+<li><p><strong>梯度消失与梯度爆炸</strong>：
+在反向传播过程中，梯度需要通过时间步骤反向传播（称为”通过时间的反向传播”，BPTT）。由于重复乘以相同的权重矩阵，梯度可能会随着时间步的增加而指数级地减小（梯度消失）或增大（梯度爆炸）。梯度消失使得网络难以学习长距离依赖，因为远距离的信号变得微不足道；梯度爆炸则可能导致训练不稳定。</p></li>
+<li><p><strong>信息瓶颈</strong>：
+标准RNN的隐藏状态通常是一个固定维度的向量，它必须编码序列中所有相关的历史信息。这创造了一个信息瓶颈，特别是对于长序列，隐藏状态可能无法有效地存储所有必要的信息。</p></li>
+<li><p><strong>顺序计算的限制</strong>：
+RNN的计算是顺序的，即必须按照序列的顺序一步一步地计算，这限制了并行化的可能性，导致训练和推理速度较慢，特别是对于长序列。</p></li>
+</ol>
+<p>为了解决这些问题，研究者提出了几种RNN的变体：</p>
+<ol class="arabic">
+<li><p><strong>长短期记忆网络（Long Short-Term Memory, LSTM）</strong>：
+LSTM引入了门控机制（输入门、遗忘门和输出门）和细胞状态，使网络能够选择性地记忆或遗忘信息，从而缓解梯度消失问题。LSTM的公式如下：</p>
+<p>$$f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)$$
+$$i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)$$
+$$\tilde{C}<em>t = \tanh(W_C \cdot [h</em>{t-1}, x_t] + b_C)$$
+$$C_t = f_t * C_{t-1} + i_t * \tilde{C}<em>t$$
+$$o_t = \sigma(W_o \cdot [h</em>{t-1}, x_t] + b_o)$$
+$$h_t = o_t * \tanh(C_t)$$</p>
+<p>其中，$f_t$是遗忘门，$i_t$是输入门，$\tilde{C}_t$是候选细胞状态，$C_t$是细胞状态，$o_t$是输出门，$h_t$是隐藏状态。</p>
+</li>
+<li><p><strong>门控循环单元（Gated Recurrent Unit, GRU）</strong>：
+GRU是LSTM的简化版本，它合并了输入门和遗忘门为一个更新门，并将细胞状态和隐藏状态合并。GRU的计算效率通常高于LSTM，同时在许多任务上表现相当。GRU的公式如下：</p>
+<p>$$z_t = \sigma(W_z \cdot [h_{t-1}, x_t] + b_z)$$
+$$r_t = \sigma(W_r \cdot [h_{t-1}, x_t] + b_r)$$
+$$\tilde{h}<em>t = \tanh(W_h \cdot [r_t * h</em>{t-1}, x_t] + b_h)$$
+$$h_t = (1 - z_t) * h_{t-1} + z_t * \tilde{h}_t$$</p>
+<p>其中，$z_t$是更新门，$r_t$是重置门，$\tilde{h}_t$是候选隐藏状态，$h_t$是隐藏状态。</p>
+</li>
+<li><p><strong>双向RNN（Bidirectional RNN）</strong>：
+双向RNN使用两个独立的RNN，一个按正向处理序列，另一个按反向处理序列，然后将两者的输出合并。这使得网络能够同时考虑过去和未来的上下文，对于许多NLP任务（如命名实体识别、词性标注）非常有效。</p></li>
+</ol>
+<p>尽管这些变体在一定程度上缓解了标准RNN的问题，但它们仍然面临信息瓶颈和顺序计算的限制。特别是对于非常长的序列，即使是LSTM和GRU也难以有效地捕捉长距离依赖关系。</p>
+<p>这些局限性促使研究者寻找新的解决方案，最终导致了注意力机制的发展，它能够直接建立序列中任意位置之间的连接，从而更有效地处理长距离依赖问题。</p>
+</section>
+</section>
+<section id="id3">
+<h2>2. 注意力机制基础<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="id4">
+<h3>注意力的直观理解<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>注意力机制（Attention Mechanism）是受人类认知过程启发而设计的一种神经网络组件。在人类认知中，注意力允许我们在处理大量信息时，选择性地关注最相关的部分。例如，当阅读一篇长文章时，我们不会同等地处理每个词，而是会更关注那些对理解当前内容最重要的词或短语。</p>
+<p>在神经网络中，注意力机制的核心思想是允许模型在处理序列数据时，动态地关注输入序列的不同部分。与RNN等传统序列模型不同，注意力机制不需要将所有历史信息压缩到一个固定大小的隐藏状态中，而是可以直接访问整个输入序列，并根据当前的需求选择性地关注相关部分。</p>
+<p>注意力机制的直观理解可以通过以下类比来说明：</p>
+<p>想象你正在翻译一个复杂的句子。传统的方法是先阅读整个源句子，然后尝试记住所有内容，最后一次性翻译出来。这类似于编码器-解码器架构中的RNN，它将整个源句子编码为一个固定大小的向量。</p>
+<p>而使用注意力机制的方法则更像是：你先大致浏览一遍源句子，然后在翻译每个词时，都会回头查看源句子中最相关的部分。例如，在翻译”The cat sat on the mat”时，当你翻译”cat”这个词时，你会特别关注源句子中的”cat”；当翻译”mat”时，你会关注源句子中的”mat”。这样，无论句子多长，你都能准确地翻译每个部分，因为你可以直接访问源句子中的任何信息，而不必将所有内容都记在脑中。</p>
+<p>注意力机制的这种特性使其特别适合处理长序列和捕捉长距离依赖关系，因为它可以直接建立序列中任意位置之间的连接，而不受序列长度的限制。</p>
+</section>
+<section id="query-key-value">
+<h3>查询(Query)、键(Key)、值(Value)三元组<a class="headerlink" href="#query-key-value" title="Link to this heading">#</a></h3>
+<p>现代注意力机制通常基于查询（Query）、键（Key）和值（Value）三元组来实现。这种框架最初由Vaswani等人在2017年的论文《Attention is All You Need》中提出，是Transformer架构的核心组件。</p>
+<p>在这个框架中：</p>
+<ol class="arabic simple">
+<li><p><strong>查询（Query）</strong>：表示当前位置的需求或兴趣。在机器翻译的例子中，查询可以是目标语言中当前正在生成的词的表示。</p></li>
+<li><p><strong>键（Key）</strong>：表示源序列中每个位置的特征或属性。键用于与查询进行匹配，以确定源序列中哪些位置与当前查询最相关。</p></li>
+<li><p><strong>值（Value）</strong>：表示源序列中每个位置的内容或信息。一旦确定了相关性（通过查询和键的匹配），值就会被聚合以产生注意力的输出。</p></li>
+</ol>
+<p>注意力机制的计算过程可以概括为以下步骤：</p>
+<ol class="arabic simple">
+<li><p>对于给定的查询，计算它与所有键的相似度或匹配度。</p></li>
+<li><p>将这些相似度转换为权重（通常通过softmax函数），使它们的总和为1。</p></li>
+<li><p>使用这些权重对值进行加权求和，得到注意力的输出。</p></li>
+</ol>
+<p>形式化地，给定查询q、键集合K和值集合V，注意力输出可以表示为：</p>
+<p>$$\text{Attention}(q, K, V) = \sum_{i} \text{weight}(q, K_i) \cdot V_i$$</p>
+<p>其中，$\text{weight}(q, K_i)$是查询q与键$K_i$的匹配度转换后的权重。</p>
+<p>在实际应用中，查询、键和值通常是通过对输入序列的不同线性变换得到的。例如，在自注意力（Self-Attention）机制中，查询、键和值都来自同一个序列，但经过不同的线性变换：</p>
+<p>$$Q = X W_Q, \quad K = X W_K, \quad V = X W_V$$</p>
+<p>其中，$X$是输入序列的表示，$W_Q$、$W_K$和$W_V$是可学习的权重矩阵。</p>
+<p>查询-键-值框架的优势在于其灵活性和通用性。它可以适应各种类型的注意力机制，包括自注意力、交叉注意力（Cross-Attention）等，并且可以扩展到多头注意力（Multi-head Attention）等更复杂的形式。</p>
+</section>
+<section id="id5">
+<h3>注意力分数计算<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>注意力分数是衡量查询与键之间相似度或匹配度的度量。它决定了在计算注意力输出时，每个值的权重。有几种常见的方法来计算注意力分数：</p>
+<ol class="arabic">
+<li><p><strong>点积注意力（Dot-Product Attention）</strong>：
+最简单的形式是直接计算查询和键的点积：
+$$\text{score}(q, k) = q \cdot k$$</p>
+<p>点积注意力计算效率高，但当查询和键的维度较大时，点积的方差也会增大，可能导致softmax函数进入饱和区域，梯度变得极小。</p>
+</li>
+<li><p><strong>缩放点积注意力（Scaled Dot-Product Attention）</strong>：
+为了解决点积注意力的方差问题，Transformer引入了缩放因子：
+$$\text{score}(q, k) = \frac{q \cdot k}{\sqrt{d_k}}$$</p>
+<p>其中，$d_k$是键的维度。这种缩放使得无论维度如何，点积的方差都保持在合理范围内。</p>
+</li>
+<li><p><strong>加性注意力（Additive Attention）</strong>：
+也称为Bahdanau注意力，使用一个前馈神经网络来计算分数：
+$$\text{score}(q, k) = v^T \tanh(W_q q + W_k k)$$</p>
+<p>其中，$v$、$W_q$和$W_k$是可学习的参数。加性注意力在计算上比点积注意力更昂贵，但在某些情况下可能表现更好，特别是当查询和键的维度不同时。</p>
+</li>
+<li><p><strong>乘性注意力（Multiplicative Attention）</strong>：
+使用一个权重矩阵来转换查询，然后与键计算点积：
+$$\text{score}(q, k) = q^T W k$$</p>
+<p>其中，$W$是一个可学习的权重矩阵。</p>
+</li>
+<li><p><strong>基于余弦相似度的注意力</strong>：
+使用余弦相似度来计算查询和键之间的相似度：
+$$\text{score}(q, k) = \frac{q \cdot k}{||q|| \cdot ||k||}$$</p>
+<p>这种方法对向量的长度不敏感，只关注方向的相似性。</p>
+</li>
+</ol>
+<p>在实际应用中，缩放点积注意力因其计算效率和良好的性能而被广泛采用，特别是在Transformer架构中。</p>
+<p>一旦计算出注意力分数，通常会使用softmax函数将其转换为概率分布（权重），确保所有权重的总和为1：</p>
+<p>$$\text{weight}(q, k) = \frac{\exp(\text{score}(q, k))}{\sum_{j} \exp(\text{score}(q, k_j))}$$</p>
+<p>然后，这些权重用于对值进行加权求和，得到注意力的输出：</p>
+<p>$$\text{Attention}(q, K, V) = \sum_{i} \text{weight}(q, k_i) \cdot v_i$$</p>
+<p>在矩阵形式中，缩放点积注意力可以表示为：</p>
+<p>$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</p>
+<p>其中，$Q$、$K$和$V$分别是查询、键和值的矩阵，每行对应一个位置的向量。</p>
+<p>注意力分数的计算是注意力机制的核心，它决定了模型如何分配注意力，从而影响模型捕捉序列中依赖关系的能力。不同的注意力分数计算方法可能适合不同的任务和数据特性，选择合适的方法是设计有效注意力机制的关键。</p>
+</section>
+</section>
+<section id="softmax">
+<h2>3. Softmax函数详解<a class="headerlink" href="#softmax" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h3>Softmax的数学定义<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>Softmax函数是深度学习中常用的一种激活函数，特别是在多分类问题和注意力机制中。它将一个实数向量转换为概率分布，使得每个元素都是正数，且所有元素的和为1。</p>
+<p>给定一个实数向量 $z = (z_1, z_2, …, z_n)$，Softmax函数将其转换为概率向量 $\sigma(z) = (\sigma(z)_1, \sigma(z)_2, …, \sigma(z)_n)$，其中：</p>
+<p>$$\sigma(z)<em>i = \frac{e^{z_i}}{\sum</em>{j=1}^{n} e^{z_j}}$$</p>
+<p>Softmax函数的主要特性包括：</p>
+<ol class="arabic simple">
+<li><p><strong>归一化</strong>：输出值的总和为1，可以解释为概率分布。</p></li>
+<li><p><strong>非线性</strong>：Softmax是一个非线性函数，能够捕捉输入之间的复杂关系。</p></li>
+<li><p><strong>单调性</strong>：如果 $z_i &gt; z_j$，则 $\sigma(z)_i &gt; \sigma(z)_j$，即保持输入的相对大小关系。</p></li>
+<li><p><strong>平滑性</strong>：Softmax是一个平滑函数，在所有点都可微，有利于梯度下降优化。</p></li>
+</ol>
+<p>在注意力机制中，Softmax函数用于将注意力分数转换为注意力权重。例如，在缩放点积注意力中：</p>
+<p>$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</p>
+<p>这里，Softmax函数确保每个位置的注意力权重是正数且总和为1，使得注意力机制可以解释为对值的加权平均。</p>
+</section>
+<section id="id7">
+<h3>数值稳定性考虑<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>尽管Softmax函数在理论上定义明确，但在实际计算中可能面临数值稳定性问题，特别是当输入包含非常大或非常小的数值时。</p>
+<p>主要的数值稳定性问题来自于指数函数的计算。当输入值非常大时，$e^{z_i}$ 可能导致溢出（overflow），即超出计算机的浮点数表示范围；当输入值非常小时，$e^{z_i}$ 可能接近于零，导致下溢（underflow）和精度损失。</p>
+<p>为了解决这些问题，通常采用以下技巧来计算Softmax：</p>
+<ol class="arabic">
+<li><p><strong>减去最大值</strong>：在计算指数之前，从所有输入中减去最大值。这不会改变Softmax的结果，因为：</p>
+<p>$$\sigma(z)<em>i = \frac{e^{z_i}}{\sum</em>{j=1}^{n} e^{z_j}} = \frac{e^{z_i - C}}{\sum_{j=1}^{n} e^{z_j - C}}$$</p>
+<p>其中，$C$ 是任意常数，通常选择 $C = \max_j z_j$。</p>
+<p>这种技巧可以防止溢出，因为最大的指数值现在是 $e^0 = 1$，而其他值都是 $e^{负数} &lt; 1$。</p>
+</li>
+<li><p><strong>使用对数空间</strong>：在某些情况下，特别是当需要计算Softmax的对数时（如交叉熵损失），可以直接在对数空间中计算，避免显式计算指数：</p>
+<p>$$\log(\sigma(z)<em>i) = z_i - \log\left(\sum</em>{j=1}^{n} e^{z_j}\right)$$</p>
+<p>使用减去最大值的技巧，这可以进一步写为：</p>
+<p>$$\log(\sigma(z)<em>i) = (z_i - \max_j z_j) - \log\left(\sum</em>{j=1}^{n} e^{z_j - \max_j z_j}\right)$$</p>
+</li>
+<li><p><strong>使用专门的数值库</strong>：现代深度学习框架（如PyTorch、TensorFlow）通常提供了数值稳定的Softmax实现，内部已经考虑了这些稳定性问题。</p></li>
+</ol>
+<p>在注意力机制中，数值稳定性尤为重要，因为注意力分数可能有很大的变化，特别是在序列很长或模型很深时。例如，在Transformer中，缩放因子 $\sqrt{d_k}$ 的引入部分是为了缓解这个问题，使得点积的方差保持在合理范围内，从而使Softmax函数工作在其敏感区域。</p>
+</section>
+<section id="id8">
+<h3>实现技巧<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>除了上述数值稳定性考虑外，在实现Softmax函数和基于Softmax的注意力机制时，还有一些实用技巧：</p>
+<ol class="arabic">
+<li><p><strong>向量化计算</strong>：使用矩阵运算而非循环来计算Softmax，这可以显著提高计算效率，特别是在GPU上。例如，在PyTorch中：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">stable_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="c1"># x: [batch_size, sequence_length, dim]</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x_max</span>  <span class="c1"># 数值稳定性技巧</span>
+    <span class="n">exp_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exp_x</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exp_x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>注意力掩码（Attention Mask）</strong>：在处理变长序列或需要防止某些位置相互关注时，可以使用掩码来修改Softmax的输入：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">masked_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+    <span class="c1"># x: [batch_size, sequence_length, sequence_length]</span>
+    <span class="c1"># mask: [batch_size, sequence_length, sequence_length], 0表示掩码位置，1表示有效位置</span>
+    <span class="n">x_masked</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">mask</span> <span class="o">-</span> <span class="mf">1e9</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mask</span><span class="p">)</span>  <span class="c1"># 将掩码位置设为很大的负数</span>
+    <span class="k">return</span> <span class="n">stable_softmax</span><span class="p">(</span><span class="n">x_masked</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这里，掩码中的0对应的位置在Softmax输入中被设为很大的负数，使得Softmax输出接近于0，有效地”屏蔽”了这些位置。</p>
+</li>
+<li><p><strong>温度参数（Temperature）</strong>：有时候可以引入一个温度参数来控制Softmax的”锐利度”：</p>
+<p>$$\sigma(z/T)<em>i = \frac{e^{z_i/T}}{\sum</em>{j=1}^{n} e^{z_j/T}}$$</p>
+<p>其中，$T$ 是温度参数。较低的温度（$T &lt; 1$）使得分布更加集中（更接近于one-hot），较高的温度（$T &gt; 1$）使得分布更加平滑。这在某些应用中很有用，如知识蒸馏或强化学习中的探索-利用平衡。</p>
+</li>
+<li><p><strong>梯度裁剪（Gradient Clipping）</strong>：在训练过程中，Softmax的梯度可能变得很大，特别是当输入分布非常不均匀时。使用梯度裁剪可以防止梯度爆炸，稳定训练过程。</p></li>
+<li><p><strong>稀疏注意力（Sparse Attention）</strong>：在某些情况下，特别是对于很长的序列，可能希望注意力权重是稀疏的，即只有少数几个位置有显著的权重。这可以通过各种方法实现，如Top-K Softmax（只保留最大的K个值）或使用Entmax（Softmax的一种稀疏化变体）。</p></li>
+<li><p><strong>批处理和并行化</strong>：在实现注意力机制时，充分利用批处理和并行计算可以显著提高效率。例如，在Transformer中，多头注意力可以并行计算，而不是顺序计算每个头。</p></li>
+</ol>
+<p>这些实现技巧不仅可以提高计算效率和数值稳定性，还可以扩展Softmax和注意力机制的功能，使其适应各种不同的应用场景。</p>
+</section>
+</section>
+<section id="id9">
+<h2>4. 位置编码器<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<section id="id10">
+<h3>为什么需要位置信息<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>在处理序列数据时，元素的位置信息通常是至关重要的。例如，在自然语言中，词的顺序直接影响句子的含义。考虑以下两个句子：</p>
+<ul class="simple">
+<li><p>“狗咬了人”</p></li>
+<li><p>“人咬了狗”</p></li>
+</ul>
+<p>这两个句子包含相同的词，但由于词序不同，它们的含义完全不同。因此，序列模型需要某种方式来编码元素的位置信息。</p>
+<p>在RNN等传统序列模型中，位置信息是隐式编码的，因为RNN按顺序处理输入，当前时间步的隐藏状态依赖于之前所有时间步的信息。然而，在Transformer等基于注意力的模型中，情况有所不同。</p>
+<p>Transformer的核心组件——自注意力机制是”置换不变的”（permutation invariant），这意味着如果我们改变输入序列中元素的顺序，但保持查询-键-值的对应关系不变，那么自注意力的输出将保持不变。换句话说，自注意力本身不考虑元素的位置，只关注元素之间的关系。</p>
+<p>这种置换不变性在某些任务中可能是有益的（如集合处理），但对于大多数序列处理任务（如自然语言处理）来说，这是一个严重的限制。为了解决这个问题，Transformer引入了位置编码（Positional Encoding），显式地将位置信息注入到模型中。</p>
+<p>位置编码的目标是为序列中的每个位置创建一个唯一的表示，使得模型能够区分不同位置的元素，同时保持位置之间的相对关系。理想的位置编码应该具有以下特性：</p>
+<ol class="arabic simple">
+<li><p><strong>唯一性</strong>：每个位置都有一个唯一的编码。</p></li>
+<li><p><strong>确定性</strong>：相同位置的编码应该是一致的。</p></li>
+<li><p><strong>有界性</strong>：编码的范围应该是有界的，以便与词嵌入兼容。</p></li>
+<li><p><strong>距离感知</strong>：编码应该能够反映位置之间的距离，使得模型能够感知元素之间的相对位置。</p></li>
+<li><p><strong>可扩展性</strong>：编码方案应该能够处理任意长度的序列，包括训练中未见过的长度。</p></li>
+</ol>
+</section>
+<section id="id11">
+<h3>正弦余弦位置编码<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>Transformer原始论文中提出的位置编码是基于正弦和余弦函数的。这种编码方法不需要学习，而是使用预定义的数学函数来生成位置向量。</p>
+<p>具体来说，对于位置 $pos$ 和维度 $i$，位置编码 $PE$ 定义为：</p>
+<p>$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$
+$$PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$</p>
+<p>其中，$d_{model}$ 是模型的维度，$i$ 的范围是 $[0, d_{model}/2)$。</p>
+<p>这种编码方法有几个重要特性：</p>
+<ol class="arabic simple">
+<li><p><strong>唯一性</strong>：每个位置都有一个唯一的编码向量。</p></li>
+<li><p><strong>有界性</strong>：所有编码值都在 $[-1, 1]$ 范围内。</p></li>
+<li><p><strong>距离感知</strong>：编码中包含了不同频率的正弦波，使得模型能够感知不同尺度的相对位置。特别地，对于任何固定的偏移量 $k$，$PE_{pos+k}$ 可以表示为 $PE_{pos}$ 的线性函数，这使得模型更容易学习相对位置关系。</p></li>
+<li><p><strong>可扩展性</strong>：这种编码方法可以扩展到任意长度的序列，即使是训练中未见过的长度。</p></li>
+</ol>
+<p>正弦余弦位置编码的实现非常简单：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">positional_encoding</span><span class="p">(</span><span class="n">max_seq_length</span><span class="p">,</span> <span class="n">d_model</span><span class="p">):</span>
+    <span class="c1"># 创建一个 [max_seq_length, d_model] 的零矩阵</span>
+    <span class="n">pe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">max_seq_length</span><span class="p">,</span> <span class="n">d_model</span><span class="p">))</span>
+    
+    <span class="c1"># 计算位置编码</span>
+    <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_seq_length</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">pe</span><span class="p">[</span><span class="n">pos</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pos</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10000</span> <span class="o">**</span> <span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="n">d_model</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">d_model</span><span class="p">:</span>
+                <span class="n">pe</span><span class="p">[</span><span class="n">pos</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pos</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10000</span> <span class="o">**</span> <span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="n">d_model</span><span class="p">)))</span>
+    
+    <span class="k">return</span> <span class="n">pe</span>
+</pre></div>
+</div>
+<p>在Transformer中，位置编码通常直接加到词嵌入上：</p>
+<p>$$\text{input} = \text{embedding} + \text{positional_encoding}$$</p>
+<p>这样，自注意力机制就能够同时考虑词的语义信息和位置信息。</p>
+</section>
+<section id="id12">
+<h3>可学习位置编码<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>除了使用预定义的正弦余弦函数，另一种常见的方法是使用可学习的位置编码。在这种方法中，位置编码是模型的可学习参数，通过训练过程来优化。</p>
+<p>可学习位置编码的实现非常简单：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+<span class="k">class</span> <span class="nc">LearnablePositionalEncoding</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_seq_length</span><span class="p">,</span> <span class="n">d_model</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LearnablePositionalEncoding</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positional_encoding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">max_seq_length</span><span class="p">,</span> <span class="n">d_model</span><span class="p">))</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positional_encoding</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># x: [batch_size, seq_length, d_model]</span>
+        <span class="n">seq_length</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">positional_encoding</span><span class="p">[:</span><span class="n">seq_length</span><span class="p">,</span> <span class="p">:]</span>
+</pre></div>
+</div>
+<p>可学习位置编码相比正弦余弦位置编码有以下优缺点：</p>
+<p><strong>优点</strong>：</p>
+<ol class="arabic simple">
+<li><p><strong>灵活性</strong>：可以适应特定任务和数据集的需求。</p></li>
+<li><p><strong>潜在的性能提升</strong>：在某些任务上可能表现更好，因为编码是针对任务优化的。</p></li>
+</ol>
+<p><strong>缺点</strong>：</p>
+<ol class="arabic simple">
+<li><p><strong>有限的序列长度</strong>：只能处理不超过训练时设定的最大序列长度的序列。</p></li>
+<li><p><strong>需要更多的训练数据</strong>：增加了模型的参数数量，可能需要更多的训练数据来有效学习。</p></li>
+<li><p><strong>可能的过拟合</strong>：如果训练数据不足，可能导致过拟合。</p></li>
+</ol>
+<p>在实践中，两种方法都被广泛使用，选择哪种方法通常取决于具体任务和可用的计算资源。一些研究表明，在许多任务上，两种方法的性能差异不大。</p>
+<p>除了上述两种基本方法，还有一些变体和改进，如相对位置编码（Relative Positional Encoding）、旋转位置编码（Rotary Position Embedding, RoPE）等，它们在某些任务或模型架构中可能表现更好。</p>
+</section>
+</section>
+<section id="id13">
+<h2>5. 实现自注意力机制<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<section id="id14">
+<h3>自注意力层的前向传播<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<p>自注意力（Self-Attention）是注意力机制的一种特殊形式，其中查询、键和值都来自同一个序列。它允许序列中的每个位置关注序列中的所有位置，从而捕捉序列内部的依赖关系。</p>
+<p>自注意力层的前向传播过程可以分为以下几个步骤：</p>
+<ol class="arabic simple">
+<li><p><strong>线性投影</strong>：将输入序列 $X$ 通过三个不同的线性变换，得到查询 $Q$、键 $K$ 和值 $V$：
+$$Q = XW_Q, \quad K = XW_K, \quad V = XW_V$$
+其中，$W_Q$、$W_K$ 和 $W_V$ 是可学习的权重矩阵。</p></li>
+<li><p><strong>计算注意力分数</strong>：使用查询和键计算注意力分数。在Transformer中，使用缩放点积注意力：
+$$\text{Scores} = \frac{QK^T}{\sqrt{d_k}}$$
+其中，$d_k$ 是键的维度。</p></li>
+<li><p><strong>应用掩码</strong>（可选）：如果需要防止某些位置相互关注（如在解码器中防止关注未来位置），可以应用掩码：
+$$\text{Masked_Scores} = \text{Scores} + \text{Mask}$$
+其中，$\text{Mask}$ 是一个包含很大负数（如 $-10^9$）的矩阵，对应于需要掩码的位置。</p></li>
+<li><p><strong>计算注意力权重</strong>：使用Softmax函数将分数转换为权重：
+$$\text{Weights} = \text{softmax}(\text{Masked_Scores})$$</p></li>
+<li><p><strong>加权求和</strong>：使用注意力权重对值进行加权求和，得到注意力输出：
+$$\text{Output} = \text{Weights} \cdot V$$</p></li>
+<li><p><strong>线性变换和残差连接</strong>（可选）：在Transformer中，通常会对注意力输出进行一个额外的线性变换，然后添加残差连接：
+$$\text{Final_Output} = \text{LayerNorm}(X + \text{Dropout}(\text{Output} \cdot W_O))$$
+其中，$W_O$ 是可学习的权重矩阵，$\text{LayerNorm}$ 是层归一化，$\text{Dropout}$ 是dropout正则化。</p></li>
+</ol>
+<p>下面是一个使用PyTorch实现自注意力层的示例代码：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="k">class</span> <span class="nc">SelfAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SelfAttention</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># x: [batch_size, seq_length, d_model]</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="n">d_model</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        
+        <span class="c1"># 线性投影</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># [batch_size, seq_length, d_model]</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>    <span class="c1"># [batch_size, seq_length, d_model]</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># [batch_size, seq_length, d_model]</span>
+        
+        <span class="c1"># 计算注意力分数</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="c1"># scores: [batch_size, seq_length, seq_length]</span>
+        
+        <span class="c1"># 应用掩码（可选）</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">masked_fill</span><span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1e9</span><span class="p">)</span>
+        
+        <span class="c1"># 计算注意力权重</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+        <span class="c1"># weights: [batch_size, seq_length, seq_length]</span>
+        
+        <span class="c1"># 加权求和</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="c1"># output: [batch_size, seq_length, d_model]</span>
+        
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">weights</span>
+</pre></div>
+</div>
+<p>这个实现包含了自注意力的核心步骤，但省略了一些Transformer中的细节，如多头注意力、残差连接和层归一化。</p>
+</section>
+<section id="id15">
+<h3>自注意力层的反向传播<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>自注意力层的反向传播是通过自动微分系统（如PyTorch的autograd）自动计算的，但理解其数学原理有助于深入理解注意力机制。</p>
+<p>反向传播的目标是计算损失函数 $L$ 关于自注意力层参数的梯度，主要包括 $W_Q$、$W_K$ 和 $W_V$。根据链式法则，我们需要首先计算 $L$ 关于层输出 $\text{Output}$ 的梯度 $\frac{\partial L}{\partial \text{Output}}$，然后反向传播到各个参数。</p>
+<p>以下是自注意力层反向传播的主要步骤：</p>
+<ol class="arabic simple">
+<li><p><strong>计算 $L$ 关于 $\text{Output}$ 的梯度</strong>：
+这通常由上层传递下来，记为 $\frac{\partial L}{\partial \text{Output}}$。</p></li>
+<li><p><strong>计算 $L$ 关于 $\text{Weights}$ 和 $V$ 的梯度</strong>：
+$$\frac{\partial L}{\partial \text{Weights}} = \frac{\partial L}{\partial \text{Output}} \cdot V^T$$
+$$\frac{\partial L}{\partial V} = \text{Weights}^T \cdot \frac{\partial L}{\partial \text{Output}}$$</p></li>
+<li><p><strong>计算 $L$ 关于 $\text{Scores}$ 的梯度</strong>：
+这涉及到Softmax函数的导数，可以表示为：
+$$\frac{\partial L}{\partial \text{Scores}} = \frac{\partial L}{\partial \text{Weights}} \odot \frac{\partial \text{Weights}}{\partial \text{Scores}}$$
+其中，$\odot$ 表示Hadamard积（元素wise乘法），$\frac{\partial \text{Weights}}{\partial \text{Scores}}$ 是Softmax函数的雅可比矩阵。</p></li>
+<li><p><strong>计算 $L$ 关于 $Q$ 和 $K$ 的梯度</strong>：
+$$\frac{\partial L}{\partial Q} = \frac{\partial L}{\partial \text{Scores}} \cdot \frac{K}{\sqrt{d_k}}$$
+$$\frac{\partial L}{\partial K} = \frac{\partial L}{\partial \text{Scores}}^T \cdot \frac{Q}{\sqrt{d_k}}$$</p></li>
+<li><p><strong>计算 $L$ 关于 $W_Q$、$W_K$ 和 $W_V$ 的梯度</strong>：
+$$\frac{\partial L}{\partial W_Q} = X^T \cdot \frac{\partial L}{\partial Q}$$
+$$\frac{\partial L}{\partial W_K} = X^T \cdot \frac{\partial L}{\partial K}$$
+$$\frac{\partial L}{\partial W_V} = X^T \cdot \frac{\partial L}{\partial V}$$</p></li>
+<li><p><strong>计算 $L$ 关于输入 $X$ 的梯度</strong>：
+$$\frac{\partial L}{\partial X} = \frac{\partial L}{\partial Q} \cdot W_Q^T + \frac{\partial L}{\partial K} \cdot W_K^T + \frac{\partial L}{\partial V} \cdot W_V^T$$</p></li>
+</ol>
+<p>这些梯度计算通常由深度学习框架自动处理，但理解这个过程有助于调试和优化模型。</p>
+</section>
+<section id="id16">
+<h3>案例：使用自注意力处理序列数据<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<p>下面我们将展示一个使用自注意力机制处理序列数据的完整示例。我们将实现一个简单的文本分类模型，使用自注意力来捕捉句子中词之间的依赖关系。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+
+<span class="c1"># 自注意力层</span>
+<span class="k">class</span> <span class="nc">SelfAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SelfAttention</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="n">d_model</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">masked_fill</span><span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1e9</span><span class="p">)</span>
+        
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+        
+        <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">weights</span>
+
+<span class="c1"># 位置编码</span>
+<span class="k">class</span> <span class="nc">PositionalEncoding</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">max_seq_length</span><span class="o">=</span><span class="mi">5000</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PositionalEncoding</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="n">pe</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">max_seq_length</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_seq_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">div_term</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">10000.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">d_model</span><span class="p">))</span>
+        
+        <span class="n">pe</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">position</span> <span class="o">*</span> <span class="n">div_term</span><span class="p">)</span>
+        <span class="n">pe</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">position</span> <span class="o">*</span> <span class="n">div_term</span><span class="p">)</span>
+        
+        <span class="n">pe</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;pe&#39;</span><span class="p">,</span> <span class="n">pe</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pe</span><span class="p">[:,</span> <span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="p">:]</span>
+
+<span class="c1"># 文本分类模型</span>
+<span class="k">class</span> <span class="nc">TextClassifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">max_seq_length</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TextClassifier</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positional_encoding</span> <span class="o">=</span> <span class="n">PositionalEncoding</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">max_seq_length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attention</span> <span class="o">=</span> <span class="n">SelfAttention</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># x: [batch_size, seq_length]</span>
+        <span class="n">embedded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># [batch_size, seq_length, d_model]</span>
+        <span class="n">embedded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">positional_encoding</span><span class="p">(</span><span class="n">embedded</span><span class="p">)</span>
+        
+        <span class="n">attended</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="n">embedded</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        
+        <span class="c1"># 全局平均池化</span>
+        <span class="n">pooled</span> <span class="o">=</span> <span class="n">attended</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [batch_size, d_model]</span>
+        
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">pooled</span><span class="p">))</span>  <span class="c1"># [batch_size, num_classes]</span>
+        
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">weights</span>
+
+<span class="c1"># 示例数据集</span>
+<span class="k">class</span> <span class="nc">TextDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="n">texts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span> <span class="o">=</span> <span class="n">vocab</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">=</span> <span class="n">max_length</span>
+        
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texts</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">texts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        
+        <span class="c1"># 将文本转换为索引</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="p">[</span><span class="s1">&#39;&lt;UNK&gt;&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">]</span>
+        
+        <span class="c1"># 填充或截断到固定长度</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="p">[</span><span class="s1">&#39;&lt;PAD&gt;&#39;</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">indices</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+<span class="c1"># 创建一个简单的词汇表和数据集</span>
+<span class="k">def</span> <span class="nf">create_sample_data</span><span class="p">():</span>
+    <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;i love this movie&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;this movie is great&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;the movie was boring&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;i hate this film&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;this is the worst movie ever&quot;</span>
+    <span class="p">]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 1表示正面评价，0表示负面评价</span>
+    
+    <span class="c1"># 创建词汇表</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;PAD&gt;&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&lt;UNK&gt;&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">:</span>
+                <span class="n">vocab</span><span class="p">[</span><span class="n">token</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">texts</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">vocab</span>
+
+<span class="c1"># 训练函数</span>
+<span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="c1"># 创建掩码</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">inputs</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">outputs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        
+        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span>
+
+<span class="c1"># 主函数</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># 参数设置</span>
+    <span class="n">d_model</span> <span class="o">=</span> <span class="mi">64</span>
+    <span class="n">num_classes</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">max_seq_length</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.001</span>
+    
+    <span class="c1"># 创建数据</span>
+    <span class="n">texts</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">vocab</span> <span class="o">=</span> <span class="n">create_sample_data</span><span class="p">()</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">TextDataset</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_seq_length</span><span class="p">)</span>
+    <span class="n">dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="c1"># 创建模型</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">TextClassifier</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">max_seq_length</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    
+    <span class="c1"># 损失函数和优化器</span>
+    <span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+    
+    <span class="c1"># 训练模型</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">num_epochs</span><span class="si">}</span><span class="s1">, Loss: </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># 可视化注意力权重</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">text</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            
+            <span class="n">_</span><span class="p">,</span> <span class="n">attention_weights</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+            
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Text: </span><span class="si">{</span><span class="n">texts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label: </span><span class="si">{</span><span class="s1">&#39;Positive&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;Negative&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Attention Weights:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">attention_weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+            <span class="nb">print</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>这个示例展示了如何使用自注意力机制处理文本分类任务。模型首先将输入文本转换为词嵌入，然后添加位置编码，接着使用自注意力层捕捉词之间的依赖关系，最后通过全连接层进行分类。</p>
+<p>通过可视化注意力权重，我们可以看到模型如何关注输入序列的不同部分，这提供了模型决策过程的可解释性。例如，在积极评价中，模型可能会更关注”love”、”great”等积极词汇；在消极评价中，则可能更关注”boring”、”hate”、”worst”等消极词汇。</p>
+<p>这个简单的例子展示了自注意力机制的强大之处：它能够动态地关注输入序列的不同部分，捕捉复杂的依赖关系，而不受固定窗口大小的限制。这使得基于注意力的模型在处理序列数据，特别是长序列数据时，表现出色。</p>
+</section>
+</section>
+<section id="id17">
+<h2>总结<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<p>在本章中，我们深入探讨了注意力机制，这是现代语言模型的核心组件之一。我们首先分析了序列模型面临的挑战，特别是长距离依赖问题，以及RNN及其变体的局限性。然后，我们介绍了注意力机制的基础概念，包括查询-键-值三元组和注意力分数计算方法。</p>
+<p>我们详细讲解了Softmax函数，它在注意力机制中用于将分数转换为权重。我们讨论了Softmax的数学定义、数值稳定性考虑和实现技巧。接着，我们探讨了位置编码的重要性，介绍了正弦余弦位置编码和可学习位置编码两种常见方法。</p>
+<p>最后，我们实现了自注意力机制，包括前向传播和反向传播过程，并通过一个文本分类的案例展示了如何使用自注意力处理序列数据。</p>
+<p>注意力机制的引入彻底改变了序列模型的设计范式，使模型能够直接建立序列中任意位置之间的连接，有效地处理长距离依赖问题。它是Transformer架构的核心组件，也是GPT、BERT等现代语言模型的基础。</p>
+<p>在下一章中，我们将学习Transformer架构，它基于注意力机制构建，并引入了多头注意力、残差连接和层归一化等重要组件，是现代语言模型的基础架构。</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../03_ngram_model/chapter03_ngram_model.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">第03章：N-gram模型（多层感知器，矩阵乘法，GELU激活函数）</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../05_transformer/chapter05_transformer.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">第05章：Transformer（transformer架构，残差连接，层归一化，GPT-2）</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. 序列模型的挑战</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">长距离依赖问题</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rnn">RNN及其变体的局限性</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2. 注意力机制基础</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">注意力的直观理解</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-key-value">查询(Query)、键(Key)、值(Value)三元组</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">注意力分数计算</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#softmax">3. Softmax函数详解</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Softmax的数学定义</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">数值稳定性考虑</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">实现技巧</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">4. 位置编码器</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">为什么需要位置信息</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">正弦余弦位置编码</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">可学习位置编码</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">5. 实现自注意力机制</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">自注意力层的前向传播</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">自注意力层的反向传播</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">案例：使用自注意力处理序列数据</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">总结</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By isLinXu
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, isLinXu.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
